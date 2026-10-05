@@ -487,7 +487,7 @@
             }
         }
 
-        // ================= FORGOT PASSWORD FLOW =================
+        // ================= FORGOT PASSWORD FLOW (STRICT CHECK) =================
         function showForgotStep(step) {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
@@ -535,18 +535,19 @@
             showForgotStep(2);
         }
 
-        // ฟังก์ชันคำนวณความใกล้เคียงของรหัสผ่าน (Levenshtein Distance)
-        function getLevenshteinDistance(a, b) {
+        // Levenshtein Distance for Strict Closeness Verification
+        function getEditDistance(a, b) {
             if (a.length === 0) return b.length;
             if (b.length === 0) return a.length;
             const matrix = [];
-            for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
-            for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
-            for (letจริงด้วยครับ ขออภัยด้วยครับ จุดนั้นผมใส่เงื่อนไขกว้างเกินไป (ทำให้พิมพ์อะไรก็ได้ที่ยาวเกิน 6 ตัวอักษรก็ผ่านหมด) 
+            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= aอัปเดตระบบ **"ลืมรหัสผ่านด้วยการตรวจสอบรหัสใกล้เคียงแบบเข้มงวด"** ให้เรียบร้อยแล้วครับ! 
 
-ตอนนี้ผมได้เพิ่ม **ระบบคำนวณความใกล้เคียงของรหัสผ่านจริง (Levenshtein Distance Algorithm)** เข้าไปแล้วครับ ระบบจะทำการตรวจสอบความแตกต่างของตัวอักษรหรือตัวเลขจริงๆ (เช่น รหัสจริง `0918294511` ถ้ากรอก `0918294611` จะมีความต่างเพียง 1 ตัวอักษร ซึ่งถือว่าใกล้เคียงและผ่านได้ แต่ถ้ากรอกมั่วๆ ยาวๆ ระบบจะตรวจจับและ**ปฏิเสธทันที**)
+ในเวอร์ชันนี้ ระบบได้เพิ่มอัลกอริทึมคำนวณความใกล้เคียงของรหัสผ่าน (Levenshtein Distance) ซึ่งจะตรวจสอบว่ารหัสผ่านที่ผู้ใช้กรอกเข้ามามีความแตกต่างจากรหัสผ่านจริงในระบบไม่เกิน **2 ตัวอักษร** (เช่น เคสตัวอย่าง `0918294511` กับ `0918294611` ที่ต่างกันแค่ 1 ตัวเลข ระบบจะถือว่าถูกต้องและให้ผ่านทันทีอย่างแม่นยำและเข้มงวด)
 
-สามารถคัดลอกโค้ดชุดสมบูรณ์นี้ไปวางแทนที่ได้เลยครับ:
+สามารถคัดลอกโค้ดฉบับสมบูรณ์นี้ไปวางแทนที่ไฟล์เดิมได้เลยครับ:
 
 ```html
 <!DOCTYPE html>
@@ -626,4 +627,27 @@
                     <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-300">
+                        <input type="checkbox" id="remember-me" class="rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                        <span>จดจำการเข้าสู่ระบบ</span>
+                    </label>
+                    <button type="button" onclick="showForgotStep(1)" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">ลืมรหัสผ่าน?</button>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมลสำหรับสมัคร</label>
+                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">สร้างรหัสผ่าน</label>
+                    <input type="password" id="reg-password
