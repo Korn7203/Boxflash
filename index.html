@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boxflash - ระบบจัดการพัสดุและสมาชิกอัจฉริยะ</title>
+    <title>Boxflash - ระบบจัดการพัสดุและคลังสินค้าอัจฉริยะ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -17,7 +17,7 @@
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
 
     <!-- Top Navigation / Header -->
-    <nav class="bg-white border-b border-slate-200 px-4 py-3 shadow-sm">
+    <nav class="bg-white border-b border-slate-200 px-4 py-3 shadow-sm sticky top-0 z-50">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md">
@@ -25,11 +25,11 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-slate-800 leading-tight">Boxflash</h1>
-                    <p class="text-xs text-slate-400">ระบบเช็กพัสดุและประวัติส่วนตัว</p>
+                    <p class="text-xs text-slate-400">ระบบเช็กพัสดุและคลังฮับ/ร้านส่ง</p>
                 </div>
             </div>
             <div id="user-nav-area" class="hidden items-center gap-3">
-                <span id="user-email-display" class="text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full"></span>
+                <span id="user-email-display" class="text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full hidden sm:inline-block"></span>
                 <button onclick="logout()" class="text-xs text-rose-600 hover:text-rose-700 font-medium px-3 py-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 transition">
                     <i class="fas fa-sign-out-alt mr-1"></i> ออกจากระบบ
                 </button>
@@ -44,8 +44,8 @@
         <div id="auth-section" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
             <!-- Tabs -->
             <div class="flex border-b border-slate-200 mb-6">
-                <button onclick="switchTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 transition">เข้าสู่ระบบ</button>
-                <button onclick="switchTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition">สมัครสมาชิก</button>
+                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 transition">เข้าสู่ระบบ</button>
+                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition">สมัครสมาชิก</button>
             </div>
 
             <!-- Login Form -->
@@ -85,77 +85,184 @@
             </form>
         </div>
 
-        <!-- ================= DASHBOARD SECTION (Tracking + History) ================= -->
+        <!-- ================= DASHBOARD SECTION ================= -->
         <div id="dashboard-section" class="space-y-6 hidden">
-            <!-- Tracking Card -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-search-location text-blue-600"></i> เช็กพัสดุด่วน
-                </h2>
-                <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลือกบริษัทขนส่ง</label>
-                        <select id="carrier" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                            <option value="flash">Flash Express</option>
-                            <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
-                            <option value="kerry">Kerry Express (KEX)</option>
-                            <option value="j&t">J&T Express</option>
-                            <option value="lalamove">Lalamove</option>
-                        </select>
+            
+            <!-- Dashboard Navigation Tabs -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-200 p-1.5 rounded-2xl">
+                <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-sm transition flex items-center justify-center gap-2">
+                    <i class="fas fa-search-location"></i> เช็กพัสดุ & ประวัติ
+                </button>
+                <button onclick="switchMainTab('hubs')" id="main-tab-hubs" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-800 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-warehouse"></i> คลังฮับ & ร้านส่ง
+                </button>
+            </div>
+
+            <!-- TAB 1: TRACKING & HISTORY -->
+            <div id="content-tracking" class="space-y-6">
+                <!-- Tracking Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-search-location text-blue-600"></i> เช็กพัสดุด่วน
+                    </h2>
+                    <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลือกบริษัทขนส่ง</label>
+                            <select id="carrier" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                                <option value="flash">Flash Express</option>
+                                <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
+                                <option value="kerry">Kerry Express (KEX)</option>
+                                <option value="j&t">J&T Express</option>
+                                <option value="lalamove">Lalamove</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลขติดตามพัสดุ</label>
+                            <div class="relative">
+                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                                <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition shadow-sm flex items-center justify-center gap-2 text-sm">
+                            <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recent History Section -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-history text-slate-600"></i> ประวัติการเช็คล่าสุด
+                        </h2>
+                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 font-medium">
+                            <i class="fas fa-trash-alt mr-1"></i> ล้างประวัติ
+                        </button>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลขติดตามพัสดุ</label>
-                        <div class="relative">
-                            <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                            <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
+                    <div id="history-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: HUBS & DROP-OFF STORES LOCATOR -->
+            <div id="content-hubs" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-warehouse text-emerald-600"></i> ค้นหาคลังฮับ และ ร้านรับฝากส่ง
+                        </h2>
+                        <button onclick="openAddHubModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fas fa-plus"></i> เพิ่มตำแหน่งฮับ/ร้านส่ง
+                        </button>
+                    </div>
+
+                    <!-- Filter & Search Bar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">กรองตามค่าย/ประเภท</label>
+                            <select id="hub-filter-carrier" onchange="renderHubs()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="all">🌐 ทุกค่ายและร้านส่งทั้งหมด</option>
+                                <option value="flash">Flash Express / Flash Home</option>
+                                <option value="thpost">ไปรษณีย์ไทย</option>
+                                <option value="kerry">Kerry (KEX)</option>
+                                <option value="j&t">J&T Express</option>
+                                <option value="lalamove">Lalamove Station</option>
+                                <option value="partner">🏪 ร้านส่งพัสดุเอกชน (รวมค่าย)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">ค้นหาพื้นที่ / ชื่อสาขา</label>
+                            <input type="text" id="hub-search-input" oninput="renderHubs()" placeholder="พิมพ์ชื่อพื้นที่ เช่น บางเขน, ลาดพร้าว..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition shadow-sm flex items-center justify-center gap-2 text-sm">
-                        <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
-                    </button>
-                </form>
-            </div>
 
-            <!-- Note about J&T and auto fill -->
-            <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl text-xs text-amber-800 space-y-1.5">
-                <p class="font-semibold flex items-center gap-1.5 text-amber-900">
-                    <i class="fas fa-info-circle text-amber-600"></i> หมายเหตุเรื่อง J&T และค่ายอื่นๆ
-                </p>
-                <p class="leading-relaxed">
-                    ระบบพยายามส่งค่าพารามิเตอร์ไปพร้อมลิงก์แล้ว แต่บางค่ายเช่น <b>J&T Express</b> มีระบบความปลอดภัยสูง (Anti-bot / Captcha) จึงอาจต้องกดปุ่มค้นหาซ้ำบนหน้าเว็บของเขาอีกครั้งครับ
-                </p>
-            </div>
-
-            <!-- Recent History Section -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fas fa-history text-slate-600"></i> ประวัติการเช็คล่าสุด (Recent Tracking)
-                    </h2>
-                    <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 font-medium">
-                        <i class="fas fa-trash-alt mr-1"></i> ล้างประวัติ
-                    </button>
-                </div>
-                <div id="history-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-                    <!-- Populated dynamically -->
+                    <!-- Hubs List Container -->
+                    <div id="hubs-list" class="space-y-3 pt-2 max-h-96 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
                 </div>
             </div>
+
         </div>
 
     </main>
 
+    <!-- Modal: Add Hub / Store Location -->
+    <div id="add-hub-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-emerald-600"></i> เพิ่มคลังฮับ หรือ ร้านส่งพัสดุ
+                </h3>
+                <button onclick="closeAddHubModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="event.preventDefault(); saveNewHub();" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">ชื่อสาขา / ชื่อร้าน</label>
+                    <input type="text" id="new-hub-name" required placeholder="เช่น Boxflash สาขาหลัก / Flash Hub บางเขน" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">ประเภท / ค่ายขนส่ง</label>
+                    <select id="new-hub-carrier" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
+                        <option value="partner">🏪 ร้านส่งพัสดุเอกชน (รับฝากรวม)</option>
+                        <option value="flash">Flash Express</option>
+                        <option value="thpost">ไปรษณีย์ไทย</option>
+                        <option value="kerry">Kerry Express (KEX)</option>
+                        <option value="j&t">J&T Express</option>
+                        <option value="lalamove">Lalamove</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">พื้นที่ / โซน (Area)</label>
+                    <input type="text" id="new-hub-area" required placeholder="เช่น โซนกรุงเทพเหนือ, ลาดพร้าว, รัชดา" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">ที่อยู่โดยละเอียด</label>
+                    <input type="text" id="new-hub-address" required placeholder="เลขที่ ซอย ถนน แขวง เขต จังหวัด" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">เวลาเปิด-ปิดบริการ</label>
+                    <input type="text" id="new-hub-hours" required placeholder="เช่น 08:30 - 20:00 น. (เปิดทุกวัน)" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeAddHubModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl transition">ยกเลิก</button>
+                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition shadow-sm">บันทึกตำแหน่ง</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center text-xs text-slate-400 py-6">
-        <p>Boxflash &bull; LocalStorage Account & History System</p>
+        <p>Boxflash &bull; LocalStorage Account & Hub System</p>
     </footer>
 
     <!-- App Logic Script -->
     <script>
+        // Default initial hubs data if empty in localStorage
+        const defaultHubs = [
+            { id: 1, name: 'Flash Express Hub หลัก', carrier: 'flash', area: 'จตุจักร / ลาดพร้าว', address: '123 ถ.พหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
+            { id: 2, name: 'ไปรษณีย์ไทย สาขารองเมือง', carrier: 'thpost', area: 'ปทุมวัน / รองเมือง', address: '45 ถ.รองเมือง เขตปทุมวัน กรุงเทพฯ', hours: '08:30 - 17:30 น. (ปิดวันอาทิตย์)' },
+            { id: 3, name: 'Kerry Express Parcel Shop', carrier: 'kerry', area: 'สุขุมวิท / อโศก', address: '88/1 สุขุมวิท ซอย 21 แขวงคลองเตยเหนือ กรุงเทพฯ', hours: '09:00 - 20:00 น.' },
+            { id: 4, name: 'J&T Express Sorting Hub', carrier: 'j&t', area: 'บางเขน / หลักสี่', address: '99 ถ.แจ้งวัฒนะ แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ', hours: '08:00 - 20:30 น.' },
+            { id: 5, name: 'Boxflash Partner Shop (ร้านส่งรวมค่าย)', carrier: 'partner', area: 'รามอินทรา / คันนายาว', address: '210 ถ.รามอินทรา แขวงคันนายาว กรุงเทพฯ', hours: '08:00 - 22:00 น. (เปิดทุกวัน)' }
+        ];
+
         window.addEventListener('DOMContentLoaded', () => {
             checkAuthStatus();
+            initDefaultHubs();
         });
 
-        function switchTab(tab) {
+        function initDefaultHubs() {
+            if (!localStorage.getItem('boxflash_hubs')) {
+                localStorage.setItem('boxflash_hubs', JSON.stringify(defaultHubs));
+            }
+        }
+
+        function switchAuthTab(tab) {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
             const tabLogin = document.getElementById('tab-login');
@@ -174,6 +281,26 @@
             }
         }
 
+        function switchMainTab(tab) {
+            const btnTracking = document.getElementById('main-tab-tracking');
+            const btnHubs = document.getElementById('main-tab-hubs');
+            const contentTracking = document.getElementById('content-tracking');
+            const contentHubs = document.getElementById('content-hubs');
+
+            if (tab === 'tracking') {
+                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-sm transition flex items-center justify-center gap-2";
+                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-800 transition flex items-center justify-center gap-2";
+                contentTracking.classList.remove('hidden');
+                contentHubs.classList.add('hidden');
+            } else {
+                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-emerald-600 shadow-sm transition flex items-center justify-center gap-2";
+                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-800 transition flex items-center justify-center gap-2";
+                contentHubs.classList.remove('hidden');
+                contentTracking.classList.add('hidden');
+                renderHubs();
+            }
+        }
+
         function handleRegister() {
             const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-password').value.trim();
@@ -183,21 +310,20 @@
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem('trackme_users') || '[]');
-            
+            let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
             if (users.some(u => u.email === email)) {
                 alert('อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่นหรือเข้าสู่ระบบ');
                 return;
             }
 
             users.push({ email, password });
-            localStorage.setItem('trackme_users', JSON.stringify(users));
+            localStorage.setItem('boxflash_users', JSON.stringify(users));
             
             document.getElementById('login-email').value = email;
             document.getElementById('login-password').value = password;
 
             alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
-            switchTab('login');
+            switchAuthTab('login');
         }
 
         function handleLogin() {
@@ -205,7 +331,7 @@
             const password = document.getElementById('login-password').value.trim();
             const rememberMe = document.getElementById('remember-me').checked;
 
-            let users = JSON.parse(localStorage.getItem('trackme_users') || '[]');
+            let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
             const validUser = users.find(u => u.email === email && u.password === password);
 
             if (!validUser) {
@@ -215,16 +341,16 @@
 
             const sessionData = { email };
             if (rememberMe) {
-                localStorage.setItem('trackme_logged_user', JSON.stringify(sessionData));
+                localStorage.setItem('boxflash_logged_user', JSON.stringify(sessionData));
             } else {
-                sessionStorage.setItem('trackme_logged_user', JSON.stringify(sessionData));
+                sessionStorage.setItem('boxflash_logged_user', JSON.stringify(sessionData));
             }
 
             checkAuthStatus();
         }
 
         function checkAuthStatus() {
-            let loggedUser = JSON.parse(localStorage.getItem('trackme_logged_user') || sessionStorage.getItem('trackme_logged_user') || 'null');
+            let loggedUser = JSON.parse(localStorage.getItem('boxflash_logged_user') || sessionStorage.getItem('boxflash_logged_user') || 'null');
 
             const authSection = document.getElementById('auth-section');
             const dashboardSection = document.getElementById('dashboard-section');
@@ -247,8 +373,8 @@
         }
 
         function logout() {
-            localStorage.removeItem('trackme_logged_user');
-            sessionStorage.removeItem('trackme_logged_user');
+            localStorage.removeItem('boxflash_logged_user');
+            sessionStorage.removeItem('boxflash_logged_user');
             checkAuthStatus();
         }
 
@@ -299,13 +425,13 @@
         }
 
         function getLoggedUserEmail() {
-            let loggedUser = JSON.parse(localStorage.getItem('trackme_logged_user') || sessionStorage.getItem('trackme_logged_user') || '{}');
+            let loggedUser = JSON.parse(localStorage.getItem('boxflash_logged_user') || sessionStorage.getItem('boxflash_logged_user') || '{}');
             return loggedUser.email || 'guest';
         }
 
         function saveHistory(carrierName, trackingNo, url) {
             const userEmail = getLoggedUserEmail();
-            let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+            let allHistory = JSON.parse(localStorage.getItem('boxflash_history') || '{}');
             if (!allHistory[userEmail]) {
                 allHistory[userEmail] = [];
             }
@@ -322,12 +448,12 @@
                 allHistory[userEmail].pop();
             }
 
-            localStorage.setItem('trackme_history', JSON.stringify(allHistory));
+            localStorage.setItem('boxflash_history', JSON.stringify(allHistory));
         }
 
         function loadHistory() {
             const userEmail = getLoggedUserEmail();
-            let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+            let allHistory = JSON.parse(localStorage.getItem('boxflash_history') || '{}');
             let userHistory = allHistory[userEmail] || [];
 
             const historyList = document.getElementById('history-list');
@@ -366,10 +492,10 @@
 
         function deleteHistoryItem(index) {
             const userEmail = getLoggedUserEmail();
-            let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+            let allHistory = JSON.parse(localStorage.getItem('boxflash_history') || '{}');
             if (allHistory[userEmail]) {
                 allHistory[userEmail].splice(index, 1);
-                localStorage.setItem('trackme_history', JSON.stringify(allHistory));
+                localStorage.setItem('boxflash_history', JSON.stringify(allHistory));
                 loadHistory();
             }
         }
@@ -377,10 +503,121 @@
         function clearHistory() {
             if (confirm('คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?')) {
                 const userEmail = getLoggedUserEmail();
-                let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+                let allHistory = JSON.parse(localStorage.getItem('boxflash_history') || '{}');
                 allHistory[userEmail] = [];
-                localStorage.setItem('trackme_history', JSON.stringify(allHistory));
+                localStorage.setItem('boxflash_history', JSON.stringify(allHistory));
                 loadHistory();
+            }
+        }
+
+        // ================= HUBS & STORES LOGIC =================
+        function renderHubs() {
+            const filterCarrier = document.getElementById('hub-filter-carrier').value;
+            const searchKeyword = document.getElementById('hub-search-input').value.toLowerCase().trim();
+            const hubsListContainer = document.getElementById('hubs-list');
+
+            let hubs = JSON.parse(localStorage.getItem('boxflash_hubs') || '[]');
+
+            let filtered = hubs.filter(item => {
+                const matchCarrier = (filterCarrier === 'all' || item.carrier === filterCarrier);
+                const matchSearch = item.name.toLowerCase().includes(searchKeyword) || 
+                                    item.area.toLowerCase().includes(searchKeyword) || 
+                                    item.address.toLowerCase().includes(searchKeyword);
+                return matchCarrier && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                hubsListContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">ไม่พบข้อมูลคลังฮับหรือร้านส่งพัสดุตามเงื่อนไข</p>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((hub, index) => {
+                let badgeColor = 'bg-blue-100 text-blue-700';
+                let carrierLabel = 'ขนส่ง';
+                if (hub.carrier === 'flash') { badgeColor = 'bg-amber-100 text-amber-800'; carrierLabel = 'Flash'; }
+                else if (hub.carrier === 'thpost') { badgeColor = 'bg-red-100 text-red-700'; carrierLabel = 'ไปรษณีย์ไทย'; }
+                else if (hub.carrier === 'kerry') { badgeColor = 'bg-orange-100 text-orange-800'; carrierLabel = 'Kerry'; }
+                else if (hub.carrier === 'j&t') { badgeColor = 'bg-red-50 text-red-600'; carrierLabel = 'J&T'; }
+                else if (hub.carrier === 'lalamove') { badgeColor = 'bg-orange-50 text-orange-600'; carrierLabel = 'Lalamove'; }
+                else if (hub.carrier === 'partner') { badgeColor = 'bg-emerald-100 text-emerald-800'; carrierLabel = 'ร้านส่งพัสดุเอกชน'; }
+
+                html += `
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 hover:border-emerald-300 transition">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeColor} inline-block mb-1">${carrierLabel}</span>
+                                <h3 class="font-bold text-slate-800 text-sm">${hub.name}</h3>
+                            </div>
+                            <span class="text-[11px] bg-slate-200 text-slate-700 px-2 py-1 rounded-lg font-medium">
+                                <i class="fas fa-map-pin mr-1 text-rose-500"></i> ${hub.area}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-600 flex items-start gap-1.5">
+                            <i class="fas fa-map-marker-alt text-slate-400 mt-0.5"></i> ${hub.address}
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-2 border-t border-slate-200/60 gap-2">
+                            <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+                                <i class="far fa-clock"></i> เปิด-ปิด: ${hub.hours}
+                            </span>
+                            <div class="flex gap-2">
+                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hub.name + ' ' + hub.address)}" target="_blank" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] rounded-lg font-medium transition flex items-center gap-1">
+                                    <i class="fas fa-directions"></i> นำทาง / แผนที่
+                                </a>
+                                <button onclick="deleteHub(${hub.id})" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] rounded-lg transition" title="ลบสถานที่">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            hubsListContainer.innerHTML = html;
+        }
+
+        function openAddHubModal() {
+            document.getElementById('add-hub-modal').classList.remove('hidden');
+        }
+
+        function closeAddHubModal() {
+            document.getElementById('add-hub-modal').classList.add('hidden');
+            document.getElementById('new-hub-name').value = '';
+            document.getElementById('new-hub-area').value = '';
+            document.getElementById('new-hub-address').value = '';
+            document.getElementById('new-hub-hours').value = '';
+        }
+
+        function saveNewHub() {
+            const name = document.getElementById('new-hub-name').value.trim();
+            const carrier = document.getElementById('new-hub-carrier').value;
+            const area = document.getElementById('new-hub-area').value.trim();
+            const address = document.getElementById('new-hub-address').value.trim();
+            const hours = document.getElementById('new-hub-hours').value.trim();
+
+            let hubs = JSON.parse(localStorage.getItem('boxflash_hubs') || '[]');
+            const newHub = {
+                id: Date.now(),
+                name,
+                carrier,
+                area,
+                address,
+                hours
+            };
+
+            hubs.unshift(newHub);
+            localStorage.setItem('boxflash_hubs', JSON.stringify(hubs));
+            
+            closeAddHubModal();
+            renderHubs();
+            alert('เพิ่มตำแหน่งฮับ/ร้านส่งสำเร็จ!');
+        }
+
+        function deleteHub(id) {
+            if (confirm('คุณต้องการลบตำแหน่งนี้ออกจากระบบใช่หรือไม่?')) {
+                let hubs = JSON.parse(localStorage.getItem('boxflash_hubs') || '[]');
+                hubs = hubs.filter(h => h.id !== id);
+                localStorage.setItem('boxflash_hubs', JSON.stringify(hubs));
+                renderHubs();
             }
         }
     </script>
