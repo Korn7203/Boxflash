@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boxflash - ค้นหาพัสดุและจุดบริการใกล้คุณ</title>
+    <title>Boxflash - ค้นหาสาขาขนส่ง & เช็กพัสดุทุกค่าย</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-slate-800 dark:text-white leading-tight">Boxflash</h1>
-                    <p class="text-xs text-slate-400 dark:text-slate-400" data-i18n="nav_subtitle">ค้นหา ขนส่ง ใกล้คุณ & เช็กพัสดุ</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-400" data-i18n="nav_subtitle">ค้นหาจุดบริการ & เช็กพัสดุทุกค่าย</p>
                 </div>
             </div>
             
@@ -108,69 +108,58 @@
             
             <!-- Dashboard Navigation Tabs -->
             <div class="grid grid-cols-2 gap-2 bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
-                <button onclick="switchMainTab('hubs')" id="main-tab-hubs" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
-                    <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_hubs">ค้นหา Flash ใกล้ฉัน</span>
+                <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
+                    <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_locator">ค้นหาสาขาบนแผนที่</span>
                 </button>
                 <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
-                    <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุ & ประวัติ</span>
+                    <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุทุกค่าย</span>
                 </button>
             </div>
 
-            <!-- TAB 1: FLASH HUBS & LOCATOR (DEFAULT TAB) -->
-            <div id="content-hubs" class="space-y-6 smooth-transition transform transition-all duration-300 opacity-150 translate-y-0">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4 smooth-transition hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                <i class="fas fa-warehouse text-amber-500"></i> <span data-i18n="hubs_header_title">ค้นหาสถานที่ Flash ใกล้คุณ</span>
-                            </h2>
-                            <p class="text-xs text-slate-400 mt-0.5" data-i18n="hubs_header_sub">กรอกตำบล อำเภอ หรือชื่อพื้นที่ เพื่อดูสาขา Flash ที่ใกล้ที่สุด</p>
-                        </div>
-                        <!-- Add Hub Button: Visible ONLY for Admin -->
-                        <button id="btn-add-hub-container" onclick="openAddHubModal()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-3.5 py-2 rounded-xl smooth-transition flex items-center gap-1.5 shadow-sm active:scale-95">
-                            <i class="fas fa-plus"></i> <span data-i18n="btn_add_hub">เพิ่มสาขาแฟลช (แอดมิน)</span>
-                        </button>
+            <!-- TAB 1: MAP LOCATOR BY CARRIER & AREA (NEW) -->
+            <div id="content-locator" class="space-y-6 smooth-transition transform transition-all duration-300 opacity-150 translate-y-0">
+                <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5 smooth-transition hover:shadow-md">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-compass text-amber-500"></i> <span data-i18n="locator_title">ค้นหาสาขาและจุดบริการขนส่งใกล้คุณ</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="locator_sub">เลือกค่ายขนส่งและระบุเขต/จังหวัด ระบบจะนำทางไปหน้าแผนที่ค้นหาทันที</p>
                     </div>
 
-                    <!-- Address Input & Search Bar -->
-                    <div class="space-y-3">
+                    <form onsubmit="event.preventDefault(); openMapSearch();" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_address_input">กรอกตำแหน่งที่อยู่ของคุณ (เช่น เขต, แขวง, จังหวัด, หรือชื่อถนน)</label>
-                            <div class="relative flex gap-2">
-                                <div class="relative flex-1">
-                                    <input type="text" id="user-address-input" oninput="searchNearbyFlash()" placeholder="เช่น บางเขน, ลาดพร้าว, รัชดาภิเษก, เชียงใหม่..." class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium smooth-transition">
-                                    <i class="fas fa-map-marker-alt absolute left-3.5 top-3.5 text-amber-500 text-base"></i>
-                                </div>
-                                <button onclick="searchNearbyFlash()" class="bg-amber-500 hover:bg-amber-600 text-white px-5 py-3 rounded-xl font-medium text-xs sm:text-sm shadow-sm smooth-transition flex items-center gap-1.5 active:scale-95">
-                                    <i class="fas fa-search"></i> <span data-i18n="btn_search_flash">ค้นหา</span>
-                                </button>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_select_carrier">เลือกค่ายขนส่ง</label>
+                            <select id="map-carrier" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium smooth-transition">
+                                <option value="Flash Express">🟡 Flash Express (และ Flash Home)</option>
+                                <option value="Kerry Express KEX">🟠 Kerry Express (KEX)</option>
+                                <option value="ไปรษณีย์ไทย">🔴 ไปรษณีย์ไทย (Thailand Post)</option>
+                                <option value="J&T Express">🟢 J&T Express</option>
+                                <option value="Ninja Van">⚫ Ninja Van</option>
+                                <option value="Best Express">🔵 Best Express</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_map_area">กรอกเขต / อำเภอ / หรือจังหวัด</label>
+                            <div class="relative">
+                                <input type="text" id="map-area-input" required placeholder="เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium smooth-transition">
+                                <i class="fas fa-map-marker-alt absolute left-4 top-3.5 text-amber-500 text-base"></i>
                             </div>
                         </div>
 
-                        <!-- Filter Type Option -->
-                        <div class="flex items-center gap-2 pt-1">
-                            <span class="text-xs text-slate-400 font-medium" data-i18n="filter_type_label">กรองประเภท:</span>
-                            <select id="flash-type-filter" onchange="searchNearbyFlash()" class="px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 smooth-transition">
-                                <option value="all" data-i18n="opt_all_flash">🟡 ทุกประเภท (Flash Express & Flash Home)</option>
-                                <option value="hub" data-i18n="opt_flash_hub">📦 Flash Express Hub (ศูนย์คัดแยกและกระจายสินค้า)</option>
-                                <option value="home" data-i18n="opt_flash_home">🏪 Flash Home / Service Point (จุดรับฝากส่งพัสดุ)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Hubs Result List Container -->
-                    <div id="hubs-list" class="space-y-3 pt-3 max-h-[420px] overflow-y-auto pr-1 transition-all duration-300">
-                        <!-- Populated dynamically -->
-                    </div>
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-3.5 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
+                            <i class="fas fa-external-link-alt"></i> <span data-i18n="btn_open_map">เปิดแผนที่ค้นหาจุดบริการใกล้ฉัน</span>
+                        </button>
+                    </form>
                 </div>
             </div>
 
-            <!-- TAB 2: TRACKING & HISTORY -->
+            <!-- TAB 2: MULTI-CARRIER TRACKING & HISTORY -->
             <div id="content-tracking" class="space-y-6 hidden smooth-transition transform transition-all duration-300 opacity-0 translate-y-2">
                 <!-- Tracking Card -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
                     <h2 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-search-location text-amber-500"></i> <span data-i18n="track_title">เช็กพัสดุด่วน</span>
+                        <i class="fas fa-search-location text-amber-500"></i> <span data-i18n="track_title">เช็กพัสดุด่วนทุกค่าย</span>
                     </h2>
                     <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
                         <div>
@@ -180,6 +169,8 @@
                                 <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
                                 <option value="kerry">Kerry Express (KEX)</option>
                                 <option value="j&t">J&T Express</option>
+                                <option value="ninjavan">Ninja Van</option>
+                                <option value="best">Best Express</option>
                                 <option value="lalamove">Lalamove</option>
                             </select>
                         </div>
@@ -216,52 +207,9 @@
 
     </main>
 
-    <!-- Modal: Add Flash Branch (Admin Only) -->
-    <div id="add-hub-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 smooth-transition">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 transform scale-95 opacity-0 smooth-transition" id="modal-content-box">
-            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
-                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
-                    <i class="fas fa-map-marker-alt text-amber-500"></i> <span data-i18n="modal_title">เพิ่มสาขา Flash Express / Flash Home</span>
-                </h3>
-                <button onclick="closeAddHubModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 smooth-transition">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-            </div>
-            <form onsubmit="event.preventDefault(); saveNewHub();" class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_name">ชื่อสาขา / จุดบริการ</label>
-                    <input type="text" id="new-hub-name" required placeholder="เช่น Flash Express สาขาบางเขน / Flash Home ม.เกษตร" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 smooth-transition">
-                </div>
-                <div>
-                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_carrier">ประเภทบริการ Flash</label>
-                    <select id="new-hub-carrier" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium smooth-transition">
-                        <option value="hub">📦 Flash Express Hub (ศูนย์หลัก / กระจายสินค้า)</option>
-                        <option value="home">🏪 Flash Home / Service Point (จุดรับพัสดุย่อย)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_area">พื้นที่ / โซน / เขต / จังหวัด</label>
-                    <input type="text" id="new-hub-area" required placeholder="เช่น บางเขน, จตุจักร, ลาดพร้าว, กรุงเทพฯ" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 smooth-transition">
-                </div>
-                <div>
-                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_address">ที่อยู่โดยละเอียด</label>
-                    <input type="text" id="new-hub-address" required placeholder="เลขที่ ซอย ถนน แขวง เขต จังหวัด" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 smooth-transition">
-                </div>
-                <div>
-                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_hours">เวลาเปิด-ปิดบริการ</label>
-                    <input type="text" id="new-hub-hours" required placeholder="เช่น 08:00 - 20:00 น. (เปิดทุกวัน)" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 smooth-transition">
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeAddHubModal()" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 font-medium py-2.5 rounded-xl smooth-transition" data-i18n="modal_cancel">ยกเลิก</button>
-                    <button type="submit" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 rounded-xl smooth-transition shadow-sm active:scale-95" data-i18n="modal_save">บันทึกสาขา</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="text-center text-xs text-slate-400 py-6">
-        <p>Boxflash &bull; Flash Express Branch Finder System</p>
+        <p>Boxflash &bull; Multi-Carrier Branch & Tracking System</p>
     </footer>
 
     <!-- App Logic & Localization Script -->
@@ -271,7 +219,7 @@
 
         const translations = {
             th: {
-                nav_subtitle: "ค้นหา Flash ใกล้คุณ & เช็กพัสดุ",
+                nav_subtitle: "ค้นหาจุดบริการ & เช็กพัสดุทุกค่าย",
                 tab_login: "เข้าสู่ระบบ",
                 tab_register: "สมัครสมาชิก",
                 label_email: "อีเมล",
@@ -281,39 +229,25 @@
                 label_reg_email: "อีเมลสำหรับสมัคร",
                 label_reg_password: "สร้างรหัสผ่าน",
                 btn_register: "สร้างบัญชีผู้ใช้ใหม่",
-                maintab_hubs: "ค้นหา Flash ใกล้ฉัน",
-                maintab_tracking: "เช็กพัสดุ & ประวัติ",
-                hubs_header_title: "ค้นหาสถานที่ Flash ใกล้คุณ",
-                hubs_header_sub: "กรอกตำบล อำเภอ หรือชื่อพื้นที่ เพื่อดูสาขา Flash ที่ใกล้ที่สุด",
-                btn_add_hub: "เพิ่มสาขาแฟลช (แอดมิน)",
-                label_address_input: "กรอกตำแหน่งที่อยู่ของคุณ (เช่น เขต, แขวง, จังหวัด, หรือชื่อถนน)",
-                btn_search_flash: "ค้นหา",
-                filter_type_label: "กรองประเภท:",
-                opt_all_flash: "🟡 ทุกประเภท (Flash Express & Flash Home)",
-                opt_flash_hub: "📦 Flash Express Hub (ศูนย์คัดแยกและกระจายสินค้า)",
-                opt_flash_home: "🏪 Flash Home / Service Point (จุดรับฝากส่งพัสดุ)",
-                track_title: "เช็กพัสดุด่วน",
+                maintab_locator: "ค้นหาสาขาบนแผนที่",
+                maintab_tracking: "เช็กพัสดุทุกค่าย",
+                locator_title: "ค้นหาสาขาและจุดบริการขนส่งใกล้คุณ",
+                locator_sub: "เลือกค่ายขนส่งและระบุเขต/จังหวัด ระบบจะนำทางไปหน้าแผนที่ค้นหาทันที",
+                label_select_carrier: "เลือกค่ายขนส่ง",
+                label_map_area: "กรอกเขต / อำเภอ / หรือจังหวัด",
+                btn_open_map: "เปิดแผนที่ค้นหาจุดบริการใกล้ฉัน",
+                track_title: "เช็กพัสดุด่วนทุกค่าย",
                 label_carrier: "เลือกบริษัทขนส่ง",
                 label_tracking_no: "เลขติดตามพัสดุ",
                 btn_track: "เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด",
                 history_title: "ประวัติการเช็คล่าสุด",
                 btn_clear_history: "ล้างประวัติ",
-                modal_title: "เพิ่มสาขา Flash Express / Flash Home",
-                modal_name: "ชื่อสาขา / จุดบริการ",
-                modal_carrier: "ประเภทบริการ Flash",
-                modal_area: "พื้นที่ / โซน / เขต / จังหวัด",
-                modal_address: "ที่อยู่โดยละเอียด",
-                modal_hours: "เวลาเปิด-ปิดบริการ",
-                modal_cancel: "ยกเลิก",
-                modal_save: "บันทึกสาขา",
                 badge_admin: "แอดมิน",
                 badge_member: "สมาชิก",
-                no_history: "ยังไม่มีประวัติการเช็กพัสดุ",
-                no_hubs: "ไม่พบสาขา Flash ที่ตรงกับพื้นที่ที่คุณค้นหา ลองกรองใหม่หรือระบุชื่อเขต/แขวงให้ชัดเจนขึ้นครับ",
-                distance_away: "ห่างจากพื้นที่ที่คุณค้นหาประมาณ"
+                no_history: "ยังไม่มีประวัติการเช็กพัสดุ"
             },
             en: {
-                nav_subtitle: "Find Flash Near You & Track Parcel",
+                nav_subtitle: "Find Branches & Track All Carriers",
                 tab_login: "Login",
                 tab_register: "Register",
                 label_email: "Email",
@@ -323,58 +257,33 @@
                 label_reg_email: "Email for registration",
                 label_reg_password: "Create Password",
                 btn_register: "Create New Account",
-                maintab_hubs: "Find Flash Near Me",
-                maintab_tracking: "Tracking & History",
-                hubs_header_title: "Find Flash Locations Near You",
-                hubs_header_sub: "Enter subdistrict, district, or area name to find nearest Flash branches",
-                btn_add_hub: "Add Flash Branch (Admin)",
-                label_address_input: "Enter your address or area (e.g. district, subdistrict, street)",
-                btn_search_flash: "Search",
-                filter_type_label: "Filter Type:",
-                opt_all_flash: "🟡 All Types (Flash Express & Flash Home)",
-                opt_flash_hub: "📦 Flash Express Hub (Sorting & Distribution)",
-                opt_flash_home: "🏪 Flash Home / Service Point (Drop-off)",
+                maintab_locator: "Find Branch on Map",
+                maintab_tracking: "Track All Carriers",
+                locator_title: "Find Courier Branches & Service Points Near You",
+                locator_sub: "Select carrier and enter area/province to open map search instantly",
+                label_select_carrier: "Select Carrier",
+                label_map_area: "Enter District / Province",
+                btn_open_map: "Open Map & Find Nearby",
                 track_title: "Quick Parcel Tracking",
                 label_carrier: "Select Carrier",
                 label_tracking_no: "Tracking Number",
                 btn_track: "Open Tracking & Save History",
                 history_title: "Recent History",
                 btn_clear_history: "Clear History",
-                modal_title: "Add Flash Express / Flash Home Branch",
-                modal_name: "Branch / Service Name",
-                modal_carrier: "Flash Service Type",
-                modal_area: "Area / District / Province",
-                modal_address: "Detailed Address",
-                modal_hours: "Operating Hours",
-                modal_cancel: "Cancel",
-                modal_save: "Save Branch",
                 badge_admin: "Admin",
                 badge_member: "Member",
-                no_history: "No tracking history yet",
-                no_hubs: "No Flash branches found matching your search. Try another area name.",
-                distance_away: "Approx. distance away:"
+                no_history: "No tracking history yet"
             }
         };
 
         let currentLang = localStorage.getItem('boxflash_lang') || 'th';
         let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
 
-        const defaultFlashBranches = [
-            { id: 1, name: 'Flash Express Hub บางเขน (ศูนย์คัดแยกหลัก)', carrierType: 'hub', area: 'บางเขน หลักสี่ อนุสาวรีย์ กรุงเทพฯ', address: '99 ถ.แจ้งวัฒนะ แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ 10220', hours: '08:00 - 21:00 น. (เปิดทุกวัน)' },
-            { id: 2, name: 'Flash Home ม.เกษตรศาสตร์ (จุดรับพัสดุ)', carrierType: 'home', area: 'จตุจักร ลาดยาว งามวงศ์วาน กรุงเทพฯ', address: '50 ถ.งามวงศ์วาน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ 10900', hours: '08:30 - 20:00 น.' },
-            { id: 3, name: 'Flash Express Hub ลาดพร้าว-รัชดา', carrierType: 'hub', area: 'ลาดพร้าว ห้วยขวาง รัชดาภิเษก กรุงเทพฯ', address: '128 ถ.ลาดพร้าว แขวงสามเสนนอก เขตห้วยขวาง กรุงเทพฯ 10310', hours: '08:00 - 21:30 น.' },
-            { id: 4, name: 'Flash Home ซอยพหลโยธิน 34', carrierType: 'home', area: 'เสนานิคม จตุจักร พหลโยธิน กรุงเทพฯ', address: '22/4 ซ.พหลโยธิน 34 แขวงเสนานิคม เขตจตุจักร กรุงเทพฯ 10900', hours: '09:00 - 19:30 น.' },
-            { id: 5, name: 'Flash Express Hub รามอินทรา', carrierType: 'home', area: 'รามอินทรา คันนายาว บึงกุ่ม กรุงเทพฯ', address: '210 ถ.รามอินทรา แขวงคันนายาว เขตคันนายาว กรุงเทพฯ 10230', hours: '08:00 - 20:00 น.' },
-            { id: 6, name: 'Flash Express Hub สุขุมวิท-อโศก', carrierType: 'hub', area: 'สุขุมวิท อโศก คลองเตย วัฒนา กรุงเทพฯ', address: '88/1 ถ.สุขุมวิท แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110', hours: '08:00 - 22:00 น.' }
-        ];
-
         window.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initLanguage();
             initAdminAccount();
-            initDefaultHubs();
             checkAuthStatus();
-            searchNearbyFlash();
         });
 
         // Theme Control
@@ -408,7 +317,7 @@
                 }
             });
             
-            document.getElementById('user-address-input').placeholder = currentLang === 'th' ? 'เช่น บางเขน, ลาดพร้าว, รัชดาภิเษก, เชียงใหม่...' : 'Enter area like Chatuchak, Asoke, Sukhumvit...';
+            document.getElementById('map-area-input').placeholder = currentLang === 'th' ? 'เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต...' : 'Enter district, province...';
             document.getElementById('tracking-number').placeholder = currentLang === 'th' ? 'กรอกเลขพัสดุที่นี่...' : 'Enter tracking number here...';
         }
 
@@ -418,7 +327,6 @@
             initLanguage();
             checkAuthStatus();
             loadHistory();
-            searchNearbyFlash();
         }
 
         function initAdminAccount() {
@@ -426,12 +334,6 @@
             if (!users.some(u => u.email === ADMIN_EMAIL)) {
                 users.push({ email: ADMIN_EMAIL, password: ADMIN_PASS });
                 localStorage.setItem('boxflash_users', JSON.stringify(users));
-            }
-        }
-
-        function initDefaultHubs() {
-            if (!localStorage.getItem('boxflash_flash_branches')) {
-                localStorage.setItem('boxflash_flash_branches', JSON.stringify(defaultFlashBranches));
             }
         }
 
@@ -456,31 +358,31 @@
 
         // Smooth Main Tab Switcher
         function switchMainTab(tab) {
-            const btnHubs = document.getElementById('main-tab-hubs');
+            const btnLocator = document.getElementById('main-tab-locator');
             const btnTracking = document.getElementById('main-tab-tracking');
-            const contentHubs = document.getElementById('content-hubs');
+            const contentLocator = document.getElementById('content-locator');
             const contentTracking = document.getElementById('content-tracking');
 
-            if (tab === 'hubs') {
-                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
+            if (tab === 'locator') {
+                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
                 btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
                 
                 contentTracking.classList.add('opacity-0', '-translate-y-2');
                 setTimeout(() => {
                     contentTracking.classList.add('hidden');
-                    contentHubs.classList.remove('hidden');
+                    contentLocator.classList.remove('hidden');
                     setTimeout(() => {
-                        contentHubs.classList.remove('opacity-0', 'translate-y-2');
-                        contentHubs.classList.add('opacity-100', 'translate-y-0');
+                        contentLocator.classList.remove('opacity-0', 'translate-y-2');
+                        contentLocator.classList.add('opacity-100', 'translate-y-0');
                     }, 20);
                 }, 150);
             } else {
                 btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
+                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
                 
-                contentHubs.classList.add('opacity-0', 'translate-y-2');
+                contentLocator.classList.add('opacity-0', 'translate-y-2');
                 setTimeout(() => {
-                    contentHubs.classList.add('hidden');
+                    contentLocator.classList.add('hidden');
                     contentTracking.classList.remove('hidden');
                     setTimeout(() => {
                         contentTracking.classList.remove('opacity-0', '-translate-y-2');
@@ -545,7 +447,6 @@
             const dashboardSection = document.getElementById('dashboard-section');
             const userNavArea = document.getElementById('user-nav-area');
             const userEmailDisplay = document.getElementById('user-email-display');
-            const addHubBtn = document.getElementById('btn-add-hub-container');
 
             if (loggedUser) {
                 authSection.classList.add('hidden');
@@ -558,10 +459,8 @@
 
                 if (loggedUser.email === ADMIN_EMAIL) {
                     userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">${adminBadge}</span>`;
-                    addHubBtn.classList.remove('hidden');
                 } else {
                     userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full text-[10px] font-medium">${memberBadge}</span>`;
-                    addHubBtn.classList.add('hidden');
                 }
 
                 loadHistory();
@@ -577,6 +476,24 @@
             localStorage.removeItem('boxflash_logged_user');
             sessionStorage.removeItem('boxflash_logged_user');
             checkAuthStatus();
+        }
+
+        // Map Search Redirection Function
+        function openMapSearch() {
+            const carrier = document.getElementById('map-carrier').value;
+            const area = document.getElementById('map-area-input').value.trim();
+
+            if (!area) {
+                alert(currentLang === 'th' ? 'กรุณากรอกเขตหรือจังหวัด' : 'Please enter an area or province.');
+                document.getElementById('map-area-input').focus();
+                return;
+            }
+
+            // Construct Google Maps Search URL combining carrier and area for "near me" style results
+            const searchQuery = `${carrier} ใกล้ฉัน ${area}`;
+            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(searchQuery)}`;
+
+            window.open(mapUrl, '_blank');
         }
 
         function trackParcel() {
@@ -608,6 +525,14 @@
                 case 'j&t':
                     carrierName = 'J&T Express';
                     targetUrl = `https://www.jtexpress.co.th/index/query/gz.html?billcode=${encodeURIComponent(trackingNo)}`;
+                    break;
+                case 'ninjavan':
+                    carrierName = 'Ninja Van';
+                    targetUrl = `https://www.ninjavan.co/en-th/tracking?id=${encodeURIComponent(trackingNo)}`;
+                    break;
+                case 'best':
+                    carrierName = 'Best Express';
+                    targetUrl = `https://www.best-inc.co.th/track?billCode=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'lalamove':
                     carrierName = 'Lalamove';
@@ -708,140 +633,6 @@
                 allHistory[userEmail] = [];
                 localStorage.setItem('boxflash_history', JSON.stringify(allHistory));
                 loadHistory();
-            }
-        }
-
-        // ================= FLASH BRANCH LOCATOR LOGIC =================
-        function searchNearbyFlash() {
-            const hubsListContainer = document.getElementById('hubs-list');
-            const addressQuery = document.getElementById('user-address-input').value.toLowerCase().trim();
-            const typeFilter = document.getElementById('flash-type-filter').value;
-            const loggedUser = JSON.parse(localStorage.getItem('boxflash_logged_user') || sessionStorage.getItem('boxflash_logged_user') || '{}');
-            const isAdmin = (loggedUser.email === ADMIN_EMAIL);
-
-            let branches = JSON.parse(localStorage.getItem('boxflash_flash_branches') || '[]');
-
-            // Filter branches
-            let filtered = branches.filter(item => {
-                const matchType = (typeFilter === 'all' || item.carrierType === typeFilter);
-                
-                // If user didn't type anything, show all or top branches
-                if (!addressQuery) return matchType;
-
-                const matchArea = item.name.toLowerCase().includes(addressQuery) || 
-                                  item.area.toLowerCase().includes(addressQuery) || 
-                                  item.address.toLowerCase().includes(addressQuery);
-                return matchType && matchArea;
-            });
-
-            // If query doesn't match specific area keywords, fallback to showing all with simulated distances or sort
-            let displayList = filtered.length > 0 ? filtered : (addressQuery ? branches.filter(item => typeFilter === 'all' || item.carrierType === typeFilter) : branches);
-
-            if (displayList.length === 0) {
-                hubsListContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">${translations[currentLang].no_hubs}</p>`;
-                return;
-            }
-
-            let html = '';
-            displayList.forEach((hub, idx) => {
-                let badgeColor = hub.carrierType === 'hub' ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300' : 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-300';
-                let typeLabel = hub.carrierType === 'hub' ? (currentLang === 'th' ? '📦 Flash Express Hub' : '📦 Flash Hub') : (currentLang === 'th' ? '🏪 Flash Home / Service' : '🏪 Flash Home');
-                
-                // Simulated distance based on index or query relevance
-                let simulatedKm = (idx * 0.8 + 0.5).toFixed(1);
-
-                let deleteBtnHtml = isAdmin ? `
-                    <button onclick="deleteFlashBranch(${hub.id})" class="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-600 dark:text-rose-400 text-[11px] rounded-lg smooth-transition" title="Delete">
-                        <i class="fas fa-trash-alt"></i> ${currentLang === 'th' ? 'ลบ' : 'Delete'}
-                    </button>
-                ` : '';
-
-                html += `
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2.5 hover:border-amber-400 dark:hover:border-amber-500 smooth-transition hover:shadow-sm">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeColor} inline-block mb-1">${typeLabel}</span>
-                                <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base">${hub.name}</h3>
-                            </div>
-                            <span class="text-[11px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 shrink-0">
-                                <i class="fas fa-route text-amber-500"></i> ~${simulatedKm} กม.
-                            </span>
-                        </div>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-1.5">
-                            <i class="fas fa-map-marker-alt text-amber-500 mt-0.5 shrink-0"></i> <span>${hub.address}</span>
-                        </p>
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-2 border-t border-slate-200/60 dark:border-slate-700/60 gap-2">
-                            <span class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                                <i class="far fa-clock"></i> ${currentLang === 'th' ? 'เวลาให้บริการ' : 'Hours'}: ${hub.hours}
-                            </span>
-                            <div class="flex gap-2 w-full sm:w-auto justify-end">
-                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hub.name + ' ' + hub.address)}" target="_blank" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs rounded-xl font-medium smooth-transition flex items-center gap-1.5 shadow-sm active:scale-95">
-                                    <i class="fas fa-directions"></i> ${currentLang === 'th' ? 'นำทาง Google Maps' : 'Navigate'}
-                                </a>
-                                ${deleteBtnHtml}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            hubsListContainer.innerHTML = html;
-        }
-
-        function openAddHubModal() {
-            const modal = document.getElementById('add-hub-modal');
-            const box = document.getElementById('modal-content-box');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                box.classList.remove('scale-95', 'opacity-0');
-                box.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        function closeAddHubModal() {
-            const modal = document.getElementById('add-hub-modal');
-            const box = document.getElementById('modal-content-box');
-            box.classList.remove('scale-100', 'opacity-100');
-            box.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.getElementById('new-hub-name').value = '';
-                document.getElementById('new-hub-area').value = '';
-                document.getElementById('new-hub-address').value = '';
-                document.getElementById('new-hub-hours').value = '';
-            }, 200);
-        }
-
-        function saveNewHub() {
-            const name = document.getElementById('new-hub-name').value.trim();
-            const carrierType = document.getElementById('new-hub-carrier').value;
-            const area = document.getElementById('new-hub-area').value.trim();
-            const address = document.getElementById('new-hub-address').value.trim();
-            const hours = document.getElementById('new-hub-hours').value.trim();
-
-            let branches = JSON.parse(localStorage.getItem('boxflash_flash_branches') || '[]');
-            const newBranch = {
-                id: Date.now(),
-                name,
-                carrierType,
-                area,
-                address,
-                hours
-            };
-
-            branches.unshift(newBranch);
-            localStorage.setItem('boxflash_flash_branches', JSON.stringify(branches));
-            
-            closeAddHubModal();
-            searchNearbyFlash();
-            alert(currentLang === 'th' ? 'เพิ่มสาขา Flash สำเร็จ!' : 'Flash branch added successfully!');
-        }
-
-        function deleteFlashBranch(id) {
-            if (confirm(currentLang === 'th' ? 'คุณต้องการลบสาขานี้ออกจากระบบใช่หรือไม่?' : 'Are you sure you want to delete this branch?')) {
-                let branches = JSON.parse(localStorage.getItem('boxflash_flash_branches') || '[]');
-                branches = branches.filter(h => h.id !== id);
-                localStorage.setItem('boxflash_flash_branches', JSON.stringify(branches));
-                searchNearbyFlash();
             }
         }
     </script>
