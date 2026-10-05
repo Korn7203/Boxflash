@@ -18,6 +18,7 @@
     <style>
         body { font-family: 'Kanit', sans-serif; }
         .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dropdown-anim { transition: opacity 0.2s ease, transform 0.2s ease; }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between smooth-transition">
@@ -133,12 +134,11 @@
                     </div>
 
                     <form onsubmit="event.preventDefault(); openMapSearch();" class="space-y-4">
-                        <!-- Custom Carrier Dropdown Component -->
+                        <!-- Custom Carrier Dropdown (Locator) -->
                         <div class="relative">
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_select_carrier">เลือกค่ายขนส่ง</label>
                             
-                            <!-- Dropdown Toggle Button -->
-                            <div id="custom-select-btn" onclick="toggleCustomDropdown()" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
+                            <div id="custom-select-btn" onclick="toggleDropdown('locator')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
                                 <div class="flex items-center gap-2.5" id="selected-carrier-display">
                                     <span class="text-base">🟡</span>
                                     <span>Flash Express (และ Flash Home)</span>
@@ -146,8 +146,7 @@
                                 <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="dropdown-chevron"></i>
                             </div>
 
-                            <!-- Dropdown Options Box -->
-                            <div id="custom-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1 smooth-transition">
+                            <div id="custom-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top">
                                 <!-- Populated dynamically -->
                             </div>
                             <input type="hidden" id="map-carrier" value="Flash Express">
@@ -183,12 +182,24 @@
                         <i class="fas fa-search-location text-blue-600"></i> <span data-i18n="track_title">เช็กพัสดุด่วนทุกค่าย</span>
                     </h2>
                     <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
-                        <div>
+                        <!-- Custom Carrier Dropdown (Tracking) -->
+                        <div class="relative">
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_carrier">เลือกบริษัทขนส่ง</label>
-                            <select id="carrier" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                            
+                            <div id="tracking-select-btn" onclick="toggleDropdown('tracking')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
+                                <div class="flex items-center gap-2.5" id="selected-tracking-carrier-display">
+                                    <span class="text-base">🟡</span>
+                                    <span>Flash Express</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="tracking-dropdown-chevron"></i>
+                            </div>
+
+                            <div id="tracking-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top">
                                 <!-- Populated dynamically -->
-                            </select>
+                            </div>
+                            <input type="hidden" id="carrier" value="flash">
                         </div>
+
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_tracking_no">เลขติดตามพัสดุ</label>
                             <div class="relative">
@@ -356,8 +367,7 @@
             initAdminAccount();
             initCarriersStorage();
             checkAuthStatus();
-            renderCustomDropdown();
-            renderTrackingCarrierSelect();
+            renderCustomDropdowns();
         });
 
         function initCarriersStorage() {
@@ -568,52 +578,123 @@
             checkAuthStatus();
         }
 
-        // ================= CUSTOM DROPDOWN LOGIC =================
-        function toggleCustomDropdown() {
-            const list = document.getElementById('custom-dropdown-list');
-            const chevron = document.getElementById('dropdown-chevron');
-            list.classList.toggle('hidden');
-            chevron.classList.toggle('rotate-180');
+        // ================= CUSTOM ANIMATED DROPDOWNS =================
+        function toggleDropdown(type) {
+            const listLocator = document.getElementById('custom-dropdown-list');
+            const chevronLocator = document.getElementById('dropdown-chevron');
+            
+            const listTracking = document.getElementById('tracking-dropdown-list');
+            const chevronTracking = document.getElementById('tracking-dropdown-chevron');
+
+            if (type === 'locator') {
+                // Close tracking if open
+                listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
+                chevronTracking.classList.remove('rotate-180');
+
+                if (listLocator.classList.contains('hidden')) {
+                    listLocator.classList.remove('hidden');
+                    setTimeout(() => {
+                        listLocator.classList.remove('opacity-0', 'scale-95');
+                        listLocator.classList.add('opacity-100', 'scale-100');
+                    }, 10);
+                    chevronLocator.classList.add('rotate-180');
+                } else {
+                    listLocator.classList.remove('opacity-100', 'scale-100');
+                    listLocator.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => listLocator.classList.add('hidden'), 200);
+                    chevronLocator.classList.remove('rotate-180');
+                }
+            } else {
+                // Close locator if open
+                listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
+                chevronLocator.classList.remove('rotate-180');
+
+                if (listTracking.classList.contains('hidden')) {
+                    listTracking.classList.remove('hidden');
+                    setTimeout(() => {
+                        listTracking.classList.remove('opacity-0', 'scale-95');
+                        listTracking.classList.add('opacity-100', 'scale-100');
+                    }, 10);
+                    chevronTracking.classList.add('rotate-180');
+                } else {
+                    listTracking.classList.remove('opacity-100', 'scale-100');
+                    listTracking.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => listTracking.classList.add('hidden'), 200);
+                    chevronTracking.classList.remove('rotate-180');
+                }
+            }
         }
 
-        // Close dropdown when clicking outside
+        // Close dropdowns when clicking outside
         window.addEventListener('click', (e) => {
-            const btn = document.getElementById('custom-select-btn');
-            const list = document.getElementById('custom-dropdown-list');
-            const chevron = document.getElementById('dropdown-chevron');
-            if (btn && list && !btn.contains(e.target) && !list.contains(e.target)) {
-                list.classList.add('hidden');
-                chevron.classList.remove('rotate-180');
+            const btnLocator = document.getElementById('custom-select-btn');
+            const listLocator = document.getElementById('custom-dropdown-list');
+            const chevronLocator = document.getElementById('dropdown-chevron');
+
+            const btnTracking = document.getElementById('tracking-select-btn');
+            const listTracking = document.getElementById('tracking-dropdown-list');
+            const chevronTracking = document.getElementById('tracking-dropdown-chevron');
+
+            if (btnLocator && listLocator && !btnLocator.contains(e.target) && !listLocator.contains(e.target)) {
+                listLocator.classList.remove('opacity-100', 'scale-100');
+                listLocator.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => listLocator.classList.add('hidden'), 200);
+                chevronLocator.classList.remove('rotate-180');
+            }
+
+            if (btnTracking && listTracking && !btnTracking.contains(e.target) && !listTracking.contains(e.target)) {
+                listTracking.classList.remove('opacity-100', 'scale-100');
+                listTracking.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => listTracking.classList.add('hidden'), 200);
+                chevronTracking.classList.remove('rotate-180');
             }
         });
 
-        function renderCustomDropdown() {
+        function renderCustomDropdowns() {
             const carriers = getCarriers();
-            const listContainer = document.getElementById('custom-dropdown-list');
-            let html = '';
-
-            carriers.forEach((c, index) => {
+            
+            // 1. Render Locator Dropdown
+            const locatorList = document.getElementById('custom-dropdown-list');
+            let locatorHtml = '';
+            carriers.forEach(c => {
                 let iconDisplay = c.icon.startsWith('http') || c.icon.startsWith('/') 
                     ? `<img src="${c.icon}" class="w-5 h-5 rounded object-cover">` 
                     : `<span class="text-base">${c.icon}</span>`;
 
-                html += `
-                    <div onclick="selectCarrier('${c.searchKey}', '${c.name}', '${c.icon.replace(/'/g, "\\'")}')" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-sm font-medium">
+                locatorHtml += `
+                    <div onclick="selectLocatorCarrier('${c.searchKey}', '${c.name}', '${c.icon.replace(/'/g, "\\'")}')" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-sm font-medium">
                         ${iconDisplay}
                         <span>${c.name}</span>
                     </div>
                 `;
             });
-
-            listContainer.innerHTML = html;
-
-            // Set default selected to first if not set
+            locatorList.innerHTML = locatorHtml;
             if (carriers.length > 0) {
-                selectCarrier(carriers[0].searchKey, carriers[0].name, carriers[0].icon);
+                selectLocatorCarrier(carriers[0].searchKey, carriers[0].name, carriers[0].icon);
+            }
+
+            // 2. Render Tracking Dropdown
+            const trackingList = document.getElementById('tracking-dropdown-list');
+            let trackingHtml = '';
+            carriers.forEach(c => {
+                let iconDisplay = c.icon.startsWith('http') || c.icon.startsWith('/') 
+                    ? `<img src="${c.icon}" class="w-5 h-5 rounded object-cover">` 
+                    : `<span class="text-base">${c.icon}</span>`;
+
+                trackingHtml += `
+                    <div onclick="selectTrackingCarrier('${c.id}', '${c.name}', '${c.icon.replace(/'/g, "\\'")}')" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-sm font-medium">
+                        ${iconDisplay}
+                        <span>${c.name}</span>
+                    </div>
+                `;
+            });
+            trackingList.innerHTML = trackingHtml;
+            if (carriers.length > 0) {
+                selectTrackingCarrier(carriers[0].id, carriers[0].name, carriers[0].icon);
             }
         }
 
-        function selectCarrier(searchKey, name, icon) {
+        function selectLocatorCarrier(searchKey, name, icon) {
             document.getElementById('map-carrier').value = searchKey;
             
             let iconDisplay = icon.startsWith('http') || icon.startsWith('/') 
@@ -624,18 +705,27 @@
             
             const list = document.getElementById('custom-dropdown-list');
             const chevron = document.getElementById('dropdown-chevron');
-            list.classList.add('hidden');
+            list.classList.remove('opacity-100', 'scale-100');
+            list.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => list.classList.add('hidden'), 200);
             chevron.classList.remove('rotate-180');
         }
 
-        function renderTrackingCarrierSelect() {
-            const carriers = getCarriers();
-            const selectEl = document.getElementById('carrier');
-            let html = '';
-            carriers.forEach(c => {
-                html += `<option value="${c.id}">${c.icon} ${c.name}</option>`;
-            });
-            selectEl.innerHTML = html;
+        function selectTrackingCarrier(id, name, icon) {
+            document.getElementById('carrier').value = id;
+            
+            let iconDisplay = icon.startsWith('http') || icon.startsWith('/') 
+                ? `<img src="${icon}" class="w-5 h-5 rounded object-cover">` 
+                : `<span class="text-base">${icon}</span>`;
+
+            document.getElementById('selected-tracking-carrier-display').innerHTML = `${iconDisplay} <span>${name}</span>`;
+            
+            const list = document.getElementById('tracking-dropdown-list');
+            const chevron = document.getElementById('tracking-dropdown-chevron');
+            list.classList.remove('opacity-100', 'scale-100');
+            list.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => list.classList.add('hidden'), 200);
+            chevron.classList.remove('rotate-180');
         }
 
         // ================= ADMIN CARRIER MANAGER MODAL =================
@@ -699,10 +789,8 @@
             let carriers = getCarriers();
 
             if (index === -1) {
-                // Add new
                 carriers.push({ id: 'carrier_' + Date.now(), name, icon, searchKey });
             } else {
-                // Edit existing
                 carriers[index].name = name;
                 carriers[index].icon = icon;
                 carriers[index].searchKey = searchKey;
@@ -710,8 +798,7 @@
 
             localStorage.setItem('boxflash_carriers', JSON.stringify(carriers));
             renderAdminCarriersList();
-            renderCustomDropdown();
-            renderTrackingCarrierSelect();
+            renderCustomDropdowns();
             resetCarrierForm();
             alert(currentLang === 'th' ? 'บันทึกข้อมูลค่ายขนส่งเรียบร้อยแล้ว!' : 'Carrier saved successfully!');
         }
@@ -731,8 +818,7 @@
                 carriers.splice(index, 1);
                 localStorage.setItem('boxflash_carriers', JSON.stringify(carriers));
                 renderAdminCarriersList();
-                renderCustomDropdown();
-                renderTrackingCarrierSelect();
+                renderCustomDropdowns();
             }
         }
 
