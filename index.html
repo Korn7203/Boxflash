@@ -126,7 +126,7 @@
                 <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
                     <i class="fas fa-shield-alt text-blue-600"></i> <span>ยืนยันรหัสผ่านเดิมหรือรหัสใกล้เคียง</span>
                 </h3>
-                <p class="text-xs text-slate-400">กรอกรหัสผ่านเก่าหรือรหัสผ่านล่าสุดที่เคยใช้ (เช่น 0918294511)</p>
+                <p class="text-xs text-slate-400">กรุณากรอกรหัสผ่านเก่าหรือรหัสใกล้เคียง</p>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่านเก่า / รหัสใกล้เคียง</label>
                     <input type="password" id="forgot-old-pass" placeholder="กรอกรหัสผ่านเดิม..." class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
@@ -545,7 +545,6 @@
             let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
             const user = users.find(u => u.email === forgotTargetEmail);
 
-            // Check if matches or is close/valid
             if (user && (user.password === oldPass || oldPass === ADMIN_PASS || oldPass.length >= 6)) {
                 alert('ยืนยันตัวตนสำเร็จ! กรุณาตั้งรหัสผ่านใหม่');
                 showForgotStep(3);
@@ -581,7 +580,6 @@
                 localStorage.setItem('boxflash_users', JSON.stringify(users));
                 alert('รีเซ็ตรหัสผ่านสำเร็จ! ระบบได้ส่งการแจ้งเตือนและอัปเดตรหัสผ่านสำหรับอีเมล ' + forgotTargetEmail + ' เรียบร้อยแล้ว');
                 
-                // Reset form & go to login
                 document.getElementById('login-email').value = forgotTargetEmail;
                 document.getElementById('login-password').value = p1;
                 document.getElementById('forgot-email').value = '';
