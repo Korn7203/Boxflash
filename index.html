@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrackMe - เช็กพัสดุด่วน ส่งตรงเว็บทางการ</title>
+    <title>Boxflash - ระบบจัดการพัสดุและสมาชิกอัจฉริยะ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -11,71 +11,250 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Kanit', sans-serif;
-        }
+        body { font-family: 'Kanit', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 md:p-8 flex flex-col justify-between">
-    <div class="max-w-xl mx-auto w-full">
-        <!-- Header -->
-        <header class="text-center my-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-lg mb-3">
-                <i class="fas fa-shipping-fast text-2xl"></i>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation / Header -->
+    <nav class="bg-white border-b border-slate-200 px-4 py-3 shadow-sm">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-shipping-fast text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-800 leading-tight">TrackMe Pro</h1>
+                    <p class="text-xs text-slate-400">ระบบเช็กพัสดุและประวัติส่วนตัว</p>
+                </div>
             </div>
-            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">TrackMe Direct</h1>
-            <p class="text-slate-500 text-sm mt-1">กรอกเลขครั้งเดียว ส่งตรงข้อมูลพัสดุจากเว็บขนส่งทันที</p>
-        </header>
+            <div id="user-nav-area" class="hidden items-center gap-3">
+                <span id="user-email-display" class="text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full"></span>
+                <button onclick="logout()" class="text-xs text-rose-600 hover:text-rose-700 font-medium px-3 py-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 transition">
+                    <i class="fas fa-sign-out-alt mr-1"></i> ออกจากระบบ
+                </button>
+            </div>
+        </div>
+    </nav>
 
-        <!-- Search Card -->
-        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80 mb-6">
-            <form id="tracking-form" onsubmit="event.preventDefault(); redirectToCarrier();" class="space-y-5">
-                <div>
-                    <label for="carrier" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">เลือกบริษัทขนส่ง</label>
-                    <select id="carrier" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-700">
-                        <option value="flash">Flash Express</option>
-                        <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
-                        <option value="kerry">Kerry Express (KEX)</option>
-                        <option value="j&t">J&T Express</option>
-                        <option value="lalamove">Lalamove</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="tracking-number" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">เลขติดตามพัสดุ</label>
-                    <div class="relative">
-                        <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-800 text-lg">
-                        <i class="fas fa-barcode absolute left-4 top-4 text-slate-400 text-lg"></i>
-                    </div>
-                </div>
+    <!-- Main Container -->
+    <main class="max-w-2xl mx-auto w-full p-4 md:p-6 my-auto">
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-3.5 px-6 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-base">
-                    <i class="fas fa-arrow-up-right-from-square"></i> เปิดดูสถานะจริงทันที
+        <!-- ================= AUTH SECTION (Login / Register) ================= -->
+        <div id="auth-section" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-200 mb-6">
+                <button onclick="switchTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 transition">เข้าสู่ระบบ</button>
+                <button onclick="switchTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition">สมัครสมาชิก</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">อีเมล</label>
+                    <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600">
+                        <input type="checkbox" id="remember-me" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                        จดจำการเข้าสู่ระบบ
+                    </label>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition shadow-sm text-sm">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">อีเมลสำหรับสมัคร</label>
+                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">สร้างรหัสผ่าน</label>
+                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-sm text-sm">
+                    สร้างบัญชีผู้ใช้ใหม่
                 </button>
             </form>
         </div>
 
-        <!-- Info Note Box -->
-        <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs text-blue-800 space-y-2">
-            <p class="font-semibold flex items-center gap-1.5 text-blue-900">
-                <i class="fas fa-bolt text-blue-600"></i> ทำไมบางค่ายอาจต้องกดค้นหาซ้ำ?
-            </p>
-            <p class="leading-relaxed">
-                ระบบจะพยายามแนบเลขพัสดุไปกับลิงก์ (URL Parameters) ให้มากที่สุดเท่าที่เว็บไซต์ของแต่ละค่ายจะรองรับ บางค่าย (เช่น Flash หรือ ไปรษณีย์ไทย) ข้อมูลจะขึ้นทันที แต่บางค่าย (เช่น J&T หรือ KEX) ระบบความปลอดภัยของเว็บไซต์เขาอาจบังคับให้หน้าเว็บรอการกดปุ่มค้นหาเพื่อป้องกันบอทครับ
-            </p>
+        <!-- ================= DASHBOARD SECTION (Tracking + History) ================= -->
+        <div id="dashboard-section" class="space-y-6 hidden">
+            <!-- Tracking Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-search-location text-blue-600"></i> เช็กพัสดุด่วน
+                </h2>
+                <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลือกบริษัทขนส่ง</label>
+                        <select id="carrier" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                            <option value="flash">Flash Express</option>
+                            <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
+                            <option value="kerry">Kerry Express (KEX)</option>
+                            <option value="j&t">J&T Express</option>
+                            <option value="lalamove">Lalamove</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลขติดตามพัสดุ</label>
+                        <div class="relative">
+                            <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                            <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition shadow-sm flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
+                    </button>
+                </form>
+            </div>
+
+            <!-- Note about J&T and auto fill -->
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl text-xs text-amber-800 space-y-1.5">
+                <p class="font-semibold flex items-center gap-1.5 text-amber-900">
+                    <i class="fas fa-info-circle text-amber-600"></i> หมายเหตุเรื่อง J&T และค่ายอื่นๆ
+                </p>
+                <p class="leading-relaxed">
+                    ระบบพยายามส่งค่าพารามิเตอร์ไปพร้อมลิงก์แล้ว แต่บางค่ายเช่น <b>J&T Express</b> มีระบบความปลอดภัยสูง (Anti-bot / Captcha) จึงอาจต้องกดปุ่มค้นหาซ้ำบนหน้าเว็บของเขาอีกครั้งครับ
+                </p>
+            </div>
+
+            <!-- Recent History Section -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-history text-slate-600"></i> ประวัติการเช็คล่าสุด (Recent Tracking)
+                    </h2>
+                    <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 font-medium">
+                        <i class="fas fa-trash-alt mr-1"></i> ล้างประวัติ
+                    </button>
+                </div>
+                <div id="history-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
         </div>
-    </div>
+
+    </main>
 
     <!-- Footer -->
     <footer class="text-center text-xs text-slate-400 py-6">
-        <p>TrackMe Direct &bull; Optimized for Vercel & GitHub</p>
+        <p>TrackMe Pro &bull; LocalStorage Account & History System</p>
     </footer>
 
-    <!-- Script logic -->
+    <!-- App Logic Script -->
     <script>
-        function redirectToCarrier() {
-            const trackingNo = document.getElementById('tracking-number').value.trim();
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+        });
+
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 transition";
+                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-emerald-600 border-b-2 border-emerald-600 transition";
+                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent transition";
+            }
+        }
+
+        function handleRegister() {
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+
+            if (!email || !password) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('trackme_users') || '[]');
+            
+            if (users.some(u => u.email === email)) {
+                alert('อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่นหรือเข้าสู่ระบบ');
+                return;
+            }
+
+            users.push({ email, password });
+            localStorage.setItem('trackme_users', JSON.stringify(users));
+            
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-password').value = password;
+
+            alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
+            switchTab('login');
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const rememberMe = document.getElementById('remember-me').checked;
+
+            let users = JSON.parse(localStorage.getItem('trackme_users') || '[]');
+            const validUser = users.find(u => u.email === email && u.password === password);
+
+            if (!validUser) {
+                alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+                return;
+            }
+
+            const sessionData = { email };
+            if (rememberMe) {
+                localStorage.setItem('trackme_logged_user', JSON.stringify(sessionData));
+            } else {
+                sessionStorage.setItem('trackme_logged_user', JSON.stringify(sessionData));
+            }
+
+            checkAuthStatus();
+        }
+
+        function checkAuthStatus() {
+            let loggedUser = JSON.parse(localStorage.getItem('trackme_logged_user') || sessionStorage.getItem('trackme_logged_user') || 'null');
+
+            const authSection = document.getElementById('auth-section');
+            const dashboardSection = document.getElementById('dashboard-section');
+            const userNavArea = document.getElementById('user-nav-area');
+            const userEmailDisplay = document.getElementById('user-email-display');
+
+            if (loggedUser) {
+                authSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+                userNavArea.classList.remove('hidden');
+                userNavArea.classList.add('flex');
+                userEmailDisplay.textContent = loggedUser.email;
+                loadHistory();
+            } else {
+                authSection.classList.remove('hidden');
+                dashboardSection.classList.add('hidden');
+                userNavArea.classList.add('hidden');
+                userNavArea.classList.remove('flex');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('trackme_logged_user');
+            sessionStorage.removeItem('trackme_logged_user');
+            checkAuthStatus();
+        }
+
+        function trackParcel() {
             const carrier = document.getElementById('carrier').value;
+            const trackingNo = document.getElementById('tracking-number').value.trim();
 
             if (!trackingNo) {
                 alert('กรุณากรอกเลขพัสดุก่อนครับ');
@@ -84,33 +263,125 @@
             }
 
             let targetUrl = '';
+            let carrierName = '';
 
             switch(carrier) {
                 case 'flash':
-                    // Flash Express query parameter
+                    carrierName = 'Flash Express';
                     targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'thpost':
-                    // Thailand Post query parameter
+                    carrierName = 'ไปรษณีย์ไทย';
                     targetUrl = `https://track.thailandpost.com/?trackNumber=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'kerry':
-                    // Kerry / KEX query parameter
+                    carrierName = 'Kerry (KEX)';
                     targetUrl = `https://th.kexexpress.com/en/track?id=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'j&t':
-                    // J&T Express query parameter
+                    carrierName = 'J&T Express';
                     targetUrl = `https://www.jtexpress.co.th/index/query/gz.html?billcode=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'lalamove':
+                    carrierName = 'Lalamove';
                     targetUrl = `https://www.lalamove.com/th-th/`;
-                    alert('Lalamove ต้องตรวจสอบผ่านแอปพลิเคชันหรือลิงก์คำสั่งซื้อโดยตรง ระบบจะพาไปหน้าแรกครับ');
                     break;
                 default:
+                    carrierName = 'ค้นหาทั่วไป';
                     targetUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNo + ' เช็คพัสดุ')}`;
             }
 
+            saveHistory(carrierName, trackingNo, targetUrl);
             window.open(targetUrl, '_blank');
+            
+            document.getElementById('tracking-number').value = '';
+            loadHistory();
+        }
+
+        function getLoggedUserEmail() {
+            let loggedUser = JSON.parse(localStorage.getItem('trackme_logged_user') || sessionStorage.getItem('trackme_logged_user') || '{}');
+            return loggedUser.email || 'guest';
+        }
+
+        function saveHistory(carrierName, trackingNo, url) {
+            const userEmail = getLoggedUserEmail();
+            let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+            if (!allHistory[userEmail]) {
+                allHistory[userEmail] = [];
+            }
+
+            allHistory[userEmail] = allHistory[userEmail].filter(item => item.trackingNo !== trackingNo);
+            allHistory[userEmail].unshift({
+                carrierName,
+                trackingNo,
+                url,
+                time: new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })
+            });
+
+            if (allHistory[userEmail].length > 15) {
+                allHistory[userEmail].pop();
+            }
+
+            localStorage.setItem('trackme_history', JSON.stringify(allHistory));
+        }
+
+        function loadHistory() {
+            const userEmail = getLoggedUserEmail();
+            let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+            let userHistory = allHistory[userEmail] || [];
+
+            const historyList = document.getElementById('history-list');
+            
+            if (userHistory.length === 0) {
+                historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">ยังไม่มีประวัติการเช็กพัสดุ</p>`;
+                return;
+            }
+
+            let html = '';
+            userHistory.forEach((item, index) => {
+                html += `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200/80 rounded-xl hover:bg-blue-50/50 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-semibold text-xs">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-700">${item.carrierName} <span class="font-normal text-slate-400 text-[11px]">(${item.time})</span></p>
+                                <p class="text-sm font-bold text-slate-900 tracking-wide">${item.trackingNo}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="${item.url}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
+                                <i class="fas fa-external-link-alt text-[10px]"></i> เปิดดู
+                            </a>
+                            <button onclick="deleteHistoryItem(${index})" class="p-1.5 text-slate-400 hover:text-rose-600 transition rounded-lg hover:bg-rose-50">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            historyList.innerHTML = html;
+        }
+
+        function deleteHistoryItem(index) {
+            const userEmail = getLoggedUserEmail();
+            let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+            if (allHistory[userEmail]) {
+                allHistory[userEmail].splice(index, 1);
+                localStorage.setItem('trackme_history', JSON.stringify(allHistory));
+                loadHistory();
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?')) {
+                const userEmail = getLoggedUserEmail();
+                let allHistory = JSON.parse(localStorage.getItem('trackme_history') || '{}');
+                allHistory[userEmail] = [];
+                localStorage.setItem('trackme_history', JSON.stringify(allHistory));
+                loadHistory();
+            }
         }
     </script>
 </body>
