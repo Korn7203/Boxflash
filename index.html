@@ -106,17 +106,23 @@
         <!-- ================= DASHBOARD SECTION ================= -->
         <div id="dashboard-section" class="space-y-6 hidden">
             
-            <!-- Dashboard Navigation Tabs -->
-            <div class="grid grid-cols-2 gap-2 bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
-                <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
-                    <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_locator">ค้นหาสาขาบนแผนที่</span>
-                </button>
-                <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
-                    <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุทุกค่าย</span>
+            <!-- Dashboard Navigation Tabs & Admin Carrier Manager Button -->
+            <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
+                <div class="grid grid-cols-2 gap-2 w-full sm:w-auto flex-1">
+                    <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
+                        <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_locator">ค้นหาสาขาบนแผนที่</span>
+                    </button>
+                    <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
+                        <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุทุกค่าย</span>
+                    </button>
+                </div>
+                <!-- Admin Carrier Manager Toggle Button (Visible only for admin) -->
+                <button id="btn-admin-carriers" onclick="openCarrierModal()" class="hidden py-2 px-3 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm smooth-transition items-center gap-1.5 shrink-0">
+                    <i class="fas fa-cog"></i> <span data-i18n="btn_manage_carriers">จัดการค่ายขนส่ง</span>
                 </button>
             </div>
 
-            <!-- TAB 1: MAP LOCATOR BY CARRIER & AREA (NEW) -->
+            <!-- TAB 1: MAP LOCATOR BY CARRIER & AREA -->
             <div id="content-locator" class="space-y-4 smooth-transition transform transition-all duration-300 opacity-150 translate-y-0">
                 <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5 smooth-transition hover:shadow-md">
                     <div>
@@ -127,17 +133,24 @@
                     </div>
 
                     <form onsubmit="event.preventDefault(); openMapSearch();" class="space-y-4">
-                        <div>
+                        <!-- Custom Carrier Dropdown Component -->
+                        <div class="relative">
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_select_carrier">เลือกค่ายขนส่ง</label>
-                            <select id="map-carrier" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
-                                <option value="Flash Express">🟡 Flash Express (และ Flash Home)</option>
-                                <option value="Kerry Express KEX">🟠 Kerry Express (KEX)</option>
-                                <option value="ไปรษณีย์ไทย">🔴 ไปรษณีย์ไทย (Thailand Post)</option>
-                                <option value="J&T Express">🟢 J&T Express</option>
-                                <option value="Ninja Van">⚫ Ninja Van</option>
-                                <option value="Best Express">🔵 Best Express</option>
-                                <option value="Lalamove">🛵 Lalamove</option>
-                            </select>
+                            
+                            <!-- Dropdown Toggle Button -->
+                            <div id="custom-select-btn" onclick="toggleCustomDropdown()" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
+                                <div class="flex items-center gap-2.5" id="selected-carrier-display">
+                                    <span class="text-base">🟡</span>
+                                    <span>Flash Express (และ Flash Home)</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="dropdown-chevron"></i>
+                            </div>
+
+                            <!-- Dropdown Options Box -->
+                            <div id="custom-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1 smooth-transition">
+                                <!-- Populated dynamically -->
+                            </div>
+                            <input type="hidden" id="map-carrier" value="Flash Express">
                         </div>
 
                         <div>
@@ -173,13 +186,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_carrier">เลือกบริษัทขนส่ง</label>
                             <select id="carrier" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
-                                <option value="flash">🟡 Flash Express</option>
-                                <option value="thpost">🔴 ไปรษณีย์ไทย (Thailand Post)</option>
-                                <option value="kerry">🟠 Kerry Express (KEX)</option>
-                                <option value="j&t">🟢 J&T Express</option>
-                                <option value="ninjavan">⚫ Ninja Van</option>
-                                <option value="best">🔵 Best Express</option>
-                                <option value="lalamove">🛵 Lalamove</option>
+                                <!-- Populated dynamically -->
                             </select>
                         </div>
                         <div>
@@ -214,6 +221,48 @@
         </div>
 
     </main>
+
+    <!-- Modal: Admin Carrier Manager (Add / Edit Carriers) -->
+    <div id="carrier-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 smooth-transition">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 transform scale-95 opacity-0 smooth-transition max-h-[90vh] overflow-y-auto" id="carrier-modal-content">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fas fa-cog text-blue-600"></i> <span>จัดการค่ายขนส่ง (แอดมิน)</span>
+                </h3>
+                <button onclick="closeCarrierModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 smooth-transition">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Add / Edit Form -->
+            <form id="carrier-form" onsubmit="event.preventDefault(); saveCarrier();" class="space-y-3 text-xs bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <input type="hidden" id="edit-carrier-index" value="-1">
+                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-sm" id="form-title">➕ เพิ่มค่ายขนส่งใหม่</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1">ชื่อค่ายขนส่ง</label>
+                        <input type="text" id="carrier-name" required placeholder="เช่น Flash Express" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1">ไอคอน / อีโมจิ หรือ URL รูปภาพ</label>
+                        <input type="text" id="carrier-icon" required placeholder="เช่น 🟡 หรือ https://..." class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="resetCarrierForm()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg font-medium">ล้างฟอร์ม</button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium shadow-sm">บันทึกค่ายขนส่ง</button>
+                </div>
+            </form>
+
+            <!-- Carriers List -->
+            <div class="space-y-2 pt-2">
+                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-wider">ค่ายขนส่งที่มีในระบบปัจจุบัน</h4>
+                <div id="admin-carriers-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="text-center text-xs text-slate-400 py-6">
@@ -253,7 +302,8 @@
                 btn_clear_history: "ล้างประวัติ",
                 badge_admin: "แอดมิน",
                 badge_member: "สมาชิก",
-                no_history: "ยังไม่มีประวัติการเช็กพัสดุ"
+                no_history: "ยังไม่มีประวัติการเช็กพัสดุ",
+                btn_manage_carriers: "จัดการค่ายขนส่ง"
             },
             en: {
                 nav_subtitle: "Find Branches & Track All Carriers",
@@ -282,19 +332,43 @@
                 btn_clear_history: "Clear History",
                 badge_admin: "Admin",
                 badge_member: "Member",
-                no_history: "No tracking history yet"
+                no_history: "No tracking history yet",
+                btn_manage_carriers: "Manage Carriers"
             }
         };
 
         let currentLang = localStorage.getItem('boxflash_lang') || 'th';
         let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
 
+        const defaultCarriers = [
+            { id: 'flash', name: 'Flash Express (และ Flash Home)', icon: '🟡', searchKey: 'Flash Express' },
+            { id: 'kerry', name: 'Kerry Express (KEX)', icon: '🟠', searchKey: 'Kerry Express KEX' },
+            { id: 'thpost', name: 'ไปรษณีย์ไทย (Thailand Post)', icon: '🔴', searchKey: 'ไปรษณีย์ไทย' },
+            { id: 'j&t', name: 'J&T Express', icon: '🟢', searchKey: 'J&T Express' },
+            { id: 'ninjavan', name: 'Ninja Van', icon: '⚫', searchKey: 'Ninja Van' },
+            { id: 'best', name: 'Best Express', icon: '🔵', searchKey: 'Best Express' },
+            { id: 'lalamove', name: 'Lalamove', icon: '🛵', searchKey: 'Lalamove' }
+        ];
+
         window.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initLanguage();
             initAdminAccount();
+            initCarriersStorage();
             checkAuthStatus();
+            renderCustomDropdown();
+            renderTrackingCarrierSelect();
         });
+
+        function initCarriersStorage() {
+            if (!localStorage.getItem('boxflash_carriers')) {
+                localStorage.setItem('boxflash_carriers', JSON.stringify(defaultCarriers));
+            }
+        }
+
+        function getCarriers() {
+            return JSON.parse(localStorage.getItem('boxflash_carriers') || JSON.stringify(defaultCarriers));
+        }
 
         // Theme Control
         function initTheme() {
@@ -457,6 +531,7 @@
             const dashboardSection = document.getElementById('dashboard-section');
             const userNavArea = document.getElementById('user-nav-area');
             const userEmailDisplay = document.getElementById('user-email-display');
+            const btnAdminCarriers = document.getElementById('btn-admin-carriers');
 
             if (loggedUser) {
                 authSection.classList.add('hidden');
@@ -469,8 +544,12 @@
 
                 if (loggedUser.email === ADMIN_EMAIL) {
                     userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">${adminBadge}</span>`;
+                    btnAdminCarriers.classList.remove('hidden');
+                    btnAdminCarriers.classList.add('flex');
                 } else {
                     userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full text-[10px] font-medium">${memberBadge}</span>`;
+                    btnAdminCarriers.classList.add('hidden');
+                    btnAdminCarriers.classList.remove('flex');
                 }
 
                 loadHistory();
@@ -479,6 +558,7 @@
                 dashboardSection.classList.add('hidden');
                 userNavArea.classList.add('hidden');
                 userNavArea.classList.remove('flex');
+                btnAdminCarriers.classList.add('hidden');
             }
         }
 
@@ -486,6 +566,181 @@
             localStorage.removeItem('boxflash_logged_user');
             sessionStorage.removeItem('boxflash_logged_user');
             checkAuthStatus();
+        }
+
+        // ================= CUSTOM DROPDOWN LOGIC =================
+        function toggleCustomDropdown() {
+            const list = document.getElementById('custom-dropdown-list');
+            const chevron = document.getElementById('dropdown-chevron');
+            list.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const btn = document.getElementById('custom-select-btn');
+            const list = document.getElementById('custom-dropdown-list');
+            const chevron = document.getElementById('dropdown-chevron');
+            if (btn && list && !btn.contains(e.target) && !list.contains(e.target)) {
+                list.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+            }
+        });
+
+        function renderCustomDropdown() {
+            const carriers = getCarriers();
+            const listContainer = document.getElementById('custom-dropdown-list');
+            let html = '';
+
+            carriers.forEach((c, index) => {
+                let iconDisplay = c.icon.startsWith('http') || c.icon.startsWith('/') 
+                    ? `<img src="${c.icon}" class="w-5 h-5 rounded object-cover">` 
+                    : `<span class="text-base">${c.icon}</span>`;
+
+                html += `
+                    <div onclick="selectCarrier('${c.searchKey}', '${c.name}', '${c.icon.replace(/'/g, "\\'")}')" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-sm font-medium">
+                        ${iconDisplay}
+                        <span>${c.name}</span>
+                    </div>
+                `;
+            });
+
+            listContainer.innerHTML = html;
+
+            // Set default selected to first if not set
+            if (carriers.length > 0) {
+                selectCarrier(carriers[0].searchKey, carriers[0].name, carriers[0].icon);
+            }
+        }
+
+        function selectCarrier(searchKey, name, icon) {
+            document.getElementById('map-carrier').value = searchKey;
+            
+            let iconDisplay = icon.startsWith('http') || icon.startsWith('/') 
+                ? `<img src="${icon}" class="w-5 h-5 rounded object-cover">` 
+                : `<span class="text-base">${icon}</span>`;
+
+            document.getElementById('selected-carrier-display').innerHTML = `${iconDisplay} <span>${name}</span>`;
+            
+            const list = document.getElementById('custom-dropdown-list');
+            const chevron = document.getElementById('dropdown-chevron');
+            list.classList.add('hidden');
+            chevron.classList.remove('rotate-180');
+        }
+
+        function renderTrackingCarrierSelect() {
+            const carriers = getCarriers();
+            const selectEl = document.getElementById('carrier');
+            let html = '';
+            carriers.forEach(c => {
+                html += `<option value="${c.id}">${c.icon} ${c.name}</option>`;
+            });
+            selectEl.innerHTML = html;
+        }
+
+        // ================= ADMIN CARRIER MANAGER MODAL =================
+        function openCarrierModal() {
+            const modal = document.getElementById('carrier-modal');
+            const content = document.getElementById('carrier-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            renderAdminCarriersList();
+        }
+
+        function closeCarrierModal() {
+            const modal = document.getElementById('carrier-modal');
+            const content = document.getElementById('carrier-modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                resetCarrierForm();
+            }, 200);
+        }
+
+        function renderAdminCarriersList() {
+            const carriers = getCarriers();
+            const container = document.getElementById('admin-carriers-list');
+            let html = '';
+
+            carriers.forEach((c, idx) => {
+                let iconDisplay = c.icon.startsWith('http') || c.icon.startsWith('/') 
+                    ? `<img src="${c.icon}" class="w-6 h-6 rounded object-cover">` 
+                    : `<span class="text-base">${c.icon}</span>`;
+
+                html += `
+                    <div class="flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                        <div class="flex items-center gap-2.5">
+                            ${iconDisplay}
+                            <div>
+                                <p class="font-bold text-xs text-slate-800 dark:text-white">${c.name}</p>
+                                <p class="text-[10px] text-slate-400">Key: ${c.searchKey}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="editCarrier(${idx})" class="px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-medium hover:bg-amber-100 smooth-transition">แก้ไข</button>
+                            <button onclick="deleteCarrier(${idx})" class="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-medium hover:bg-rose-100 smooth-transition">ลบ</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function saveCarrier() {
+            const index = parseInt(document.getElementById('edit-carrier-index').value);
+            const name = document.getElementById('carrier-name').value.trim();
+            const icon = document.getElementById('carrier-icon').value.trim();
+            const searchKey = name;
+
+            let carriers = getCarriers();
+
+            if (index === -1) {
+                // Add new
+                carriers.push({ id: 'carrier_' + Date.now(), name, icon, searchKey });
+            } else {
+                // Edit existing
+                carriers[index].name = name;
+                carriers[index].icon = icon;
+                carriers[index].searchKey = searchKey;
+            }
+
+            localStorage.setItem('boxflash_carriers', JSON.stringify(carriers));
+            renderAdminCarriersList();
+            renderCustomDropdown();
+            renderTrackingCarrierSelect();
+            resetCarrierForm();
+            alert(currentLang === 'th' ? 'บันทึกข้อมูลค่ายขนส่งเรียบร้อยแล้ว!' : 'Carrier saved successfully!');
+        }
+
+        function editCarrier(index) {
+            const carriers = getCarriers();
+            const c = carriers[index];
+            document.getElementById('edit-carrier-index').value = index;
+            document.getElementById('carrier-name').value = c.name;
+            document.getElementById('carrier-icon').value = c.icon;
+            document.getElementById('form-title').innerHTML = '✏️ แก้ไขค่ายขนส่ง';
+        }
+
+        function deleteCarrier(index) {
+            if (confirm(currentLang === 'th' ? 'คุณต้องการลบค่ายขนส่งนี้ใช่หรือไม่?' : 'Are you sure you want to delete this carrier?')) {
+                let carriers = getCarriers();
+                carriers.splice(index, 1);
+                localStorage.setItem('boxflash_carriers', JSON.stringify(carriers));
+                renderAdminCarriersList();
+                renderCustomDropdown();
+                renderTrackingCarrierSelect();
+            }
+        }
+
+        function resetCarrierForm() {
+            document.getElementById('edit-carrier-index').value = -1;
+            document.getElementById('carrier-name').value = '';
+            document.getElementById('carrier-icon').value = '';
+            document.getElementById('form-title').innerHTML = '➕ เพิ่มค่ายขนส่งใหม่';
         }
 
         // Map Search Redirection Function
@@ -506,7 +761,7 @@
         }
 
         function trackParcel() {
-            const carrier = document.getElementById('carrier').value;
+            const carrierId = document.getElementById('carrier').value;
             const trackingNo = document.getElementById('tracking-number').value.trim();
 
             if (!trackingNo) {
@@ -518,7 +773,7 @@
             let targetUrl = '';
             let carrierName = '';
 
-            switch(carrier) {
+            switch(carrierId) {
                 case 'flash':
                     carrierName = 'Flash Express';
                     targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`;
