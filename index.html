@@ -1,40 +1,56 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boxflash - ระบบจัดการพัสดุและคลังสินค้าอัจฉริยะ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Kanit', sans-serif; }
-        /* Smooth transitions */
         .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between smooth-transition">
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between smooth-transition">
 
     <!-- Top Navigation / Header -->
-    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 shadow-sm sticky top-0 z-50 smooth-transition">
+    <nav class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 px-4 py-3 shadow-sm sticky top-0 z-50 smooth-transition">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2.5">
                 <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md transform hover:rotate-6 smooth-transition">
                     <i class="fas fa-shipping-fast text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg text-slate-800 leading-tight">Boxflash</h1>
-                    <p class="text-xs text-slate-400">ระบบเช็กพัสดุและคลังฮับ/ร้านส่ง</p>
+                    <h1 class="font-bold text-lg text-slate-800 dark:text-white leading-tight">Boxflash</h1>
+                    <p class="text-xs text-slate-400 dark:text-slate-400" data-i18n="nav_subtitle">ระบบเช็กพัสดุและคลังฮับ/ร้านส่ง</p>
                 </div>
             </div>
-            <div id="user-nav-area" class="hidden items-center gap-3">
-                <div id="user-email-display" class="text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full hidden sm:flex items-center gap-1.5 smooth-transition"></div>
-                <button onclick="logout()" class="text-xs text-rose-600 hover:text-rose-700 font-medium px-3 py-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 smooth-transition active:scale-95">
-                    <i class="fas fa-sign-out-alt mr-1"></i> ออกจากระบบ
+            
+            <div class="flex items-center gap-2">
+                <!-- Language Switcher Button -->
+                <button onclick="toggleLanguage()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 smooth-transition" id="lang-btn">
+                    🇹🇭 TH
                 </button>
+                <!-- Theme Switcher Button -->
+                <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 smooth-transition text-amber-500 dark:text-amber-400" id="theme-btn" title="Toggle Theme">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
+
+                <div id="user-nav-area" class="hidden items-center gap-2 ml-1">
+                    <div id="user-email-display" class="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full hidden sm:flex items-center gap-1.5 smooth-transition"></div>
+                    <button onclick="logout()" class="text-xs text-rose-600 hover:text-rose-700 dark:text-rose-400 font-medium px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900 hover:bg-rose-50 dark:hover:bg-rose-950/50 smooth-transition active:scale-95" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -43,30 +59,30 @@
     <main class="max-w-2xl mx-auto w-full p-4 md:p-6 my-auto">
 
         <!-- ================= AUTH SECTION (Login / Register) ================= -->
-        <div id="auth-section" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 smooth-transition">
+        <div id="auth-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition">
             <!-- Tabs -->
-            <div class="flex border-b border-slate-200 mb-6">
-                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition">เข้าสู่ระบบ</button>
-                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition">สมัครสมาชิก</button>
+            <div class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
+                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition" data-i18n="tab_login">เข้าสู่ระบบ</button>
+                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition" data-i18n="tab_register">สมัครสมาชิก</button>
             </div>
 
             <!-- Login Form -->
             <form id="login-form" onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">อีเมล</label>
-                    <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_email">อีเมล</label>
+                    <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
-                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_password">รหัสผ่าน</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div class="flex items-center justify-between text-xs">
-                    <label class="flex items-center gap-2 cursor-pointer text-slate-600">
-                        <input type="checkbox" id="remember-me" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                        จดจำการเข้าสู่ระบบ
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-300">
+                        <input type="checkbox" id="remember-me" class="rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                        <span data-i18n="remember_me">จดจำการเข้าสู่ระบบ</span>
                     </label>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_login">
                     เข้าสู่ระบบ
                 </button>
             </form>
@@ -74,14 +90,14 @@
             <!-- Register Form -->
             <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">อีเมลสำหรับสมัคร</label>
-                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_email">อีเมลสำหรับสมัคร</label>
+                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">สร้างรหัสผ่าน</label>
-                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_password">สร้างรหัสผ่าน</label>
+                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_register">
                     สร้างบัญชีผู้ใช้ใหม่
                 </button>
             </form>
@@ -90,27 +106,27 @@
         <!-- ================= DASHBOARD SECTION ================= -->
         <div id="dashboard-section" class="space-y-6 hidden">
             
-            <!-- Dashboard Navigation Tabs -->
-            <div class="grid grid-cols-2 gap-2 bg-slate-200 p-1.5 rounded-2xl smooth-transition">
-                <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-sm smooth-transition flex items-center justify-center gap-2">
-                    <i class="fas fa-search-location"></i> เช็กพัสดุ & ประวัติ
+            <!-- Dashboard Navigation Tabs with Smooth Transition -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
+                <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
+                    <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุ & ประวัติ</span>
                 </button>
-                <button onclick="switchMainTab('hubs')" id="main-tab-hubs" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-800 smooth-transition flex items-center justify-center gap-2">
-                    <i class="fas fa-warehouse"></i> คลังฮับ & ร้านส่ง
+                <button onclick="switchMainTab('hubs')" id="main-tab-hubs" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
+                    <i class="fas fa-warehouse"></i> <span data-i18n="maintab_hubs">คลังฮับ & ร้านส่ง</span>
                 </button>
             </div>
 
             <!-- TAB 1: TRACKING & HISTORY -->
-            <div id="content-tracking" class="space-y-6 smooth-transition">
+            <div id="content-tracking" class="space-y-6 smooth-transition transform transition-all duration-300 opacity-100 translate-y-0">
                 <!-- Tracking Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 smooth-transition hover:shadow-md">
-                    <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fas fa-search-location text-blue-600"></i> เช็กพัสดุด่วน
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
+                    <h2 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-search-location text-blue-600"></i> <span data-i18n="track_title">เช็กพัสดุด่วน</span>
                     </h2>
                     <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลือกบริษัทขนส่ง</label>
-                            <select id="carrier" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_carrier">เลือกบริษัทขนส่ง</label>
+                            <select id="carrier" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
                                 <option value="flash">Flash Express</option>
                                 <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
                                 <option value="kerry">Kerry Express (KEX)</option>
@@ -119,25 +135,25 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">เลขติดตามพัสดุ</label>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_tracking_no">เลขติดตามพัสดุ</label>
                             <div class="relative">
-                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
                                 <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]" data-i18n="btn_track">
                             <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
                         </button>
                     </form>
                 </div>
 
                 <!-- Recent History Section -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 smooth-transition hover:shadow-md">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-history text-slate-600"></i> ประวัติการเช็คล่าสุด
+                        <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-history text-slate-600 dark:text-slate-400"></i> <span data-i18n="history_title">ประวัติการเช็คล่าสุด</span>
                         </h2>
-                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 font-medium smooth-transition">
+                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 font-medium smooth-transition" data-i18n="btn_clear_history">
                             <i class="fas fa-trash-alt mr-1"></i> ล้างประวัติ
                         </button>
                     </div>
@@ -148,40 +164,40 @@
             </div>
 
             <!-- TAB 2: HUBS & DROP-OFF STORES LOCATOR -->
-            <div id="content-hubs" class="space-y-6 hidden smooth-transition">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 smooth-transition hover:shadow-md">
+            <div id="content-hubs" class="space-y-6 hidden smooth-transition transform transition-all duration-300 opacity-0 translate-y-2">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4 smooth-transition hover:shadow-md">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-warehouse text-emerald-600"></i> ค้นหาคลังฮับ และ ร้านรับฝากส่ง
+                        <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-warehouse text-emerald-600"></i> <span data-i18n="hubs_header_title">ค้นหาคลังฮับ และ ร้านรับฝากส่ง</span>
                         </h2>
                         <!-- Add Hub Button: Visible ONLY for Admin -->
                         <button id="btn-add-hub-container" onclick="openAddHubModal()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium px-3.5 py-2 rounded-xl smooth-transition flex items-center gap-1.5 shadow-sm active:scale-95">
-                            <i class="fas fa-plus"></i> เพิ่มตำแหน่งฮับ/ร้านส่ง (แอดมิน)
+                            <i class="fas fa-plus"></i> <span data-i18n="btn_add_hub">เพิ่มตำแหน่งฮับ/ร้านส่ง (แอดมิน)</span>
                         </button>
                     </div>
 
                     <!-- Filter & Search Bar -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">กรองตามค่าย/ประเภท</label>
-                            <select id="hub-filter-carrier" onchange="renderHubs()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
-                                <option value="all">🌐 ทุกค่ายและร้านส่งทั้งหมด</option>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="filter_carrier_label">กรองตามค่าย/ประเภท</label>
+                            <select id="hub-filter-carrier" onchange="renderHubs()" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                                <option value="all" data-i18n="opt_all_carriers">🌐 ทุกค่ายและร้านส่งทั้งหมด</option>
                                 <option value="flash">Flash Express / Flash Home</option>
-                                <option value="thpost">ไปรษณีย์ไทย</option>
+                                <option value="thpost" data-i18n="opt_thpost">ไปรษณีย์ไทย</option>
                                 <option value="kerry">Kerry (KEX)</option>
                                 <option value="j&t">J&T Express</option>
                                 <option value="lalamove">Lalamove Station</option>
-                                <option value="partner">🏪 ร้านส่งพัสดุเอกชน (รวมค่าย)</option>
+                                <option value="partner" data-i18n="opt_partner">🏪 ร้านส่งพัสดุเอกชน (รวมค่าย)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">ค้นหาพื้นที่ / ชื่อสาขา</label>
-                            <input type="text" id="hub-search-input" oninput="renderHubs()" placeholder="พิมพ์ชื่อพื้นที่ เช่น บางเขน, ลาดพร้าว..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="filter_search_label">ค้นหาพื้นที่ / ชื่อสาขา</label>
+                            <input type="text" id="hub-search-input" oninput="renderHubs()" placeholder="พิมพ์ชื่อพื้นที่ เช่น บางเขน, ลาดพร้าว..." class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                         </div>
                     </div>
 
-                    <!-- Hubs List Container -->
-                    <div id="hubs-list" class="space-y-3 pt-2 max-h-96 overflow-y-auto pr-1">
+                    <!-- Hubs List Container with Filter Animation Target -->
+                    <div id="hubs-list" class="space-y-3 pt-2 max-h-96 overflow-y-auto pr-1 transition-all duration-300 transform opacity-100 scale-100">
                         <!-- Populated dynamically -->
                     </div>
                 </div>
@@ -193,23 +209,23 @@
 
     <!-- Modal: Add Hub / Store Location (Admin Only) -->
     <div id="add-hub-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 smooth-transition">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-slate-200 transform scale-95 opacity-0 smooth-transition" id="modal-content-box">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="fas fa-map-marker-alt text-emerald-600"></i> เพิ่มคลังฮับ หรือ ร้านส่งพัสดุ
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 transform scale-95 opacity-0 smooth-transition" id="modal-content-box">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-emerald-600"></i> <span data-i18n="modal_title">เพิ่มคลังฮับ หรือ ร้านส่งพัสดุ</span>
                 </h3>
-                <button onclick="closeAddHubModal()" class="text-slate-400 hover:text-slate-600 smooth-transition">
+                <button onclick="closeAddHubModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 smooth-transition">
                     <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
             <form onsubmit="event.preventDefault(); saveNewHub();" class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">ชื่อสาขา / ชื่อร้าน</label>
-                    <input type="text" id="new-hub-name" required placeholder="เช่น Boxflash สาขาหลัก / Flash Hub บางเขน" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_name">ชื่อสาขา / ชื่อร้าน</label>
+                    <input type="text" id="new-hub-name" required placeholder="เช่น Boxflash สาขาหลัก / Flash Hub บางเขน" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">ประเภท / ค่ายขนส่ง</label>
-                    <select id="new-hub-carrier" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium smooth-transition">
+                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_carrier">ประเภท / ค่ายขนส่ง</label>
+                    <select id="new-hub-carrier" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium smooth-transition">
                         <option value="partner">🏪 ร้านส่งพัสดุเอกชน (รับฝากรวม)</option>
                         <option value="flash">Flash Express</option>
                         <option value="thpost">ไปรษณีย์ไทย</option>
@@ -219,20 +235,20 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">พื้นที่ / โซน (Area)</label>
-                    <input type="text" id="new-hub-area" required placeholder="เช่น โซนกรุงเทพเหนือ, ลาดพร้าว, รัชดา" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_area">พื้นที่ / โซน (Area)</label>
+                    <input type="text" id="new-hub-area" required placeholder="เช่น โซนกรุงเทพเหนือ, ลาดพร้าว, รัชดา" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">ที่อยู่โดยละเอียด</label>
-                    <input type="text" id="new-hub-address" required placeholder="เลขที่ ซอย ถนน แขวง เขต จังหวัด" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_address">ที่อยู่โดยละเอียด</label>
+                    <input type="text" id="new-hub-address" required placeholder="เลขที่ ซอย ถนน แขวง เขต จังหวัด" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">เวลาเปิด-ปิดบริการ</label>
-                    <input type="text" id="new-hub-hours" required placeholder="เช่น 08:30 - 20:00 น. (เปิดทุกวัน)" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                    <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_hours">เวลาเปิด-ปิดบริการ</label>
+                    <input type="text" id="new-hub-hours" required placeholder="เช่น 08:30 - 20:00 น. (เปิดทุกวัน)" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                 </div>
                 <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeAddHubModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl smooth-transition">ยกเลิก</button>
-                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl smooth-transition shadow-sm active:scale-95">บันทึกตำแหน่ง</button>
+                    <button type="button" onclick="closeAddHubModal()" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 font-medium py-2.5 rounded-xl smooth-transition" data-i18n="modal_cancel">ยกเลิก</button>
+                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl smooth-transition shadow-sm active:scale-95" data-i18n="modal_save">บันทึกตำแหน่ง</button>
                 </div>
             </form>
         </div>
@@ -243,10 +259,94 @@
         <p>Boxflash &bull; LocalStorage Account & Admin System</p>
     </footer>
 
-    <!-- App Logic Script -->
+    <!-- App Logic & Localization Script -->
     <script>
         const ADMIN_EMAIL = 'musicnoa7@gmail.com';
         const ADMIN_PASS = '0918294511';
+
+        const translations = {
+            th: {
+                nav_subtitle: "ระบบเช็กพัสดุและคลังฮับ/ร้านส่ง",
+                tab_login: "เข้าสู่ระบบ",
+                tab_register: "สมัครสมาชิก",
+                label_email: "อีเมล",
+                label_password: "รหัสผ่าน",
+                remember_me: "จดจำการเข้าสู่ระบบ",
+                btn_login: "เข้าสู่ระบบ",
+                label_reg_email: "อีเมลสำหรับสมัคร",
+                label_reg_password: "สร้างรหัสผ่าน",
+                btn_register: "สร้างบัญชีผู้ใช้ใหม่",
+                maintab_tracking: "เช็กพัสดุ & ประวัติ",
+                maintab_hubs: "คลังฮับ & ร้านส่ง",
+                track_title: "เช็กพัสดุด่วน",
+                label_carrier: "เลือกบริษัทขนส่ง",
+                label_tracking_no: "เลขติดตามพัสดุ",
+                btn_track: "เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด",
+                history_title: "ประวัติการเช็คล่าสุด",
+                btn_clear_history: "ล้างประวัติ",
+                hubs_header_title: "ค้นหาคลังฮับ และ ร้านรับฝากส่ง",
+                btn_add_hub: "เพิ่มตำแหน่งฮับ/ร้านส่ง (แอดมิน)",
+                filter_carrier_label: "กรองตามค่าย/ประเภท",
+                opt_all_carriers: "🌐 ทุกค่ายและร้านส่งทั้งหมด",
+                opt_thpost: "ไปรษณีย์ไทย",
+                opt_partner: "🏪 ร้านส่งพัสดุเอกชน (รวมค่าย)",
+                filter_search_label: "ค้นหาพื้นที่ / ชื่อสาขา",
+                modal_title: "เพิ่มคลังฮับ หรือ ร้านส่งพัสดุ",
+                modal_name: "ชื่อสาขา / ชื่อร้าน",
+                modal_carrier: "ประเภท / ค่ายขนส่ง",
+                modal_area: "พื้นที่ / โซน (Area)",
+                modal_address: "ที่อยู่โดยละเอียด",
+                modal_hours: "เวลาเปิด-ปิดบริการ",
+                modal_cancel: "ยกเลิก",
+                modal_save: "บันทึกตำแหน่ง",
+                badge_admin: "แอดมิน",
+                badge_member: "สมาชิก",
+                no_history: "ยังไม่มีประวัติการเช็กพัสดุ",
+                no_hubs: "ไม่พบข้อมูลคลังฮับหรือร้านส่งพัสดุตามเงื่อนไข"
+            },
+            en: {
+                nav_subtitle: "Parcel Tracking & Hub Finder System",
+                tab_login: "Login",
+                tab_register: "Register",
+                label_email: "Email",
+                label_password: "Password",
+                remember_me: "Remember me",
+                btn_login: "Login",
+                label_reg_email: "Email for registration",
+                label_reg_password: "Create Password",
+                btn_register: "Create New Account",
+                maintab_tracking: "Tracking & History",
+                maintab_hubs: "Hubs & Drop-off",
+                track_title: "Quick Parcel Tracking",
+                label_carrier: "Select Carrier",
+                label_tracking_no: "Tracking Number",
+                btn_track: "Open Tracking & Save History",
+                history_title: "Recent History",
+                btn_clear_history: "Clear History",
+                hubs_header_title: "Find Hubs & Drop-off Stores",
+                btn_add_hub: "Add Hub/Store (Admin)",
+                filter_carrier_label: "Filter by Carrier/Type",
+                opt_all_carriers: "🌐 All Carriers & Stores",
+                opt_thpost: "Thailand Post",
+                opt_partner: "🏪 Private Parcel Shop (Partner)",
+                filter_search_label: "Search Area / Branch Name",
+                modal_title: "Add Hub or Drop-off Location",
+                modal_name: "Branch / Store Name",
+                modal_carrier: "Carrier Type",
+                modal_area: "Area / Zone",
+                modal_address: "Detailed Address",
+                modal_hours: "Operating Hours",
+                modal_cancel: "Cancel",
+                modal_save: "Save Location",
+                badge_admin: "Admin",
+                badge_member: "Member",
+                no_history: "No tracking history yet",
+                no_hubs: "No hubs or drop-off stores found matching criteria"
+            }
+        };
+
+        let currentLang = localStorage.getItem('boxflash_lang') || 'th';
+        let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
 
         const defaultHubs = [
             { id: 1, name: 'Flash Express Hub หลัก', carrier: 'flash', area: 'จตุจักร / ลาดพร้าว', address: '123 ถ.พหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
@@ -257,10 +357,57 @@
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initLanguage();
             initAdminAccount();
             initDefaultHubs();
             checkAuthStatus();
         });
+
+        // Theme Control
+        function initTheme() {
+            const htmlRoot = document.getElementById('html-root');
+            const themeIcon = document.getElementById('theme-icon');
+            if (currentTheme === 'dark') {
+                htmlRoot.classList.add('dark');
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                htmlRoot.classList.remove('dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('boxflash_theme', currentTheme);
+            initTheme();
+        }
+
+        // Language Control
+        function initLanguage() {
+            const langBtn = document.getElementById('lang-btn');
+            langBtn.innerHTML = currentLang === 'th' ? '🇹🇭 TH' : '🇬🇧 EN';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+            
+            // Placeholders
+            document.getElementById('tracking-number').placeholder = currentLang === 'th' ? 'กรอกเลขพัสดุที่นี่...' : 'Enter tracking number here...';
+            document.getElementById('hub-search-input').placeholder = currentLang === 'th' ? 'พิมพ์ชื่อพื้นที่ เช่น บางเขน, ลาดพร้าว...' : 'Search area like Chatuchak, Asoke...';
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'th' ? 'en' : 'th';
+            localStorage.setItem('boxflash_lang', currentLang);
+            initLanguage();
+            checkAuthStatus(); // Refresh badge text
+            loadHistory();
+            renderHubs();
+        }
 
         function initAdminAccount() {
             let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
@@ -295,6 +442,7 @@
             }
         }
 
+        // Smooth Main Tab Switcher Animation
         function switchMainTab(tab) {
             const btnTracking = document.getElementById('main-tab-tracking');
             const btnHubs = document.getElementById('main-tab-hubs');
@@ -302,16 +450,32 @@
             const contentHubs = document.getElementById('content-hubs');
 
             if (tab === 'tracking') {
-                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-800 smooth-transition flex items-center justify-center gap-2";
-                contentTracking.classList.remove('hidden');
-                contentHubs.classList.add('hidden');
+                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
+                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
+                
+                contentHubs.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    contentHubs.classList.add('hidden');
+                    contentTracking.classList.remove('hidden');
+                    setTimeout(() => {
+                        contentTracking.classList.remove('opacity-0', '-translate-y-2');
+                        contentTracking.classList.add('opacity-100', 'translate-y-0');
+                    }, 20);
+                }, 150);
             } else {
-                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white text-emerald-600 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-800 smooth-transition flex items-center justify-center gap-2";
-                contentHubs.classList.remove('hidden');
-                contentTracking.classList.add('hidden');
-                renderHubs();
+                btnHubs.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
+                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
+                
+                contentTracking.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => {
+                    contentTracking.classList.add('hidden');
+                    contentHubs.classList.remove('hidden');
+                    setTimeout(() => {
+                        contentHubs.classList.remove('opacity-0', 'translate-y-2');
+                        contentHubs.classList.add('opacity-100', 'translate-y-0');
+                    }, 20);
+                    renderHubs();
+                }, 150);
             }
         }
 
@@ -320,13 +484,13 @@
             const password = document.getElementById('reg-password').value.trim();
 
             if (!email || !password) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                alert(currentLang === 'th' ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : 'Please fill in all fields.');
                 return;
             }
 
             let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
             if (users.some(u => u.email === email)) {
-                alert('อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่นหรือเข้าสู่ระบบ');
+                alert(currentLang === 'th' ? 'อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่นหรือเข้าสู่ระบบ' : 'Email already in use.');
                 return;
             }
 
@@ -336,7 +500,7 @@
             document.getElementById('login-email').value = email;
             document.getElementById('login-password').value = password;
 
-            alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
+            alert(currentLang === 'th' ? 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ' : 'Registration successful! Please login.');
             switchAuthTab('login');
         }
 
@@ -349,7 +513,7 @@
             const validUser = users.find(u => u.email === email && u.password === password);
 
             if (!validUser) {
-                alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+                alert(currentLang === 'th' ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : 'Invalid email or password.');
                 return;
             }
 
@@ -378,11 +542,14 @@
                 userNavArea.classList.remove('hidden');
                 userNavArea.classList.add('flex');
 
+                const adminBadge = translations[currentLang].badge_admin;
+                const memberBadge = translations[currentLang].badge_member;
+
                 if (loggedUser.email === ADMIN_EMAIL) {
-                    userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">แอดมิน</span>`;
+                    userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">${adminBadge}</span>`;
                     addHubBtn.classList.remove('hidden');
                 } else {
-                    userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px] font-medium">สมาชิก</span>`;
+                    userEmailDisplay.innerHTML = `${loggedUser.email} <span class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full text-[10px] font-medium">${memberBadge}</span>`;
                     addHubBtn.classList.add('hidden');
                 }
 
@@ -406,7 +573,7 @@
             const trackingNo = document.getElementById('tracking-number').value.trim();
 
             if (!trackingNo) {
-                alert('กรุณากรอกเลขพัสดุก่อนครับ');
+                alert(currentLang === 'th' ? 'กรุณากรอกเลขพัสดุก่อนครับ' : 'Please enter tracking number.');
                 document.getElementById('tracking-number').focus();
                 return;
             }
@@ -420,7 +587,7 @@
                     targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'thpost':
-                    carrierName = 'ไปรษณีย์ไทย';
+                    carrierName = currentLang === 'th' ? 'ไปรษณีย์ไทย' : 'Thailand Post';
                     targetUrl = `https://track.thailandpost.com/?trackNumber=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'kerry':
@@ -436,8 +603,8 @@
                     targetUrl = `https://www.lalamove.com/th-th/`;
                     break;
                 default:
-                    carrierName = 'ค้นหาทั่วไป';
-                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNo + ' เช็คพัสดุ')}`;
+                    carrierName = 'General Search';
+                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNo + ' tracking')}`;
             }
 
             saveHistory(carrierName, trackingNo, targetUrl);
@@ -464,7 +631,7 @@
                 carrierName,
                 trackingNo,
                 url,
-                time: new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })
+                time: new Date().toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US', { dateStyle: 'short', timeStyle: 'short' })
             });
 
             if (allHistory[userEmail].length > 15) {
@@ -482,28 +649,28 @@
             const historyList = document.getElementById('history-list');
             
             if (userHistory.length === 0) {
-                historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">ยังไม่มีประวัติการเช็กพัสดุ</p>`;
+                historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">${translations[currentLang].no_history}</p>`;
                 return;
             }
 
             let html = '';
             userHistory.forEach((item, index) => {
                 html += `
-                    <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200/80 rounded-xl hover:bg-blue-50/50 smooth-transition">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 rounded-xl hover:bg-blue-50/50 dark:hover:bg-slate-700/50 smooth-transition">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-semibold text-xs">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-semibold text-xs">
                                 <i class="fas fa-box"></i>
                             </div>
                             <div>
-                                <p class="text-xs font-semibold text-slate-700">${item.carrierName} <span class="font-normal text-slate-400 text-[11px]">(${item.time})</span></p>
-                                <p class="text-sm font-bold text-slate-900 tracking-wide">${item.trackingNo}</p>
+                                <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">${item.carrierName} <span class="font-normal text-slate-400 text-[11px]">(${item.time})</span></p>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white tracking-wide">${item.trackingNo}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <a href="${item.url}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium smooth-transition shadow-sm flex items-center gap-1">
-                                <i class="fas fa-external-link-alt text-[10px]"></i> เปิดดู
+                                <i class="fas fa-external-link-alt text-[10px]"></i> ${currentLang === 'th' ? 'เปิดดู' : 'View'}
                             </a>
-                            <button onclick="deleteHistoryItem(${index})" class="p-1.5 text-slate-400 hover:text-rose-600 smooth-transition rounded-lg hover:bg-rose-50">
+                            <button onclick="deleteHistoryItem(${index})" class="p-1.5 text-slate-400 hover:text-rose-600 smooth-transition rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50">
                                 <i class="fas fa-times text-xs"></i>
                             </button>
                         </div>
@@ -524,7 +691,7 @@
         }
 
         function clearHistory() {
-            if (confirm('คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?')) {
+            if (confirm(currentLang === 'th' ? 'คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?' : 'Are you sure you want to clear all history?')) {
                 const userEmail = getLoggedUserEmail();
                 let allHistory = JSON.parse(localStorage.getItem('boxflash_history') || '{}');
                 allHistory[userEmail] = [];
@@ -533,75 +700,84 @@
             }
         }
 
-        // ================= HUBS & STORES LOGIC =================
+        // ================= HUBS & STORES LOGIC WITH FILTER ANIMATION =================
         function renderHubs() {
-            const filterCarrier = document.getElementById('hub-filter-carrier').value;
-            const searchKeyword = document.getElementById('hub-search-input').value.toLowerCase().trim();
             const hubsListContainer = document.getElementById('hubs-list');
-            const loggedUser = JSON.parse(localStorage.getItem('boxflash_logged_user') || sessionStorage.getItem('boxflash_logged_user') || '{}');
-            const isAdmin = (loggedUser.email === ADMIN_EMAIL);
+            
+            // Trigger Fade-out animation for switching/filtering
+            hubsListContainer.classList.add('opacity-0', 'scale-95');
 
-            let hubs = JSON.parse(localStorage.getItem('boxflash_hubs') || '[]');
+            setTimeout(() => {
+                const filterCarrier = document.getElementById('hub-filter-carrier').value;
+                const searchKeyword = document.getElementById('hub-search-input').value.toLowerCase().trim();
+                const loggedUser = JSON.parse(localStorage.getItem('boxflash_logged_user') || sessionStorage.getItem('boxflash_logged_user') || '{}');
+                const isAdmin = (loggedUser.email === ADMIN_EMAIL);
 
-            let filtered = hubs.filter(item => {
-                const matchCarrier = (filterCarrier === 'all' || item.carrier === filterCarrier);
-                const matchSearch = item.name.toLowerCase().includes(searchKeyword) || 
-                                    item.area.toLowerCase().includes(searchKeyword) || 
-                                    item.address.toLowerCase().includes(searchKeyword);
-                return matchCarrier && matchSearch;
-            });
+                let hubs = JSON.parse(localStorage.getItem('boxflash_hubs') || '[]');
 
-            if (filtered.length === 0) {
-                hubsListContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">ไม่พบข้อมูลคลังฮับหรือร้านส่งพัสดุตามเงื่อนไข</p>`;
-                return;
-            }
+                let filtered = hubs.filter(item => {
+                    const matchCarrier = (filterCarrier === 'all' || item.carrier === filterCarrier);
+                    const matchSearch = item.name.toLowerCase().includes(searchKeyword) || 
+                                        item.area.toLowerCase().includes(searchKeyword) || 
+                                        item.address.toLowerCase().includes(searchKeyword);
+                    return matchCarrier && matchSearch;
+                });
 
-            let html = '';
-            filtered.forEach((hub) => {
-                let badgeColor = 'bg-blue-100 text-blue-700';
-                let carrierLabel = 'ขนส่ง';
-                if (hub.carrier === 'flash') { badgeColor = 'bg-amber-100 text-amber-800'; carrierLabel = 'Flash'; }
-                else if (hub.carrier === 'thpost') { badgeColor = 'bg-red-100 text-red-700'; carrierLabel = 'ไปรษณีย์ไทย'; }
-                else if (hub.carrier === 'kerry') { badgeColor = 'bg-orange-100 text-orange-800'; carrierLabel = 'Kerry'; }
-                else if (hub.carrier === 'j&t') { badgeColor = 'bg-red-50 text-red-600'; carrierLabel = 'J&T'; }
-                else if (hub.carrier === 'lalamove') { badgeColor = 'bg-orange-50 text-orange-600'; carrierLabel = 'Lalamove'; }
-                else if (hub.carrier === 'partner') { badgeColor = 'bg-emerald-100 text-emerald-800'; carrierLabel = 'ร้านส่งพัสดุเอกชน'; }
+                if (filtered.length === 0) {
+                    hubsListContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">${translations[currentLang].no_hubs}</p>`;
+                } else {
+                    let html = '';
+                    filtered.forEach((hub) => {
+                        let badgeColor = 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300';
+                        let carrierLabel = 'Express';
+                        if (hub.carrier === 'flash') { badgeColor = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300'; carrierLabel = 'Flash'; }
+                        else if (hub.carrier === 'thpost') { badgeColor = 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'; carrierLabel = currentLang === 'th' ? 'ไปรษณีย์ไทย' : 'Thailand Post'; }
+                        else if (hub.carrier === 'kerry') { badgeColor = 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-300'; carrierLabel = 'Kerry'; }
+                        else if (hub.carrier === 'j&t') { badgeColor = 'bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400'; carrierLabel = 'J&T'; }
+                        else if (hub.carrier === 'lalamove') { badgeColor = 'bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400'; carrierLabel = 'Lalamove'; }
+                        else if (hub.carrier === 'partner') { badgeColor = 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300'; carrierLabel = currentLang === 'th' ? 'ร้านส่งพัสดุเอกชน' : 'Private Shop'; }
 
-                let deleteBtnHtml = isAdmin ? `
-                    <button onclick="deleteHub(${hub.id})" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] rounded-lg smooth-transition" title="ลบสถานที่ (แอดมิน)">
-                        <i class="fas fa-trash-alt"></i> ลบ
-                    </button>
-                ` : '';
+                        let deleteBtnHtml = isAdmin ? `
+                            <button onclick="deleteHub(${hub.id})" class="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-600 dark:text-rose-400 text-[11px] rounded-lg smooth-transition" title="Delete">
+                                <i class="fas fa-trash-alt"></i> ${currentLang === 'th' ? 'ลบ' : 'Delete'}
+                            </button>
+                        ` : '';
 
-                html += `
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 hover:border-emerald-300 smooth-transition hover:shadow-sm">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeColor} inline-block mb-1">${carrierLabel}</span>
-                                <h3 class="font-bold text-slate-800 text-sm">${hub.name}</h3>
+                        html += `
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2 hover:border-emerald-300 dark:hover:border-emerald-600 smooth-transition hover:shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeColor} inline-block mb-1">${carrierLabel}</span>
+                                        <h3 class="font-bold text-slate-800 dark:text-white text-sm">${hub.name}</h3>
+                                    </div>
+                                    <span class="text-[11px] bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-lg font-medium">
+                                        <i class="fas fa-map-pin mr-1 text-rose-500"></i> ${hub.area}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-1.5">
+                                    <i class="fas fa-map-marker-alt text-slate-400 mt-0.5"></i> ${hub.address}
+                                </p>
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-2 border-t border-slate-200/60 dark:border-slate-700/60 gap-2">
+                                    <span class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                                        <i class="far fa-clock"></i> ${currentLang === 'th' ? 'เปิด-ปิด' : 'Hours'}: ${hub.hours}
+                                    </span>
+                                    <div class="flex gap-2">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hub.name + ' ' + hub.address)}" target="_blank" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] rounded-lg font-medium smooth-transition flex items-center gap-1 shadow-sm">
+                                            <i class="fas fa-directions"></i> ${currentLang === 'th' ? 'นำทาง' : 'Navigate'}
+                                        </a>
+                                        ${deleteBtnHtml}
+                                    </div>
+                                </div>
                             </div>
-                            <span class="text-[11px] bg-slate-200 text-slate-700 px-2 py-1 rounded-lg font-medium">
-                                <i class="fas fa-map-pin mr-1 text-rose-500"></i> ${hub.area}
-                            </span>
-                        </div>
-                        <p class="text-xs text-slate-600 flex items-start gap-1.5">
-                            <i class="fas fa-map-marker-alt text-slate-400 mt-0.5"></i> ${hub.address}
-                        </p>
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-2 border-t border-slate-200/60 gap-2">
-                            <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">
-                                <i class="far fa-clock"></i> เปิด-ปิด: ${hub.hours}
-                            </span>
-                            <div class="flex gap-2">
-                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hub.name + ' ' + hub.address)}" target="_blank" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] rounded-lg font-medium smooth-transition flex items-center gap-1 shadow-sm">
-                                    <i class="fas fa-directions"></i> นำทาง
-                                </a>
-                                ${deleteBtnHtml}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            hubsListContainer.innerHTML = html;
+                        `;
+                    });
+                    hubsListContainer.innerHTML = html;
+                }
+
+                // Trigger Fade-in animation
+                hubsListContainer.classList.remove('opacity-0', 'scale-95');
+                hubsListContainer.classList.add('opacity-100', 'scale-100');
+            }, 150);
         }
 
         function openAddHubModal() {
@@ -650,11 +826,11 @@
             
             closeAddHubModal();
             renderHubs();
-            alert('เพิ่มตำแหน่งฮับ/ร้านส่งสำเร็จ!');
+            alert(currentLang === 'th' ? 'เพิ่มตำแหน่งฮับ/ร้านส่งสำเร็จ!' : 'Hub/Store added successfully!');
         }
 
         function deleteHub(id) {
-            if (confirm('คุณต้องการลบตำแหน่งนี้ออกจากระบบใช่หรือไม่?')) {
+            if (confirm(currentLang === 'th' ? 'คุณต้องการลบตำแหน่งนี้ออกจากระบบใช่หรือไม่?' : 'Are you sure you want to delete this location?')) {
                 let hubs = JSON.parse(localStorage.getItem('boxflash_hubs') || '[]');
                 hubs = hubs.filter(h => h.id !== id);
                 localStorage.setItem('boxflash_hubs', JSON.stringify(hubs));
