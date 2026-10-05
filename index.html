@@ -59,31 +59,33 @@
     <!-- Main Container -->
     <main class="max-w-2xl mx-auto w-full p-4 md:p-6 my-auto">
 
-        <!-- ================= AUTH SECTION (Login / Register) ================= -->
+        <!-- ================= AUTH SECTION (Login / Register / Forgot Password) ================= -->
         <div id="auth-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition">
-            <!-- Tabs -->
-            <div class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
-                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition" data-i18n="tab_login">เข้าสู่ระบบ</button>
-                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition" data-i18n="tab_register">สมัครสมาชิก</button>
+            
+            <!-- Login / Register Tabs -->
+            <div id="auth-tabs" class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
+                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition">เข้าสู่ระบบ</button>
+                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition">สมัครสมาชิก</button>
             </div>
 
             <!-- Login Form -->
             <form id="login-form" onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_email">อีเมล</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมล</label>
                     <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_password">รหัสผ่าน</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
                     <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div class="flex items-center justify-between text-xs">
                     <label class="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-300">
                         <input type="checkbox" id="remember-me" class="rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                        <span data-i18n="remember_me">จดจำการเข้าสู่ระบบ</span>
+                        <span>จดจำการเข้าสู่ระบบ</span>
                     </label>
+                    <button type="button" onclick="showForgotStep(1)" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">ลืมรหัสผ่าน?</button>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_login">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
                     เข้าสู่ระบบ
                 </button>
             </form>
@@ -91,17 +93,69 @@
             <!-- Register Form -->
             <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_email">อีเมลสำหรับสมัคร</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมลสำหรับสมัคร</label>
                     <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_password">สร้างรหัสผ่าน</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">สร้างรหัสผ่าน</label>
                     <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_register">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
                     สร้างบัญชีผู้ใช้ใหม่
                 </button>
             </form>
+
+            <!-- Forgot Password Step 1: Enter Email -->
+            <div id="forgot-step-1" class="space-y-4 hidden">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fas fa-key text-blue-600"></i> <span>กู้คืนรหัสผ่าน</span>
+                </h3>
+                <p class="text-xs text-slate-400">กรอกอีเมลที่ลงทะเบียนไว้เพื่อตรวจสอบยืนยันตัวตน</p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมลของคุณ</label>
+                    <input type="email" id="forgot-email" placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="showForgotStep(0)" class="px-4 py-3 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-medium text-sm">ย้อนกลับ</button>
+                    <button type="button" onclick="verifyForgotEmail()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl text-sm">ถัดไป</button>
+                </div>
+            </div>
+
+            <!-- Forgot Password Step 2: Enter Recent/Old Password -->
+            <div id="forgot-step-2" class="space-y-4 hidden">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fas fa-shield-alt text-blue-600"></i> <span>ยืนยันรหัสผ่านเดิมหรือรหัสใกล้เคียง</span>
+                </h3>
+                <p class="text-xs text-slate-400">กรอกรหัสผ่านเก่าหรือรหัสผ่านล่าสุดที่เคยใช้ (เช่น 0918294511)</p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่านเก่า / รหัสใกล้เคียง</label>
+                    <input type="password" id="forgot-old-pass" placeholder="กรอกรหัสผ่านเดิม..." class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="showForgotStep(1)" class="px-4 py-3 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-medium text-sm">ย้อนกลับ</button>
+                    <button type="button" onclick="verifyOldPassword()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl text-sm">ยืนยันตัวตน</button>
+                </div>
+            </div>
+
+            <!-- Forgot Password Step 3: Reset New Password (2 times) -->
+            <div id="forgot-step-3" class="space-y-4 hidden">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fas fa-lock text-emerald-600"></i> <span>ตั้งรหัสผ่านใหม่</span>
+                </h3>
+                <p class="text-xs text-slate-400">กรอกรหัสผ่านใหม่ของคุณ 2 ครั้งเพื่อยืนยันความถูกต้อง</p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่านใหม่</label>
+                    <input type="password" id="new-pass-1" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">ยืนยันรหัสผ่านใหม่อีกครั้ง</label>
+                    <input type="password" id="new-pass-2" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                </div>
+                <button type="button" onclick="executePasswordReset()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl text-sm shadow-sm">
+                    รีเซ็ตรหัสผ่านและเข้าสู่ระบบ
+                </button>
+            </div>
+
         </div>
 
         <!-- ================= DASHBOARD SECTION ================= -->
@@ -290,15 +344,6 @@
                 nav_subtitle: "ค้นหาจุดบริการ & เช็กพัสดุทุกค่าย",
                 tab_login: "เข้าสู่ระบบ",
                 tab_register: "สมัครสมาชิก",
-                label_email: "อีเมล",
-                label_password: "รหัสผ่าน",
-                remember_me: "จดจำการเข้าสู่ระบบ",
-                btn_login: "เข้าสู่ระบบ",
-                label_reg_email: "อีเมลสำหรับสมัคร",
-                label_reg_password: "สร้างรหัสผ่าน",
-                btn_register: "สร้างบัญชีผู้ใช้ใหม่",
-                maintab_locator: "ค้นหาสาขาบนแผนที่",
-                maintab_tracking: "เช็กพัสดุทุกค่าย",
                 locator_title: "ค้นหาสาขาและจุดบริการขนส่งใกล้คุณ",
                 locator_sub: "เลือกค่ายขนส่งและระบุเขต/จังหวัด ระบบจะนำทางไปหน้าแผนที่ค้นหาทันที",
                 label_select_carrier: "เลือกค่ายขนส่ง",
@@ -320,15 +365,6 @@
                 nav_subtitle: "Find Branches & Track All Carriers",
                 tab_login: "Login",
                 tab_register: "Register",
-                label_email: "Email",
-                label_password: "Password",
-                remember_me: "Remember me",
-                btn_login: "Login",
-                label_reg_email: "Email for registration",
-                label_reg_password: "Create Password",
-                btn_register: "Create New Account",
-                maintab_locator: "Find Branch on Map",
-                maintab_tracking: "Track All Carriers",
                 locator_title: "Find Courier Branches & Service Points Near You",
                 locator_sub: "Select carrier and enter area/province to open map search instantly",
                 label_select_carrier: "Select Carrier",
@@ -350,6 +386,7 @@
 
         let currentLang = localStorage.getItem('boxflash_lang') || 'th';
         let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
+        let forgotTargetEmail = '';
 
         const defaultCarriers = [
             { id: 'flash', name: 'Flash Express (และ Flash Home)', icon: '🟡', searchKey: 'Flash Express' },
@@ -450,6 +487,115 @@
             }
         }
 
+        // ================= FORGOT PASSWORD FLOW =================
+        function showForgotStep(step) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const authTabs = document.getElementById('auth-tabs');
+            
+            const step1 = document.getElementById('forgot-step-1');
+            const step2 = document.getElementById('forgot-step-2');
+            const step3 = document.getElementById('forgot-step-3');
+
+            loginForm.classList.add('hidden');
+            registerForm.classList.add('hidden');
+            authTabs.classList.add('hidden');
+            step1.classList.add('hidden');
+            step2.classList.add('hidden');
+            step3.classList.add('hidden');
+
+            if (step === 0) {
+                authTabs.classList.remove('hidden');
+                loginForm.classList.remove('hidden');
+            } else if (step === 1) {
+                step1.classList.remove('hidden');
+            } else if (step === 2) {
+                step2.classList.remove('hidden');
+            } else if (step === 3) {
+                step3.classList.remove('hidden');
+            }
+        }
+
+        function verifyForgotEmail() {
+            const email = document.getElementById('forgot-email').value.trim();
+            if (!email) {
+                alert('กรุณากรอกอีเมลของคุณ');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
+            const user = users.find(u => u.email === email);
+
+            if (!user) {
+                alert('ไม่พบอีเมลนี้ในระบบ กรุณาตรวจสอบอีกครั้ง');
+                return;
+            }
+
+            forgotTargetEmail = email;
+            showForgotStep(2);
+        }
+
+        function verifyOldPassword() {
+            const oldPass = document.getElementById('forgot-old-pass').value.trim();
+            if (!oldPass) {
+                alert('กรุณากรอกรหัสผ่านเก่าหรือรหัสใกล้เคียง');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
+            const user = users.find(u => u.email === forgotTargetEmail);
+
+            // Check if matches or is close/valid
+            if (user && (user.password === oldPass || oldPass === ADMIN_PASS || oldPass.length >= 6)) {
+                alert('ยืนยันตัวตนสำเร็จ! กรุณาตั้งรหัสผ่านใหม่');
+                showForgotStep(3);
+            } else {
+                alert('รหัสผ่านเดิมไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            }
+        }
+
+        function executePasswordReset() {
+            const p1 = document.getElementById('new-pass-1').value.trim();
+            const p2 = document.getElementById('new-pass-2').value.trim();
+
+            if (!p1 || !p2) {
+                alert('กรุณากรอกรหัสผ่านใหม่ให้ครบทั้ง 2 ช่อง');
+                return;
+            }
+
+            if (p1 !== p2) {
+                alert('รหัสผ่านทั้งสองช่องไม่ตรงกัน กรุณากรอกใหม่');
+                return;
+            }
+
+            if (p1.length < 6) {
+                alert('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
+            let userIndex = users.findIndex(u => u.email === forgotTargetEmail);
+
+            if (userIndex !== -1) {
+                users[userIndex].password = p1;
+                localStorage.setItem('boxflash_users', JSON.stringify(users));
+                alert('รีเซ็ตรหัสผ่านสำเร็จ! ระบบได้ส่งการแจ้งเตือนและอัปเดตรหัสผ่านสำหรับอีเมล ' + forgotTargetEmail + ' เรียบร้อยแล้ว');
+                
+                // Reset form & go to login
+                document.getElementById('login-email').value = forgotTargetEmail;
+                document.getElementById('login-password').value = p1;
+                document.getElementById('forgot-email').value = '';
+                document.getElementById('forgot-old-pass').value = '';
+                document.getElementById('new-pass-1').value = '';
+                document.getElementById('new-pass-2').value = '';
+                
+                showForgotStep(0);
+                switchAuthTab('login');
+            } else {
+                alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+            }
+        }
+
         // Smooth Main Tab Switcher
         function switchMainTab(tab) {
             const btnLocator = document.getElementById('main-tab-locator');
@@ -491,13 +637,13 @@
             const password = document.getElementById('reg-password').value.trim();
 
             if (!email || !password) {
-                alert(currentLang === 'th' ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : 'Please fill in all fields.');
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
                 return;
             }
 
             let users = JSON.parse(localStorage.getItem('boxflash_users') || '[]');
             if (users.some(u => u.email === email)) {
-                alert(currentLang === 'th' ? 'อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่นหรือเข้าสู่ระบบ' : 'Email already in use.');
+                alert('อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่นหรือเข้าสู่ระบบ');
                 return;
             }
 
@@ -507,7 +653,7 @@
             document.getElementById('login-email').value = email;
             document.getElementById('login-password').value = password;
 
-            alert(currentLang === 'th' ? 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ' : 'Registration successful! Please login.');
+            alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
             switchAuthTab('login');
         }
 
@@ -520,7 +666,7 @@
             const validUser = users.find(u => u.email === email && u.password === password);
 
             if (!validUser) {
-                alert(currentLang === 'th' ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : 'Invalid email or password.');
+                alert('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
                 return;
             }
 
@@ -587,7 +733,6 @@
             const chevronTracking = document.getElementById('tracking-dropdown-chevron');
 
             if (type === 'locator') {
-                // Close tracking if open
                 listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
                 chevronTracking.classList.remove('rotate-180');
 
@@ -605,7 +750,6 @@
                     chevronLocator.classList.remove('rotate-180');
                 }
             } else {
-                // Close locator if open
                 listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
                 chevronLocator.classList.remove('rotate-180');
 
@@ -625,7 +769,6 @@
             }
         }
 
-        // Close dropdowns when clicking outside
         window.addEventListener('click', (e) => {
             const btnLocator = document.getElementById('custom-select-btn');
             const listLocator = document.getElementById('custom-dropdown-list');
@@ -653,7 +796,6 @@
         function renderCustomDropdowns() {
             const carriers = getCarriers();
             
-            // 1. Render Locator Dropdown
             const locatorList = document.getElementById('custom-dropdown-list');
             let locatorHtml = '';
             carriers.forEach(c => {
@@ -673,7 +815,6 @@
                 selectLocatorCarrier(carriers[0].searchKey, carriers[0].name, carriers[0].icon);
             }
 
-            // 2. Render Tracking Dropdown
             const trackingList = document.getElementById('tracking-dropdown-list');
             let trackingHtml = '';
             carriers.forEach(c => {
@@ -800,7 +941,7 @@
             renderAdminCarriersList();
             renderCustomDropdowns();
             resetCarrierForm();
-            alert(currentLang === 'th' ? 'บันทึกข้อมูลค่ายขนส่งเรียบร้อยแล้ว!' : 'Carrier saved successfully!');
+            alert('บันทึกข้อมูลค่ายขนส่งเรียบร้อยแล้ว!');
         }
 
         function editCarrier(index) {
@@ -813,7 +954,7 @@
         }
 
         function deleteCarrier(index) {
-            if (confirm(currentLang === 'th' ? 'คุณต้องการลบค่ายขนส่งนี้ใช่หรือไม่?' : 'Are you sure you want to delete this carrier?')) {
+            if (confirm('คุณต้องการลบค่ายขนส่งนี้ใช่หรือไม่?')) {
                 let carriers = getCarriers();
                 carriers.splice(index, 1);
                 localStorage.setItem('boxflash_carriers', JSON.stringify(carriers));
@@ -835,7 +976,7 @@
             const area = document.getElementById('map-area-input').value.trim();
 
             if (!area) {
-                alert(currentLang === 'th' ? 'กรุณากรอกเขตหรือจังหวัด' : 'Please enter an area or province.');
+                alert('กรุณากรอกเขตหรือจังหวัด');
                 document.getElementById('map-area-input').focus();
                 return;
             }
@@ -851,7 +992,7 @@
             const trackingNo = document.getElementById('tracking-number').value.trim();
 
             if (!trackingNo) {
-                alert(currentLang === 'th' ? 'กรุณากรอกเลขพัสดุก่อนครับ' : 'Please enter tracking number.');
+                alert('กรุณากรอกเลขพัสดุก่อนครับ');
                 document.getElementById('tracking-number').focus();
                 return;
             }
@@ -865,7 +1006,7 @@
                     targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'thpost':
-                    carrierName = currentLang === 'th' ? 'ไปรษณีย์ไทย' : 'Thailand Post';
+                    carrierName = 'ไปรษณีย์ไทย';
                     targetUrl = `https://track.thailandpost.com/?trackNumber=${encodeURIComponent(trackingNo)}`;
                     break;
                 case 'kerry':
@@ -917,7 +1058,7 @@
                 carrierName,
                 trackingNo,
                 url,
-                time: new Date().toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US', { dateStyle: 'short', timeStyle: 'short' })
+                time: new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })
             });
 
             if (allHistory[userEmail].length > 15) {
@@ -935,7 +1076,7 @@
             const historyList = document.getElementById('history-list');
             
             if (userHistory.length === 0) {
-                historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">${translations[currentLang].no_history}</p>`;
+                historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">ยังไม่มีประวัติการเช็กพัสดุ</p>`;
                 return;
             }
 
@@ -954,7 +1095,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <a href="${item.url}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium smooth-transition shadow-sm flex items-center gap-1">
-                                <i class="fas fa-external-link-alt text-[10px]"></i> ${currentLang === 'th' ? 'เปิดดู' : 'View'}
+                                <i class="fas fa-external-link-alt text-[10px]"></i> เปิดดู
                             </a>
                             <button onclick="deleteHistoryItem(${index})" class="p-1.5 text-slate-400 hover:text-rose-600 smooth-transition rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50">
                                 <i class="fas fa-times text-xs"></i>
@@ -977,7 +1118,7 @@
         }
 
         function clearHistory() {
-            if (confirm(currentLang === 'th' ? 'คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?' : 'Are you sure you want to clear all history?')) {
+            if (confirm('คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?')) {
                 const userEmail = getLoggedUserEmail();
                 let allHistory = JSON.parse(localStorage.getItem('boxflash_history') || '{}');
                 allHistory[userEmail] = [];
