@@ -182,7 +182,7 @@
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="filter_carrier_label">กรองตามค่าย/ประเภท</label>
                             <select id="hub-filter-carrier" onchange="renderHubs()" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                                 <option value="all" data-i18n="opt_all_carriers">🌐 ทุกค่ายและร้านส่งทั้งหมด</option>
-                                <option value="flash">Flash Express / Flash Home</option>
+                                <option value="flash">⚡ Flash Express / Flash Home (เน้นแฟลช)</option>
                                 <option value="thpost" data-i18n="opt_thpost">ไปรษณีย์ไทย</option>
                                 <option value="kerry">Kerry (KEX)</option>
                                 <option value="j&t">J&T Express</option>
@@ -191,8 +191,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="filter_search_label">ค้นหาพื้นที่ / ชื่อสาขา</label>
-                            <input type="text" id="hub-search-input" oninput="renderHubs()" placeholder="พิมพ์ชื่อพื้นที่ เช่น บางเขน, ลาดพร้าว..." class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="filter_search_label">พิมพ์ค้นหาพื้นที่ / สาขา (เช่น ลาดพร้าว, บางเขน)</label>
+                            <input type="text" id="hub-search-input" oninput="renderHubs()" placeholder="พิมพ์ชื่อพื้นที่หรือสาขา..." class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                         </div>
                     </div>
 
@@ -221,13 +221,13 @@
             <form onsubmit="event.preventDefault(); saveNewHub();" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_name">ชื่อสาขา / ชื่อร้าน</label>
-                    <input type="text" id="new-hub-name" required placeholder="เช่น Boxflash สาขาหลัก / Flash Hub บางเขน" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                    <input type="text" id="new-hub-name" required placeholder="เช่น Flash Express สาขาลาดพร้าว 71" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_carrier">ประเภท / ค่ายขนส่ง</label>
                     <select id="new-hub-carrier" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium smooth-transition">
+                        <option value="flash">Flash Express / Flash Home</option>
                         <option value="partner">🏪 ร้านส่งพัสดุเอกชน (รับฝากรวม)</option>
-                        <option value="flash">Flash Express</option>
                         <option value="thpost">ไปรษณีย์ไทย</option>
                         <option value="kerry">Kerry Express (KEX)</option>
                         <option value="j&t">J&T Express</option>
@@ -236,7 +236,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_area">พื้นที่ / โซน (Area)</label>
-                    <input type="text" id="new-hub-area" required placeholder="เช่น โซนกรุงเทพเหนือ, ลาดพร้าว, รัชดา" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
+                    <input type="text" id="new-hub-area" required placeholder="เช่น โซนลาดพร้าว, บางเขน, จตุจักร" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 smooth-transition">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="modal_address">ที่อยู่โดยละเอียด</label>
@@ -290,7 +290,7 @@
                 opt_all_carriers: "🌐 ทุกค่ายและร้านส่งทั้งหมด",
                 opt_thpost: "ไปรษณีย์ไทย",
                 opt_partner: "🏪 ร้านส่งพัสดุเอกชน (รวมค่าย)",
-                filter_search_label: "ค้นหาพื้นที่ / ชื่อสาขา",
+                filter_search_label: "พิมพ์ค้นหาพื้นที่ / สาขา (เช่น ลาดพร้าว, บางเขน)",
                 modal_title: "เพิ่มคลังฮับ หรือ ร้านส่งพัสดุ",
                 modal_name: "ชื่อสาขา / ชื่อร้าน",
                 modal_carrier: "ประเภท / ค่ายขนส่ง",
@@ -302,7 +302,7 @@
                 badge_admin: "แอดมิน",
                 badge_member: "สมาชิก",
                 no_history: "ยังไม่มีประวัติการเช็กพัสดุ",
-                no_hubs: "ไม่พบข้อมูลคลังฮับหรือร้านส่งพัสดุตามเงื่อนไข"
+                no_hubs: "ไม่พบสาขา Flash หรือร้านส่งพัสดุตามพื้นที่ที่คุณค้นหา"
             },
             en: {
                 nav_subtitle: "Parcel Tracking & Hub Finder System",
@@ -329,7 +329,7 @@
                 opt_all_carriers: "🌐 All Carriers & Stores",
                 opt_thpost: "Thailand Post",
                 opt_partner: "🏪 Private Parcel Shop (Partner)",
-                filter_search_label: "Search Area / Branch Name",
+                filter_search_label: "Search Area / Branch Name (e.g. Ladprao)",
                 modal_title: "Add Hub or Drop-off Location",
                 modal_name: "Branch / Store Name",
                 modal_carrier: "Carrier Type",
@@ -341,19 +341,26 @@
                 badge_admin: "Admin",
                 badge_member: "Member",
                 no_history: "No tracking history yet",
-                no_hubs: "No hubs or drop-off stores found matching criteria"
+                no_hubs: "No Flash branches or stores found matching your search"
             }
         };
 
-        let currentLang = localStorage.getItem('boxflash_lang') || 'th';
-        let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
-
+        // Expanded Flash Branches Database (Specific Branches by Area)
         const defaultHubs = [
-            { id: 1, name: 'Flash Express Hub หลัก', carrier: 'flash', area: 'จตุจักร / ลาดพร้าว', address: '123 ถ.พหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
-            { id: 2, name: 'ไปรษณีย์ไทย สาขารองเมือง', carrier: 'thpost', area: 'ปทุมวัน / รองเมือง', address: '45 ถ.รองเมือง เขตปทุมวัน กรุงเทพฯ', hours: '08:30 - 17:30 น. (ปิดวันอาทิตย์)' },
-            { id: 3, name: 'Kerry Express Parcel Shop', carrier: 'kerry', area: 'สุขุมวิท / อโศก', address: '88/1 สุขุมวิท ซอย 21 แขวงคลองเตยเหนือ กรุงเทพฯ', hours: '09:00 - 20:00 น.' },
-            { id: 4, name: 'J&T Express Sorting Hub', carrier: 'j&t', area: 'บางเขน / หลักสี่', address: '99 ถ.แจ้งวัฒนะ แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ', hours: '08:00 - 20:30 น.' },
-            { id: 5, name: 'Boxflash Partner Shop (ร้านส่งรวมค่าย)', carrier: 'partner', area: 'รามอินทรา / คันนายาว', address: '210 ถ.รามอินทรา แขวงคันนายาว กรุงเทพฯ', hours: '08:00 - 22:00 น. (เปิดทุกวัน)' }
+            { id: 1, name: 'Flash Express สาขาลาดพร้าว 71', carrier: 'flash', area: 'ลาดพร้าว / วังทองหลาง', address: '28/5 ถ.นาคนิวาส ลาดพร้าว กรุงเทพฯ', hours: '08:00 - 20:00 น.' },
+            { id: 2, name: 'Flash Home โชคชัย 4 ซอย 54', carrier: 'flash', area: 'โชคชัย 4 / ลาดพร้าว', address: '112 ซ.โชคชัย 4 แขวงลาดพร้าว เขตลาดพร้าว กรุงเทพฯ', hours: '08:30 - 20:30 น.' },
+            { id: 3, name: 'Flash Express สาขาบางเขน', carrier: 'flash', area: 'บางเขน / หลักสี่', address: '55/9 ถ.พหลโยธิน แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
+            { id: 4, name: 'Flash Home พหลโยธิน 34', carrier: 'flash', area: 'เสนานิคม / จตุจักร', address: '12/4 ซ.พหลโยธิน 34 แขวงเสนานิคม เขตจตุจักร กรุงเทพฯ', hours: '09:00 - 20:00 น.' },
+            { id: 5, name: 'Flash Express สาขารามอินทรา กม.4', carrier: 'flash', area: 'รามอินทรา / คันนายาว', address: '420 ถ.รามอินทรา แขวงคันนายาว เขตคันนายาว กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
+            { id: 6, name: 'Flash Home ลาดปลาเค้า', carrier: 'flash', area: 'ลาดปลาเค้า / วามอินทรา', address: '89 ถ.ลาดปลาเค้า แขวงจรเข้บัว เขตลาดพร้าว กรุงเทพฯ', hours: '08:30 - 20:00 น.' },
+            { id: 7, name: 'Flash Express สาขาบางกะปิ', carrier: 'flash', area: 'บางกะปิ / แฮปปี้แลนด์', address: '310 ถ.ลาดพร้าว แขวงคลองจั่น เขตบางกะปิ กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
+            { id: 8, name: 'Flash Home นวมินทร์ 74', carrier: 'flash', area: 'บึงกุ่ม / นวมินทร์', address: '155 ซ.นวมินทร์ 74 แขวงรามอินทรา เขตคันนายาว กรุงเทพฯ', hours: '08:30 - 20:00 น.' },
+            { id: 9, name: 'Flash Express สาขาสุขุมวิท 77 (อ่อนนุช)', carrier: 'flash', area: 'อ่อนนุช / สุขุมวิท', address: '98 ถ.สุขุมวิท 77 แขวงสวนหลวง เขตสวนหลวง กรุงเทพฯ', hours: '08:00 - 21:00 น.' },
+            { id: 10, name: 'Flash Express สาขาบางนา-ตราด กม.5', carrier: 'flash', area: 'บางนา / ประเวศ', address: '88/5 ถ.บางนา-ตราด แขวงบางนาใต้ เขตบางนา กรุงเทพฯ', hours: '08:00 - 21:30 น.' },
+            { id: 11, name: 'ไปรษณีย์ไทย สาขารองเมือง', carrier: 'thpost', area: 'ปทุมวัน / รองเมือง', address: '45 ถ.รองเมือง เขตปทุมวัน กรุงเทพฯ', hours: '08:30 - 17:30 น. (ปิดวันอาทิตย์)' },
+            { id: 12, name: 'Kerry Express Parcel Shop', carrier: 'kerry', area: 'สุขุมวิท / อโศก', address: '88/1 สุขุมวิท ซอย 21 แขวงคลองเตยเหนือ กรุงเทพฯ', hours: '09:00 - 20:00 น.' },
+            { id: 13, name: 'J&T Express Sorting Hub', carrier: 'j&t', area: 'บางเขน / หลักสี่', address: '99 ถ.แจ้งวัฒนะ แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพฯ', hours: '08:00 - 20:30 น.' },
+            { id: 14, name: 'Boxflash Partner Shop (รับฝากรวมทุกค่าย)', carrier: 'partner', area: 'รามอินทรา / คันนายาว', address: '210 ถ.รามอินทรา แขวงคันนายาว กรุงเทพฯ', hours: '08:00 - 22:00 น. (เปิดทุกวัน)' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -397,14 +404,14 @@
             
             // Placeholders
             document.getElementById('tracking-number').placeholder = currentLang === 'th' ? 'กรอกเลขพัสดุที่นี่...' : 'Enter tracking number here...';
-            document.getElementById('hub-search-input').placeholder = currentLang === 'th' ? 'พิมพ์ชื่อพื้นที่ เช่น บางเขน, ลาดพร้าว...' : 'Search area like Chatuchak, Asoke...';
+            document.getElementById('hub-search-input').placeholder = currentLang === 'th' ? 'พิมพ์ชื่อพื้นที่หรือสาขา เช่น ลาดพร้าว, บางเขน...' : 'Search area or branch like Ladprao, Asoke...';
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'th' ? 'en' : 'th';
             localStorage.setItem('boxflash_lang', currentLang);
             initLanguage();
-            checkAuthStatus(); // Refresh badge text
+            checkAuthStatus(); 
             loadHistory();
             renderHubs();
         }
@@ -700,11 +707,11 @@
             }
         }
 
-        // ================= HUBS & STORES LOGIC WITH FILTER ANIMATION =================
+        // ================= HUBS & STORES LOGIC WITH REAL-TIME FILTER & ANIMATION =================
         function renderHubs() {
             const hubsListContainer = document.getElementById('hubs-list');
             
-            // Trigger Fade-out animation for switching/filtering
+            // Trigger Fade-out animation for smooth transition when typing/filtering
             hubsListContainer.classList.add('opacity-0', 'scale-95');
 
             setTimeout(() => {
@@ -730,7 +737,7 @@
                     filtered.forEach((hub) => {
                         let badgeColor = 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300';
                         let carrierLabel = 'Express';
-                        if (hub.carrier === 'flash') { badgeColor = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300'; carrierLabel = 'Flash'; }
+                        if (hub.carrier === 'flash') { badgeColor = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300'; carrierLabel = '⚡ Flash Express'; }
                         else if (hub.carrier === 'thpost') { badgeColor = 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'; carrierLabel = currentLang === 'th' ? 'ไปรษณีย์ไทย' : 'Thailand Post'; }
                         else if (hub.carrier === 'kerry') { badgeColor = 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-300'; carrierLabel = 'Kerry'; }
                         else if (hub.carrier === 'j&t') { badgeColor = 'bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400'; carrierLabel = 'J&T'; }
@@ -744,26 +751,26 @@
                         ` : '';
 
                         html += `
-                            <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2 hover:border-emerald-300 dark:hover:border-emerald-600 smooth-transition hover:shadow-sm">
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2 hover:border-amber-400 dark:hover:border-amber-500 smooth-transition hover:shadow-sm">
                                 <div class="flex justify-between items-start">
                                     <div>
                                         <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${badgeColor} inline-block mb-1">${carrierLabel}</span>
                                         <h3 class="font-bold text-slate-800 dark:text-white text-sm">${hub.name}</h3>
                                     </div>
                                     <span class="text-[11px] bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-lg font-medium">
-                                        <i class="fas fa-map-pin mr-1 text-rose-500"></i> ${hub.area}
+                                        <i class="fas fa-map-pin mr-1 text-amber-500"></i> ${hub.area}
                                     </span>
                                 </div>
                                 <p class="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-1.5">
                                     <i class="fas fa-map-marker-alt text-slate-400 mt-0.5"></i> ${hub.address}
                                 </p>
                                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-2 border-t border-slate-200/60 dark:border-slate-700/60 gap-2">
-                                    <span class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                                    <span class="text-xs text-amber-700 dark:text-amber-400 font-semibold flex items-center gap-1">
                                         <i class="far fa-clock"></i> ${currentLang === 'th' ? 'เปิด-ปิด' : 'Hours'}: ${hub.hours}
                                     </span>
                                     <div class="flex gap-2">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hub.name + ' ' + hub.address)}" target="_blank" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] rounded-lg font-medium smooth-transition flex items-center gap-1 shadow-sm">
-                                            <i class="fas fa-directions"></i> ${currentLang === 'th' ? 'นำทาง' : 'Navigate'}
+                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hub.name + ' ' + hub.address)}" target="_blank" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white text-[11px] rounded-lg font-medium smooth-transition flex items-center gap-1 shadow-sm">
+                                            <i class="fas fa-directions"></i> ${currentLang === 'th' ? 'นำทาง Google Maps' : 'Navigate'}
                                         </a>
                                         ${deleteBtnHtml}
                                     </div>
