@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackMe - ระบบติดตามพัสดุรวมทุกขนส่ง</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+        /* Custom Timeline Styling */
+        .timeline-container {
+            position: relative;
+            padding-left: 1.75rem;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background-color: #e2e8f0;
+        }
+        .timeline-item {
+            position: relative;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -1.75rem;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 3px solid #cbd5e1;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .timeline-dot.active {
+            border-color: #2563eb;
+            background-color: #2563eb;
+            box-shadow: 0 0 0 4px #dbeafe;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-4 md:p-8 flex flex-col justify-between">
+    <div class="max-w-2xl mx-auto w-full">
+        <!-- Header -->
+        <header class="text-center my-6">
+            <div class="inline-flex items-center justify-center w-14 h-14 bg-blue-600 text-white rounded-2xl shadow-md mb-3">
+                <i class="fas fa-box-open text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">TrackMe</h1>
+            <p class="text-slate-500 text-sm mt-1">เช็กสถานะพัสดุโปรโตไทป์ รวมทุกบริษัทขนส่งในหน้าเดียว</p>
+        </header>
+
+        <!-- Search Card -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-6">
+            <form id="tracking-form" onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label for="carrier" class="block text-xs font-medium text-slate-500 mb-1">เลือกบริษัทขนส่ง</label>
+                        <select id="carrier" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-700">
+                            <option value="flash">Flash Express</option>
+                            <option value="thpost">ไปรษณีย์ไทย (Thailand Post)</option>
+                            <option value="kerry">Kerry Express (KEX)</option>
+                            <option value="lalamove">Lalamove</option>
+                            <option value="j&t">J&T Express</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="tracking-number" class="block text-xs font-medium text-slate-500 mb-1">เลขติดตามพัสดุ</label>
+                        <div class="relative">
+                            <input type="text" id="tracking-number" placeholder="เช่น TH0123456789" value="TH0123456789" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-800">
+                            <i class="fas fa-barcode absolute left-3.5 top-3.5 text-slate-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-3 px-6 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
+                    <i class="fas fa-search"></i> ค้นหาพัสดุ
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="hidden text-center py-10 bg-white rounded-2xl shadow-sm border border-slate-200/80 mb-6">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-t-blue-600 mb-3"></div>
+            <p class="text-slate-600 font-medium">กำลังติดต่อศูนย์ข้อมูลขนส่ง...</p>
+            <p class="text-slate-400 text-xs mt-1">โปรดรอสักครู่</p>
+        </div>
+
+        <!-- Result Container -->
+        <div id="result-container" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80">
+            <!-- Header Summary -->
+            <div class="border-b border-slate-100 pb-6 mb-6">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+                    <div>
+                        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tracking ID</span>
+                        <h2 id="show-tracking" class="text-2xl font-bold text-slate-800 tracking-tight">TH0123456789</h2>
+                    </div>
+                    <span id="status-badge" class="px-3.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200/60 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                        <span class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+                        กำลังจัดส่ง (Out for Delivery)
+                    </span>
+                </div>
+
+                <!-- ETA & Quick Info Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-lg">
+                            <i class="fas fa-truck-ramping"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">ขนส่งโดย</p>
+                            <p id="show-carrier" class="text-sm font-semibold text-slate-800">Flash Express</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">เวลาออกเดินทาง</p>
+                            <p id="depart-time" class="text-sm font-semibold text-slate-800">08:30 น. (เช้าวันนี้)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg">
+                            <i class="fas fa-house-chimney-user"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">คาดว่าถึงมือผู้รับ</p>
+                            <p id="eta-time" class="text-sm font-semibold text-emerald-700">14:30 - 15:30 น.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Status Timeline -->
+            <div>
+                <h3 class="text-base font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-route text-blue-600"></i> ประวัติการเดินทางพัสดุ
+                </h3>
+                <div class="timeline-container">
+                    <ul id="timeline-list" class="space-y-6">
+                        <!-- Items rendered by JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-400 py-6">
+        <p>TrackMe Prototype System &bull; Ready for Vercel & GitHub</p>
+    </footer>
+
+    <!-- Script logic -->
+    <script>
+        function getMockTrackingData(trackingNo, carrierValue, carrierName) {
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+            
+            return [
+                {
+                    status: "พนักงานกำลังนำส่งพัสดุให้คุณ (Out for Delivery)",
+                    location: "สาขาปลายทาง - เขตจตุจักร กรุงเทพฯ",
+                    time: "10:15 น.",
+                    date: dateStr,
+                    note: "พนักงานส่งของ: สมชาย ใจดี (โทร 081-XXX-XXXX) ออกเดินทางเมื่อ 08:30 น. คาดว่าถึงปลายทางเวลา 14:30 - 15:30 น.",
+                    active: true
+                },
+                {
+                    status: "พัสดุถึงสาขาปลายทางเรียบร้อยแล้ว",
+                    location: "ศูนย์กระจายพัสดุ กรุงเทพฯ ฝั่งเหนือ",
+                    time: "06:40 น.",
+                    date: dateStr,
+                    note: "พัสดุจัดสรรเข้าคิวรถส่งรอบเช้าเรียบร้อย",
+                    active: false
+                },
+                {
+                    status: "พัสดุอยู่ระหว่างการขนส่งระหว่างศูนย์คัดแยก",
+                    location: "ศูนย์คัดแยกพัสดุกลาง (Hub)",
+                    time: "22:15 น.",
+                    date: "เมื่อวาน",
+                    note: "รถขนส่งออกจากศูนย์คัดแยกเวลา 22:30 น.",
+                    active: false
+                },
+                {
+                    status: "ร้านค้าเข้าระบบฝากส่งพัสดุเรียบร้อย",
+                    location: "สาขาต้นทาง - อ.เมือง นนทบุรี",
+                    time: "15:20 น.",
+                    date: "เมื่อวาน",
+                    note: "รับเข้าระบบเรียบร้อย",
+                    active: false
+                }
+            ];
+        }
+
+        function trackParcel() {
+            const trackingInput = document.getElementById('tracking-number').value.trim();
+            const carrierSelect = document.getElementById('carrier');
+            const carrierValue = carrierSelect.value;
+            const carrierName = carrierSelect.options[carrierSelect.selectedIndex].text;
+
+            if (!trackingInput) {
+                alert('กรุณากรอกเลขพัสดุก่อนค้นหาครับ');
+                return;
+            }
+
+            document.getElementById('result-container').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('result-container').classList.remove('hidden');
+
+                document.getElementById('show-tracking').innerText = trackingInput;
+                document.getElementById('show-carrier').innerText = carrierName;
+
+                const mockData = getMockTrackingData(trackingInput, carrierValue, carrierName);
+                renderTimeline(mockData);
+            }, 1000);
+        }
+
+        function renderTimeline(events) {
+            const list = document.getElementById('timeline-list');
+            list.innerHTML = '';
+
+            events.forEach((item) => {
+                const li = document.createElement('li');
+                li.className = 'timeline-item';
+
+                const dotClass = item.active ? 'timeline-dot active' : 'timeline-dot';
+                const statusColor = item.active ? 'text-blue-600 font-semibold' : 'text-slate-800 font-medium';
+
+                li.innerHTML = `
+                    <div class="${dotClass}"></div>
+                    <div class="ml-4 flex flex-col sm:flex-row sm:justify-between sm:items-start bg-slate-50/50 p-3.5 rounded-xl border border-slate-100">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs bg-slate-200/70 text-slate-600 px-2 py-0.5 rounded font-mono">${item.time}</span>
+                                <h4 class="text-sm ${statusColor}">${item.status}</h4>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                <i class="fas fa-location-dot text-slate-400"></i> ${item.location}
+                            </p>
+                            ${item.note ? `<p class="text-xs text-slate-600 mt-2 bg-white p-2.5 rounded-lg border border-slate-200/60"><i class="fas fa-info-circle text-blue-500 mr-1"></i> ${item.note}</p>` : ''}
+                        </div>
+                        <div class="text-left sm:text-right mt-2 sm:mt-0 text-xs text-slate-400 font-medium sm:ml-4">
+                            <span>${item.date}</span>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // Auto track on load for immediate demonstration
+        window.onload = function() {
+            trackParcel();
+        };
+    </script>
+</body>
+</html>
