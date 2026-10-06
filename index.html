@@ -45,9 +45,6 @@
             </div>
             
             <div class="flex items-center gap-2">
-                <button onclick="toggleLanguage()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 smooth-transition active:scale-95" id="lang-btn">
-                    🇹🇭 TH
-                </button>
                 <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 smooth-transition text-amber-500 dark:text-amber-400 active:scale-95" id="theme-btn" title="Toggle Theme">
                     <i class="fas fa-sun" id="theme-icon"></i>
                 </button>
@@ -107,8 +104,8 @@
         <div id="dashboard-section" class="space-y-6 hidden animate-fade-in">
             
             <!-- Dashboard Navigation Tabs -->
-            <div class="flex gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
-                <div class="grid grid-cols-2 gap-2 w-full">
+            <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
+                <div class="grid grid-cols-2 gap-2 w-full sm:w-auto flex-1">
                     <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
                         <i class="fas fa-map-marked-alt"></i> ค้นหาสาขาบนแผนที่
                     </button>
@@ -116,6 +113,9 @@
                         <i class="fas fa-search-location"></i> เช็กพัสดุทุกค่าย
                     </button>
                 </div>
+                <button id="btn-admin-carriers" onclick="openCarrierModal()" class="hidden py-2 px-3 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm smooth-transition items-center gap-1.5 shrink-0 active:scale-95">
+                    <i class="fas fa-cog"></i> จัดการค่ายขนส่ง
+                </button>
             </div>
 
             <!-- TAB 1: MAP LOCATOR (All Carriers Nearby & GPS Routing) -->
@@ -215,6 +215,35 @@
 
     </main>
 
+    <!-- Modal: Admin Carrier Manager -->
+    <div id="carrier-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 smooth-transition">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 transform scale-95 opacity-0 smooth-transition max-h-[90vh] overflow-y-auto" id="carrier-modal-content">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fas fa-cog text-blue-600"></i> จัดการค่ายขนส่ง (แอดมิน)
+                </h3>
+                <button onclick="closeCarrierModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 smooth-transition">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <form id="carrier-form" onsubmit="event.preventDefault(); saveCarrier();" class="space-y-3 text-xs bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-sm">➕ เพิ่มค่ายขนส่งใหม่</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1">ชื่อค่ายขนส่ง</label>
+                        <input type="text" id="carrier-name" required class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1">ไอคอน / อีโมจิ</label>
+                        <input type="text" id="carrier-icon" required class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium">บันทึก</button>
+            </form>
+            <div id="admin-carriers-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center text-xs text-slate-400 py-6">
         <p>Boxflash &bull; All Carriers Real Branch & GPS Routing System</p>
@@ -227,7 +256,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCq5bwLyxo4ijvov9FUloeHlhaa3NZpSBY",
@@ -242,16 +271,17 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const ADMIN_EMAIL = 'musicnoa7@gmail.com';
 
         let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
         let currentUser = null;
+        let carriersCache = [];
         let map = null;
         let markersLayer = null;
         let userLat = null;
         let userLon = null;
         let userMarker = null;
 
-        // ฐานข้อมูลสาขาจริงทุกค่ายขนส่งทั่วไทย
         const allCarriersBranches = [
             { name: 'Flash Express บางซื่อ', carrier: 'Flash Express', icon: '🟡', lat: 13.8055, lon: 100.5398, address: 'เตาปูน บางซื่อ กรุงเทพมหานคร' },
             { name: 'Flash Express ดินแดง', carrier: 'Flash Express', icon: '🟡', lat: 13.7651, lon: 100.5583, address: 'ดินแดง กรุงเทพมหานคร' },
@@ -267,8 +297,19 @@
             { name: 'Lalamove Hub พระราม 9', carrier: 'Lalamove', icon: '🛵', lat: 13.7570, lon: 100.5650, address: 'ห้วยขวาง กรุงเทพมหานคร' }
         ];
 
+        const defaultCarriers = [
+            { id: 'flash', name: 'Flash Express', icon: '🟡' },
+            { id: 'kerry', name: 'Kerry Express (KEX)', icon: '🟠' },
+            { id: 'thpost', name: 'ไปรษณีย์ไทย', icon: '🔴' },
+            { id: 'j&t', name: 'J&T Express', icon: '🟢' },
+            { id: 'ninjavan', name: 'Ninja Van', icon: '⚫' },
+            { id: 'best', name: 'Best Express', icon: '🔵' },
+            { id: 'lalamove', name: 'Lalamove', icon: '🛵' }
+        ];
+
         window.addEventListener('DOMContentLoaded', async () => {
             initTheme();
+            await initCarriersStorage();
             setupAuthListener();
             renderTrackingDropdown();
             initInteractiveMap();
@@ -385,6 +426,78 @@
             }
         }
 
+        async function initCarriersStorage() {
+            try {
+                const snapshot = await getDocs(collection(db, 'carriers'));
+                if (snapshot.empty) {
+                    for (let c of defaultCarriers) {
+                        await setDoc(doc(db, 'carriers', c.id), c);
+                    }
+                    carriersCache = defaultCarriers;
+                } else {
+                    carriersCache = [];
+                    snapshot.forEach(docSnap => {
+                        carriersCache.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                }
+            } catch (err) {
+                carriersCache = defaultCarriers;
+            }
+        }
+
+        window.openCarrierModal = function() {
+            document.getElementById('carrier-modal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('carrier-modal-content').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+            renderAdminCarriersList();
+        }
+
+        window.closeCarrierModal = function() {
+            document.getElementById('carrier-modal-content').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('carrier-modal').classList.add('hidden');
+            }, 150);
+        }
+
+        function renderAdminCarriersList() {
+            const container = document.getElementById('admin-carriers-list');
+            let html = '';
+            carriersCache.forEach((c) => {
+                html += `
+                    <div class="flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 border rounded-xl">
+                        <div class="flex items-center gap-2">
+                            <span>${c.icon}</span>
+                            <span class="font-bold text-xs">${c.name}</span>
+                        </div>
+                        <button onclick="deleteCarrier('${c.id}')" class="px-2.5 py-1 bg-rose-50 text-rose-600 rounded-lg text-xs font-medium">ลบ</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        window.saveCarrier = async function() {
+            const name = document.getElementById('carrier-name').value.trim();
+            const icon = document.getElementById('carrier-icon').value.trim();
+            const newId = 'carrier_' + Date.now();
+            await setDoc(doc(db, 'carriers', newId), { name, icon });
+            await initCarriersStorage();
+            renderAdminCarriersList();
+            renderTrackingDropdown();
+            document.getElementById('carrier-form').reset();
+            alert('บันทึกค่ายขนส่งเรียบร้อย');
+        }
+
+        window.deleteCarrier = async function(id) {
+            if (confirm('ต้องการลบใช่หรือไม่?')) {
+                await deleteDoc(doc(db, 'carriers', id));
+                await initCarriersStorage();
+                renderAdminCarriersList();
+                renderTrackingDropdown();
+            }
+        }
+
         window.initTheme = function() {
             const htmlRoot = document.getElementById('html-root');
             const themeIcon = document.getElementById('theme-icon');
@@ -401,10 +514,6 @@
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             localStorage.setItem('boxflash_theme', currentTheme);
             initTheme();
-        }
-
-        window.toggleLanguage = function() {
-            // Placeholder for language toggle if needed
         }
 
         window.switchAuthTab = function(tab) {
@@ -476,18 +585,28 @@
             const dashboardSection = document.getElementById('dashboard-section');
             const userNavArea = document.getElementById('user-nav-area');
             const userEmailDisplay = document.getElementById('user-email-display');
+            const btnAdminCarriers = document.getElementById('btn-admin-carriers');
 
             if (user) {
                 authSection.classList.add('hidden');
                 dashboardSection.classList.remove('hidden');
                 userNavArea.classList.remove('hidden');
                 userNavArea.classList.add('flex');
-                userEmailDisplay.innerHTML = `${user.email} <span class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full text-[10px]">Member</span>`;
+
+                if (user.email === ADMIN_EMAIL) {
+                    userEmailDisplay.innerHTML = `${user.email} <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">Admin</span>`;
+                    btnAdminCarriers.classList.remove('hidden');
+                    btnAdminCarriers.classList.add('flex');
+                } else {
+                    userEmailDisplay.innerHTML = `${user.email} <span class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full text-[10px]">Member</span>`;
+                    btnAdminCarriers.classList.add('hidden');
+                }
                 loadHistory();
             } else {
                 authSection.classList.remove('hidden');
                 dashboardSection.classList.add('hidden');
                 userNavArea.classList.add('hidden');
+                btnAdminCarriers.classList.add('hidden');
             }
         }
 
@@ -508,24 +627,16 @@
 
         window.renderTrackingDropdown = function() {
             const trackingList = document.getElementById('tracking-dropdown-list');
-            const defaultCarriers = [
-                { id: 'flash', name: 'Flash Express', icon: '🟡' },
-                { id: 'kerry', name: 'Kerry Express (KEX)', icon: '🟠' },
-                { id: 'thpost', name: 'ไปรษณีย์ไทย', icon: '🔴' },
-                { id: 'j&t', name: 'J&T Express', icon: '🟢' },
-                { id: 'ninjavan', name: 'Ninja Van', icon: '⚫' },
-                { id: 'best', name: 'Best Express', icon: '🔵' },
-                { id: 'lalamove', name: 'Lalamove', icon: '🛵' }
-            ];
+            const carriers = carriersCache.length > 0 ? carriersCache : defaultCarriers;
             trackingList.innerHTML = '';
-            defaultCarriers.forEach(c => {
+            carriers.forEach(c => {
                 const item = document.createElement('div');
                 item.className = "flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 text-sm font-medium";
-                item.innerHTML = `<span class="text-base">${c.icon}</span><span>${c.name}</span>`;
-                item.onclick = () => selectTrackingCarrier(c.id, c.name, c.icon);
+                item.innerHTML = `<span class="text-base">${c.icon || '📦'}</span><span>${c.name}</span>`;
+                item.onclick = () => selectTrackingCarrier(c.id, c.name, c.icon || '📦');
                 trackingList.appendChild(item);
             });
-            selectTrackingCarrier('flash', 'Flash Express', '🟡');
+            selectTrackingCarrier(carriers[0].id, carriers[0].name, carriers[0].icon || '📦');
         }
 
         function selectTrackingCarrier(id, name, icon) {
@@ -535,7 +646,6 @@
             document.getElementById('tracking-dropdown-chevron').classList.remove('rotate-180');
         }
 
-        // แก้ไขระบบเปิดเว็บเช็กพัสดุให้ตรงตามค่ายขนส่งจริงโดยไม่เด้งไปหน้า Trading
         window.trackParcel = async function() {
             const carrierId = document.getElementById('carrier').value;
             const trackingNo = document.getElementById('tracking-number').value.trim();
@@ -574,8 +684,9 @@
                     carrierDisplayName = 'Lalamove';
                     break;
                 default:
-                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNo)}`;
-                    carrierDisplayName = 'General Carrier';
+                    const foundC = carriersCache.find(c => c.id === carrierId);
+                    carrierDisplayName = foundC ? foundC.name : 'Carrier';
+                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(carrierDisplayName + ' tracking ' + trackingNo)}`;
             }
 
             await addDoc(collection(db, 'tracking_history'), {
