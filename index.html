@@ -103,7 +103,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_password">สร้างรหัสผ่าน</label>
-                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" data-i18n-placeholder="placeholder_reg_password" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_register">
                     สร้างบัญชีผู้ใช้ใหม่
@@ -144,7 +144,7 @@
                 </div>
                 <!-- Admin Edit Banner Button (Visible for admin only) -->
                 <button id="btn-edit-banner" onclick="openBannerModal()" class="hidden text-xs bg-white text-amber-600 hover:bg-amber-50 font-semibold px-3 py-1.5 rounded-lg shadow-sm shrink-0 active:scale-95 smooth-transition items-center gap-1">
-                    <i class="fas fa-edit"></i> แก้ไขประกาศ
+                    <i class="fas fa-edit"></i> <span data-i18n="btn_edit_banner">แก้ไขประกาศ</span>
                 </button>
             </div>
 
@@ -199,7 +199,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_map_area">กรอกเขต / อำเภอ / หรือจังหวัด</label>
                             <div class="relative">
-                                <input type="text" id="map-area-input" required placeholder="เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                                <input type="text" id="map-area-input" required placeholder="เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต..." data-i18n-placeholder="placeholder_map_area" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
                                 <i class="fas fa-map-marker-alt absolute left-4 top-3.5 text-blue-600 text-base"></i>
                             </div>
                         </div>
@@ -247,12 +247,12 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_tracking_no">เลขติดตามพัสดุ</label>
                             <div class="relative">
-                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." data-i18n-placeholder="placeholder_tracking_number" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
                                 <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
                             </div>
                         </div>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]" data-i18n="btn_track">
-                            <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
+                            เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
                         </button>
                     </form>
 
@@ -301,10 +301,10 @@
                             <div>
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_box_size">ขนาดกล่อง / ความสูง</label>
                                 <select id="calc-box-size" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                    <option value="S">กล่อง S (เล็ก / เอกสาร)</option>
-                                    <option value="M" selected>กล่อง M (ขนาดกลาง)</option>
-                                    <option value="L">กล่อง L (ขนาดใหญ่)</option>
-                                    <option value="XL">กล่อง XL (ใหญ่พิเศษ / พัสดุหนัก)</option>
+                                    <option value="S" data-i18n="box_s">กล่อง S (เล็ก / เอกสาร)</option>
+                                    <option value="M" selected data-i18n="box_m">กล่อง M (ขนาดกลาง)</option>
+                                    <option value="L" data-i18n="box_l">กล่อง L (ขนาดใหญ่)</option>
+                                    <option value="XL" data-i18n="box_xl">กล่อง XL (ใหญ่พิเศษ / พัสดุหนัก)</option>
                                 </select>
                             </div>
                         </div>
@@ -314,24 +314,24 @@
                             <div>
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_item_type">ประเภทสิ่งของ</label>
                                 <select id="calc-item-type" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                    <option value="normal">สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)</option>
-                                    <option value="fragile">สินค้าแตกหักง่าย (แก้ว, อิเล็กทรอนิกส์)</option>
-                                    <option value="cold">อาหารแห้ง / ควบคุมอุณหภูมิ</option>
+                                    <option value="normal" data-i18n="item_normal">สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)</option>
+                                    <option value="fragile" data-i18n="item_fragile">สินค้าแตกหักง่าย (แก้ว, อิเล็กทรอนิกส์)</option>
+                                    <option value="cold" data-i18n="item_cold">อาหารแห้ง / ควบคุมอุณหภูมิ</option>
                                 </select>
                             </div>
                             <!-- บับเบิ้ล -->
                             <div>
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_bubble">ห่อบับเบิ้ลกันกระแทก</label>
                                 <select id="calc-bubble" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                    <option value="0">ไม่ห่อบับเบิ้ล</option>
-                                    <option value="15">ห่อบับเบิ้ลมาตรฐาน (+15 บาท)</option>
-                                    <option value="30">ห่อบับเบิ้ลหนาพิเศษ (+30 บาท)</option>
+                                    <option value="0" data-i18n="bubble_none">ไม่ห่อบับเบิ้ล</option>
+                                    <option value="15" data-i18n="bubble_standard">ห่อบับเบิ้ลมาตรฐาน (+15 บาท)</option>
+                                    <option value="30" data-i18n="bubble_thick">ห่อบับเบิ้ลหนาพิเศษ (+30 บาท)</option>
                                 </select>
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
-                            <i class="fas fa-calculator"></i> <span data-i18n="btn_calculate">คำนวณราคาเปรียบเทียบ</span>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]" data-i18n="btn_calculate">
+                            คำนวณราคาเปรียบเทียบ
                         </button>
                     </form>
 
@@ -368,11 +368,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1" data-i18n="label_carrier_name">ชื่อค่ายขนส่ง</label>
-                        <input type="text" id="carrier-name" required placeholder="เช่น Flash Express" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="carrier-name" required placeholder="เช่น Flash Express" data-i18n-placeholder="placeholder_carrier_name" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1" data-i18n="label_carrier_icon">ไอคอน / อีโมจิ หรือ URL รูปภาพ</label>
-                        <input type="text" id="carrier-icon" required placeholder="เช่น 🟡 หรือ https://..." class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="carrier-icon" required placeholder="เช่น 🟡 หรือ https://..." data-i18n-placeholder="placeholder_carrier_icon" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
                 <div class="flex gap-2 pt-2">
@@ -406,7 +406,7 @@
             <form onsubmit="event.preventDefault(); saveAnnouncementBanner();" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1.5" data-i18n="label_banner_text">ข้อความประกาศแจ้งเตือนส่งล่าช้า</label>
-                    <textarea id="banner-input-text" rows="4" required class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-500 text-sm font-medium" placeholder="เช่น ขณะนี้ขนส่งภาคเหนืออาจล่าช้า 1-2 วันเนื่องจากสภาพอากาศ..."></textarea>
+                    <textarea id="banner-input-text" rows="4" required class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-500 text-sm font-medium" placeholder="เช่น ขณะนี้ขนส่งภาคเหนืออาจล่าช้า 1-2 วันเนื่องจากสภาพอากาศ..." data-i18n-placeholder="placeholder_banner_text"></textarea>
                 </div>
                 <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-medium shadow-sm text-sm active:scale-95 smooth-transition" data-i18n="btn_save_banner">บันทึกและเผยแพร่ประกาศ</button>
             </form>
@@ -491,17 +491,34 @@
                 btn_delete: "ลบ",
                 btn_open_view: "เปิดดู",
                 banner_heading: "ประกาศแจ้งเตือนสถานะพัสดุ",
+                btn_edit_banner: "แก้ไขประกาศ",
                 pricing_title: "เช็กราคาประเมินค่าส่งคร่าว ๆ ทุกค่าย",
                 pricing_sub: "คำนวณจากน้ำหนัก ขนาดกล่อง ประเภทสิ่งของ และบับเบิ้ลกันกระแทก",
                 label_weight: "น้ำหนัก (กิโลกรัม)",
                 label_box_size: "ขนาดกล่อง / ความสูง",
                 label_item_type: "ประเภทสิ่งของ",
                 label_bubble: "ห่อบับเบิ้ลกันกระแทก",
+                box_s: "กล่อง S (เล็ก / เอกสาร)",
+                box_m: "กล่อง M (ขนาดกลาง)",
+                box_l: "กล่อง L (ขนาดใหญ่)",
+                box_xl: "กล่อง XL (ใหญ่พิเศษ / พัสดุหนัก)",
+                item_normal: "สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)",
+                item_fragile: "สินค้าแตกหักง่าย (แก้ว, อิเล็กทรอนิกส์)",
+                item_cold: "อาหารแห้ง / ควบคุมอุณหภูมิ",
+                bubble_none: "ไม่ห่อบับเบิ้ล",
+                bubble_standard: "ห่อบับเบิ้ลมาตรฐาน (+15 บาท)",
+                bubble_thick: "ห่อบับเบิ้ลหนาพิเศษ (+30 บาท)",
                 btn_calculate: "คำนวณราคาเปรียบเทียบ",
                 pricing_result_title: "📊 ผลการประเมินราคาค่าส่งแต่ละค่าย",
                 banner_modal_title: "แก้ไขประกาศแจ้งเตือน",
                 label_banner_text: "ข้อความประกาศแจ้งเตือนส่งล่าช้า",
-                btn_save_banner: "บันทึกและเผยแพร่ประกาศ"
+                btn_save_banner: "บันทึกและเผยแพร่ประกาศ",
+                placeholder_reg_password: "อย่างน้อย 6 ตัวอักษร",
+                placeholder_map_area: "เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต...",
+                placeholder_tracking_number: "กรอกเลขพัสดุที่นี่...",
+                placeholder_carrier_name: "เช่น Flash Express",
+                placeholder_carrier_icon: "เช่น 🟡 หรือ https://...",
+                placeholder_banner_text: "เช่น ขณะนี้ขนส่งภาคเหนืออาจล่าช้า 1-2 วันเนื่องจากสภาพอากาศ..."
             },
             en: {
                 nav_subtitle: "Find Branches & Track All Carriers",
@@ -552,17 +569,34 @@
                 btn_delete: "Delete",
                 btn_open_view: "Open",
                 banner_heading: "Parcel Delay Announcement",
+                btn_edit_banner: "Edit Banner",
                 pricing_title: "Estimated Shipping Price Calculator",
                 pricing_sub: "Calculated based on weight, box size, item type, and bubble wrap options",
                 label_weight: "Weight (kg)",
                 label_box_size: "Box Size / Height",
                 label_item_type: "Item Type",
                 label_bubble: "Bubble Wrap",
+                box_s: "Box S (Small / Documents)",
+                box_m: "Box M (Medium Size)",
+                box_l: "Box L (Large Size)",
+                box_xl: "Box XL (Extra Large / Heavy)",
+                item_normal: "General Items (Cloth, Apparel, Books)",
+                item_fragile: "Fragile Items (Glassware, Electronics)",
+                item_cold: "Dry Food / Temperature Controlled",
+                bubble_none: "No Bubble Wrap",
+                bubble_standard: "Standard Bubble Wrap (+15 THB)",
+                bubble_thick: "Thick Bubble Wrap (+30 THB)",
                 btn_calculate: "Calculate Comparison",
                 pricing_result_title: "📊 Estimated Shipping Costs",
                 banner_modal_title: "Edit Announcement Banner",
                 label_banner_text: "Delay Announcement Message",
-                btn_save_banner: "Save & Publish"
+                btn_save_banner: "Save & Publish",
+                placeholder_reg_password: "At least 6 characters",
+                placeholder_map_area: "e.g. Bang Khen, Chatuchak, Chiang Mai...",
+                placeholder_tracking_number: "Enter tracking number here...",
+                placeholder_carrier_name: "e.g. Flash Express",
+                placeholder_carrier_icon: "e.g. 🟡 or https://...",
+                placeholder_banner_text: "e.g. Northern routes might be delayed by 1-2 days due to weather..."
             }
         };
 
@@ -644,9 +678,13 @@
                     el.textContent = translations[currentLang][key];
                 }
             });
-            
-            document.getElementById('map-area-input').placeholder = currentLang === 'th' ? 'เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต...' : 'Enter district, province...';
-            document.getElementById('tracking-number').placeholder = currentLang === 'th' ? 'กรอกเลขพัสดุที่นี่...' : 'Enter tracking number here...';
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    el.placeholder = translations[currentLang][key];
+                }
+            });
         }
 
         window.toggleLanguage = function() {
@@ -898,14 +936,12 @@
             const itemType = document.getElementById('calc-item-type').value;
             const bubbleCost = parseFloat(document.getElementById('calc-bubble').value) || 0;
 
-            // Base price factor by box size
             let sizeMultiplier = { 'S': 25, 'M': 40, 'L': 65, 'XL': 100 }[boxSize] || 40;
             let weightCost = weight * 12;
 
-            // Item type surcharge
             let itemMultiplier = 1.0;
-            if (itemType === 'fragile') itemMultiplier = 1.25; // Fragile extra care
-            if (itemType === 'cold') itemMultiplier = 1.6;    // Cold chain extra
+            if (itemType === 'fragile') itemMultiplier = 1.25;
+            if (itemType === 'cold') itemMultiplier = 1.6;
 
             const resultsArea = document.getElementById('pricing-results-area');
             const resultsList = document.getElementById('pricing-results-list');
@@ -913,14 +949,16 @@
 
             let html = '';
             carriersCache.forEach((c, index) => {
-                // Vary slightly per carrier for realism
                 let variance = 0.9 + (index * 0.05);
                 let estimatedPrice = Math.round((sizeMultiplier + weightCost) * itemMultiplier * variance + bubbleCost);
-                let estDays = index === 2 ? '2-3 วัน' : '1-2 วัน';
+                let estDays = currentLang === 'th' ? (index === 2 ? '2-3 วัน' : '1-2 วัน') : (index === 2 ? '2-3 days' : '1-2 days');
 
                 let iconDisplay = (c.icon && (c.icon.startsWith('http') || c.icon.startsWith('/')))
                     ? `<img src="${c.icon}" class="w-6 h-6 rounded object-cover">` 
                     : `<span class="text-base">${c.icon || '📦'}</span>`;
+
+                const estDeliveryText = currentLang === 'th' ? 'จัดส่งโดยประมาณ:' : 'Est. delivery:';
+                const currencyUnit = currentLang === 'th' ? 'บาท' : 'THB';
 
                 html += `
                     <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl">
@@ -928,11 +966,11 @@
                             ${iconDisplay}
                             <div>
                                 <p class="font-bold text-xs text-slate-800 dark:text-white">${c.name}</p>
-                                <p class="text-[10px] text-slate-400">จัดส่งโดยประมาณ: ${estDays}</p>
+                                <p class="text-[10px] text-slate-400">${estDeliveryText} ${estDays}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-blue-600 dark:text-blue-400">~${estimatedPrice} บาท</span>
+                            <span class="text-sm font-bold text-blue-600 dark:text-blue-400">~${estimatedPrice} ${currencyUnit}</span>
                         </div>
                     </div>
                 `;
