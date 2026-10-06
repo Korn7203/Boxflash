@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boxflash - ค้นหาสาขาทุกค่ายขนส่ง & เช็กพัสดุ</title>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?v=2026"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
         }
     </script>
     <!-- FontAwesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2026" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Leaflet CSS for Interactive Map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css?v=2026" />
     <style>
         body { font-family: 'Kanit', sans-serif; }
         .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -250,7 +250,7 @@
     </footer>
 
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js?v=2026"></script>
 
     <!-- Firebase SDK & Script -->
     <script type="module">
@@ -362,9 +362,10 @@
                 userLat = position.coords.latitude;
                 userLon = position.coords.longitude;
                 
-                // บังคับรีเฟรชแผนที่แบบเรียลไทม์
-                map.invalidateSize();
-                map.setView([userLat, userLon], 14);
+                if (map) {
+                    map.invalidateSize();
+                    map.setView([userLat, userLon], 14);
+                }
 
                 if (userMarker) markersLayer.removeLayer(userMarker);
                 userMarker = L.marker([userLat, userLon], {
@@ -417,14 +418,14 @@
                         </div>
                     </div>
                     <div class="flex gap-1 shrink-0">
-                        <button onclick="map.invalidateSize(); map.setView([${b.lat}, ${b.lon}], 15);" class="px-2.5 py-1.5 bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-200"><i class="fas fa-map-marker-alt"></i></button>
+                        <button onclick="if(map){map.invalidateSize(); map.setView([${b.lat}, ${b.lon}], 15);}" class="px-2.5 py-1.5 bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-200"><i class="fas fa-map-marker-alt"></i></button>
                         <a href="${routeUrl}" target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium flex items-center gap-1 shadow-sm"><i class="fas fa-directions"></i> นำทาง</a>
                     </div>
                 `;
                 listContainer.appendChild(item);
             });
 
-            if (bounds.length > 0) {
+            if (bounds.length > 0 && map) {
                 map.invalidateSize();
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
