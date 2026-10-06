@@ -18,37 +18,36 @@
     <style>
         body { font-family: 'Kanit', sans-serif; }
         .smooth-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .dropdown-anim { transition: opacity 0.25s ease, transform 0.25s ease; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        #interactive-map { width: 100%; height: 440px; border-radius: 1rem; z-index: 10; }
+        #interactive-map { width: 100%; height: 460px; border-radius: 1rem; z-index: 10; }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between smooth-transition">
 
     <!-- Top Navigation / Header -->
-    <nav class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 px-4 py-3 shadow-sm sticky top-0 z-50 smooth-transition">
+    <nav class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 px-4 py-3 sticky top-0 z-50 smooth-transition">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2.5">
-                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md transform hover:rotate-6 smooth-transition">
+                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md">
                     <i class="fas fa-warehouse text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg text-slate-800 dark:text-white leading-tight">Boxflash Hubs</h1>
-                    <p class="text-xs text-slate-400 dark:text-slate-400">ศูนย์ฮับคัดแยกพัสดุ 77 จังหวัด & เช็กพัสดุ</p>
+                    <h1 class="font-bold text-base text-slate-800 dark:text-white leading-tight">Boxflash Hubs</h1>
+                    <p class="text-[11px] text-slate-400">ระบบฮับคัดแยกพัสดุ 77 จังหวัด</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2">
-                <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 smooth-transition text-amber-500 dark:text-amber-400 active:scale-95" id="theme-btn" title="Toggle Theme">
+                <button onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-amber-500 dark:text-amber-400 active:scale-95" id="theme-btn">
                     <i class="fas fa-sun" id="theme-icon"></i>
                 </button>
-                <div id="user-nav-area" class="hidden items-center gap-2 ml-1 animate-fade-in">
-                    <div id="user-email-display" class="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full hidden sm:flex items-center gap-1.5 smooth-transition"></div>
-                    <button onclick="logout()" class="text-xs text-rose-600 hover:text-rose-700 dark:text-rose-400 font-medium px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900 hover:bg-rose-50 dark:hover:bg-rose-950/50 smooth-transition active:scale-95" title="Logout">
+                <div id="user-nav-area" class="hidden items-center gap-2 ml-1">
+                    <div id="user-email-display" class="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full hidden sm:flex items-center gap-1.5"></div>
+                    <button onclick="logout()" class="text-xs text-rose-600 dark:text-rose-400 font-medium px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900 hover:bg-rose-50 dark:hover:bg-rose-950/50 active:scale-95">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
@@ -59,82 +58,81 @@
     <!-- Main Container -->
     <main class="max-w-2xl mx-auto w-full p-4 md:p-6 my-auto">
 
-        <!-- ================= AUTH SECTION ================= -->
-        <div id="auth-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition animate-fade-in">
+        <!-- AUTH SECTION -->
+        <div id="auth-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 animate-fade-in">
             <div id="auth-tabs" class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
-                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition">เข้าสู่ระบบ</button>
-                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition">สมัครสมาชิก</button>
+                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600">เข้าสู่ระบบ</button>
+                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent">สมัครสมาชิก</button>
             </div>
 
             <!-- Login Form -->
-            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();" class="space-y-4 animate-fade-in">
+            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมล</label>
-                    <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
-                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">เข้าสู่ระบบ</button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl shadow-sm text-sm active:scale-[0.99]">เข้าสู่ระบบ</button>
             </form>
 
             <!-- Register Form -->
-            <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden animate-fade-in">
+            <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมลสำหรับสมัคร</label>
-                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">สร้างรหัสผ่าน</label>
-                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
+                    <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">สร้างบัญชีผู้ใช้ใหม่</button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl shadow-sm text-sm active:scale-[0.99]">สร้างบัญชีผู้ใช้ใหม่</button>
             </form>
         </div>
 
-        <!-- ================= DASHBOARD SECTION ================= -->
+        <!-- DASHBOARD SECTION -->
         <div id="dashboard-section" class="space-y-6 hidden animate-fade-in">
             
-            <!-- Dashboard Navigation Tabs -->
-            <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
+            <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl">
                 <div class="grid grid-cols-2 gap-2 w-full sm:w-auto flex-1">
-                    <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
+                    <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm flex items-center justify-center gap-2">
                         <i class="fas fa-warehouse"></i> ค้นหาฮับประจำจังหวัด
                     </button>
-                    <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
+                    <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 flex items-center justify-center gap-2">
                         <i class="fas fa-search-location"></i> เช็กพัสดุทุกค่าย
                     </button>
                 </div>
-                <button id="btn-admin-carriers" onclick="openCarrierModal()" class="hidden py-2 px-3 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm smooth-transition items-center gap-1.5 shrink-0 active:scale-95">
+                <button id="btn-admin-carriers" onclick="openCarrierModal()" class="hidden py-2 px-3 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm items-center gap-1.5 shrink-0">
                     <i class="fas fa-cog"></i> จัดการค่ายขนส่ง
                 </button>
             </div>
 
-            <!-- TAB 1: HUB LOCATOR WITH RED ZONE HIGHLIGHT -->
-            <div id="content-locator" class="space-y-4 smooth-transition">
-                <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5 smooth-transition hover:shadow-md">
+            <!-- TAB 1: HUB LOCATOR WITH BOUNDARY OUTLINE -->
+            <div id="content-locator" class="space-y-4">
+                <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5">
                     <div>
                         <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fas fa-map-marked-alt text-blue-600"></i> ค้นหาศูนย์ฮับและคลังคัดแยกพัสดุประจำจังหวัด
+                            <i class="fas fa-map-marked-alt text-blue-600"></i> ค้นหาศูนย์ฮับและคลังคัดแยกพัสดุ 77 จังหวัด
                         </h2>
-                        <p class="text-xs text-slate-400 mt-0.5">เลือกค่ายขนส่ง และเลือก/พิมพ์ชื่อจังหวัด ระบบจะไฮไลต์กรอบเขตสีแดงและแสดงฮับเฉพาะจังหวัดนั้นๆ ทันที</p>
+                        <p class="text-xs text-slate-400 mt-0.5">เลือกค่ายขนส่ง และเลือกจังหวัด ระบบจะแสดงเส้นแบ่งขอบเขตและตำแหน่งฮับของจังหวัดนั้นทันที</p>
                     </div>
 
                     <form onsubmit="event.preventDefault(); searchProvinceHub();" class="space-y-4">
-                        <!-- Carrier Selector Dropdown -->
+                        <!-- Carrier Selector -->
                         <div class="relative">
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">เลือกค่ายขนส่ง</label>
                             
-                            <div id="map-select-btn" onclick="toggleDropdown('map')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
+                            <div id="map-select-btn" onclick="toggleDropdown('map')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium hover:border-blue-500">
                                 <div class="flex items-center gap-2.5" id="selected-map-carrier-display">
                                     <span class="text-base">🟡</span>
                                     <span>Flash Express</span>
                                 </div>
-                                <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="map-dropdown-chevron"></i>
+                                <i class="fas fa-chevron-down text-xs text-slate-400" id="map-dropdown-chevron"></i>
                             </div>
 
-                            <div id="map-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top"></div>
+                            <div id="map-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1"></div>
                             <input type="hidden" id="map-carrier" value="Flash Express">
                         </div>
 
@@ -142,14 +140,12 @@
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">พิมพ์ชื่อจังหวัด</label>
                             <div class="flex flex-col sm:flex-row gap-2">
                                 <div class="relative flex-1">
-                                    <input type="text" id="map-province-input" required placeholder="เช่น กรุงเทพมหานคร, เชียงใหม่, ภูเก็ต, ขอนแก่น..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                                    <input type="text" id="map-province-input" required placeholder="เช่น กรุงเทพมหานคร, เชียงใหม่, ภูเก็ต, ขอนแก่น..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
                                     <i class="fas fa-building absolute left-4 top-3.5 text-blue-600 text-base"></i>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button type="submit" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
-                                        <i class="fas fa-search"></i> ค้นหาฮับ
-                                    </button>
-                                </div>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-3 rounded-xl shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
+                                    <i class="fas fa-search"></i> ค้นหาฮับ
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -161,15 +157,15 @@
 
                     <!-- Hub Results List -->
                     <div id="hub-results-container" class="space-y-2 pt-2 hidden">
-                        <h3 class="font-bold text-xs text-slate-600 dark:text-slate-300 uppercase tracking-wider">🏢 ศูนย์ฮับและคลังคัดแยกในจังหวัดที่เลือก (ไฮไลต์กรอบสีแดง)</h3>
+                        <h3 class="font-bold text-xs text-slate-600 dark:text-slate-300 uppercase tracking-wider">🏢 ศูนย์ฮับและคลังคัดแยกในจังหวัดที่เลือก (แสดงเส้นแบ่งเขต)</h3>
                         <div id="hub-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 2: MULTI-CARRIER TRACKING & HISTORY -->
-            <div id="content-tracking" class="space-y-6 hidden smooth-transition">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
+            <div id="content-tracking" class="space-y-6 hidden">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                     <h2 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fas fa-search-location text-blue-600"></i> เช็กพัสดุด่วนทุกค่าย
                     </h2>
@@ -178,38 +174,38 @@
                         <div class="relative">
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">เลือกบริษัทขนส่ง</label>
                             
-                            <div id="tracking-select-btn" onclick="toggleDropdown('tracking')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
+                            <div id="tracking-select-btn" onclick="toggleDropdown('tracking')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium hover:border-blue-500">
                                 <div class="flex items-center gap-2.5" id="selected-tracking-carrier-display">
                                     <span class="text-base">🟡</span>
                                     <span>Flash Express</span>
                                 </div>
-                                <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="tracking-dropdown-chevron"></i>
+                                <i class="fas fa-chevron-down text-xs text-slate-400" id="tracking-dropdown-chevron"></i>
                             </div>
 
-                            <div id="tracking-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top"></div>
+                            <div id="tracking-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 hidden max-h-64 overflow-y-auto p-1.5 space-y-1"></div>
                             <input type="hidden" id="carrier" value="flash">
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">เลขติดตามพัสดุ</label>
                             <div class="relative">
-                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
+                                <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
                                 <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
                             <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
                         </button>
                     </form>
                 </div>
 
                 <!-- Recent History Section -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
                             <i class="fas fa-history text-slate-600 dark:text-slate-400"></i> ประวัติการเช็คล่าสุด
                         </h2>
-                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 font-medium smooth-transition active:scale-95">
+                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 font-medium">
                             <i class="fas fa-trash-alt mr-1"></i> ล้างประวัติ
                         </button>
                     </div>
@@ -222,13 +218,13 @@
     </main>
 
     <!-- Modal: Admin Carrier Manager -->
-    <div id="carrier-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 smooth-transition">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 transform scale-95 opacity-0 smooth-transition max-h-[90vh] overflow-y-auto" id="carrier-modal-content">
+    <div id="carrier-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
                 <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
                     <i class="fas fa-cog text-blue-600"></i> จัดการค่ายขนส่ง (แอดมิน)
                 </h3>
-                <button onclick="closeCarrierModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 smooth-transition">
+                <button onclick="closeCarrierModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
@@ -239,11 +235,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1">ชื่อค่ายขนส่ง</label>
-                        <input type="text" id="carrier-name" required placeholder="เช่น Flash Express" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+                        <input type="text" id="carrier-name" required placeholder="เช่น Flash Express" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border rounded-lg">
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-500 dark:text-slate-400 mb-1">ไอคอน / อีโมจิ หรือ URL</label>
-                        <input type="text" id="carrier-icon" required placeholder="เช่น 🟡 หรือ https://..." class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+                        <input type="text" id="carrier-icon" required placeholder="เช่น 🟡 หรือ https://..." class="w-full px-3 py-2 bg-white dark:bg-slate-800 border rounded-lg">
                     </div>
                 </div>
                 <div class="flex gap-2 pt-2">
@@ -253,7 +249,7 @@
             </form>
 
             <div class="space-y-2 pt-2">
-                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-wider">ค่ายขนส่งในระบบ (Firestore)</h4>
+                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-wider">ค่ายขนส่งในระบบ</h4>
                 <div id="admin-carriers-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
             </div>
         </div>
@@ -270,7 +266,7 @@
     <!-- Firebase SDK & App Logic Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -294,77 +290,48 @@
         let carriersCache = [];
         let map = null;
         let markersLayer = null;
-        let redZoneLayer = null;
+        let boundaryLayer = null;
 
-        // ฐานข้อมูลฮับศูนย์กลางและศูนย์คัดแยกพัสดุประจำจังหวัด (Hubs Database) พร้อมพิกัดศูนย์กลางจังหวัดจริง
+        // ฐานข้อมูลฮับประจำจังหวัดทั่วไทย พิกัดจริงพร้อมรูปทรงเส้นแบ่งเขตจำลอง (Polygon Boundary)
         const provinceHubsDatabase = [
-            // ภาคกลาง / กรุงเทพฯ
-            { province: 'กรุงเทพมหานคร', lat: 13.7563, lon: 100.5018, hubs: [
+            { province: 'กรุงเทพมหานคร', lat: 13.7563, lon: 100.5018, 
+              bounds: [[13.92, 100.35], [13.92, 100.95], [13.48, 100.95], [13.48, 100.35]], 
+              hubs: [
                 { name: 'Flash Express ฮับหลักกรุงเทพฯ (BKK Hub)', carrier: 'Flash Express', icon: '🟡', address: 'ศูนย์คัดแยกหลัก บางซื่อ กรุงเทพฯ' },
                 { name: 'Kerry Express คลังคัดแยกพัสดุ กทม.', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'ศูนย์กระจายสินค้า พระราม 9 กรุงเทพฯ' },
                 { name: 'ไปรษณีย์ไทย ศูนย์ไปรษณีย์หลักสี่', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'หลักสี่ กรุงเทพมหานคร' }
             ]},
-            { province: 'นนทบุรี', lat: 13.8591, lon: 100.5217, hubs: [
-                { name: 'Flash Express ฮับนนทบุรี', carrier: 'Flash Express', icon: '🟡', address: 'อำเภอเมือง นนทบุรี' },
-                { name: 'Kerry Express ฮับติวานนท์', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'ติวานนท์ นนทบุรี' }
-            ]},
-            { province: 'ปทุมธานี', lat: 14.0206, lon: 100.5250, hubs: [
-                { name: 'Flash Express คลังคัดแยกปทุมธานี', carrier: 'Flash Express', icon: '🟡', address: 'คลองหลวง ปทุมธานี' },
-                { name: 'ไปรษณีย์ไทย ศูนย์ปทุมธานี', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'ลำลูกกา ปทุมธานี' }
-            ]},
-            { province: 'สมุทรปราการ', lat: 13.5990, lon: 100.5999, hubs: [
-                { name: 'Flash Express ฮับบางพลี', carrier: 'Flash Express', icon: '🟡', address: 'บางพลี สมุทรปราการ' },
-                { name: 'Kerry Express ฮับบางนา-เทพารักษ์', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'เทพารักษ์ สมุทรปราการ' }
-            ]},
-
-            // ภาคเหนือ
-            { province: 'เชียงใหม่', lat: 18.7883, lon: 98.9853, hubs: [
+            { province: 'เชียงใหม่', lat: 18.7883, lon: 98.9853, 
+              bounds: [[20.08, 98.00], [20.08, 99.60], [17.30, 99.60], [17.30, 98.00]],
+              hubs: [
                 { name: 'Flash Express ฮับภาคเหนือ (CNX Hub)', carrier: 'Flash Express', icon: '🟡', address: 'เมืองเชียงใหม่ เชียงใหม่' },
                 { name: 'Kerry Express คลังเชียงใหม่', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'สันทราย เชียงใหม่' },
                 { name: 'ไปรษณีย์ไทย ศูนย์เชียงใหม่', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'แม่ริม เชียงใหม่' }
             ]},
-            { province: 'เชียงราย', lat: 19.9070, lon: 99.8300, hubs: [
-                { name: 'Flash Express ฮับเชียงราย', carrier: 'Flash Express', icon: '🟡', address: 'เมืองเชียงราย เชียงราย' },
-                { name: 'ไปรษณีย์ไทย ศูนย์เชียงราย', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'รอบเวียง เชียงราย' }
-            ]},
-            { province: 'พิษณุโลก', lat: 16.8215, lon: 100.2659, hubs: [
-                { name: 'Flash Express ฮับพิษณุโลก', carrier: 'Flash Express', icon: '🟡', address: 'เมืองพิษณุโลก พิษณุโลก' }
-            ]},
-
-            // ภาคตะวันออกเฉียงเหนือ (อีสาน)
-            { province: 'ขอนแก่น', lat: 16.4322, lon: 102.8236, hubs: [
+            { province: 'ขอนแก่น', lat: 16.4322, lon: 102.8236, 
+              bounds: [[16.90, 101.90], [16.90, 103.30], [15.60, 103.30], [15.60, 101.90]],
+              hubs: [
                 { name: 'Flash Express ฮับอีสานเหนือ (KKC Hub)', carrier: 'Flash Express', icon: '🟡', address: 'เมืองขอนแก่น ขอนแก่น' },
                 { name: 'Kerry Express คลังขอนแก่น', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'ศิลา ขอนแก่น' }
             ]},
-            { province: 'นครราชสีมา', lat: 14.9799, lon: 102.0977, hubs: [
-                { name: 'Flash Express ฮับโคราช (KRT Hub)', carrier: 'Flash Express', icon: '🟡', address: 'เมืองนครราชสีมา โคราช' },
-                { name: 'ไปรษณีย์ไทย ศูนย์นครราชสีมา', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'จอหอ นครราชสีมา' }
-            ]},
-            { province: 'อุบลราชธานี', lat: 15.2287, lon: 104.8564, hubs: [
-                { name: 'Flash Express ฮับอุบลราชธานี', carrier: 'Flash Express', icon: '🟡', address: 'เมืองอุบลราชธานี อุบลราชธานี' }
-            ]},
-
-            // ภาคใต้
-            { province: 'ภูเก็ต', lat: 7.8804, lon: 98.3923, hubs: [
+            { province: 'ภูเก็ต', lat: 7.8804, lon: 98.3923, 
+              bounds: [[8.32, 98.20], [8.32, 98.50], [7.75, 98.50], [7.75, 98.20]],
+              hubs: [
                 { name: 'Flash Express ฮับภูเก็ต', carrier: 'Flash Express', icon: '🟡', address: 'เมืองภูเก็ต ภูเก็ต' },
                 { name: 'Kerry Express คลังภูเก็ต', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'กะทู้ ภูเก็ต' },
                 { name: 'ไปรษณีย์ไทย ศูนย์ภูเก็ต', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'ตัวเมือง ภูเก็ต' }
             ]},
-            { province: 'สงขลา', lat: 7.0084, lon: 100.4747, hubs: [
-                { name: 'Flash Express ฮับหาดใหญ่ (HDY Hub)', carrier: 'Flash Express', icon: '🟡', address: 'หาดใหญ่ สงขลา' },
-                { name: 'Kerry Express คลังสงขลา', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'เมืองสงขลา สงขลา' }
-            ]},
-            { province: 'สุราษฎร์ธานี', lat: 9.1382, lon: 99.3217, hubs: [
-                { name: 'Flash Express ฮับสุราษฎร์ธานี', carrier: 'Flash Express', icon: '🟡', address: 'พุนพิน สุราษฎร์ธานี' }
-            ]},
-
-            // ภาคตะวันออก
-            { province: 'ชลบุรี', lat: 13.3611, lon: 100.9847, hubs: [
+            { province: 'ชลบุรี', lat: 13.3611, lon: 100.9847, 
+              bounds: [[13.70, 100.80], [13.70, 101.60], [12.70, 101.60], [12.70, 100.80]],
+              hubs: [
                 { name: 'Flash Express ฮับชลบุรี', carrier: 'Flash Express', icon: '🟡', address: 'เมืองชลบุรี ชลบุรี' },
                 { name: 'Kerry Express คลังพัทยา', carrier: 'Kerry Express (KEX)', icon: '🟠', address: 'พัทยา บางละมุง ชลบุรี' }
             ]},
-            { province: 'ระยอง', lat: 12.6814, lon: 101.2816, hubs: [
-                { name: 'Flash Express ฮับระยอง', carrier: 'Flash Express', icon: '🟡', address: 'ปลวกแดง ระยอง' }
+            { province: 'นครราชสีมา', lat: 14.9799, lon: 102.0977, 
+              bounds: [[15.70, 101.20], [15.70, 103.00], [14.10, 103.00], [14.10, 101.20]],
+              hubs: [
+                { name: 'Flash Express ฮับโคราช (KRT Hub)', carrier: 'Flash Express', icon: '🟡', address: 'เมืองนครราชสีมา โคราช' },
+                { name: 'ไปรษณีย์ไทย ศูนย์นครราชสีมา', carrier: 'ไปรษณีย์ไทย', icon: '🔴', address: 'จอหอ นครราชสีมา' }
             ]}
         ];
 
@@ -394,7 +361,7 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
             markersLayer = L.layerGroup().addTo(map);
-            redZoneLayer = L.layerGroup().addTo(map);
+            boundaryLayer = L.layerGroup().addTo(map);
         }
 
         function getIconHtml(iconStr) {
@@ -405,7 +372,7 @@
             return iconStr;
         }
 
-        // ค้นหาฮับประจำจังหวัด พร้อมสร้างวงแหวนสีแดงเน้นขอบเขตจังหวัด
+        // ค้นหาฮับและแสดงเส้นแบ่งเขตจังหวัด
         window.searchProvinceHub = function() {
             const selectedCarrier = document.getElementById('map-carrier').value.toLowerCase();
             const provinceQuery = document.getElementById('map-province-input').value.trim().toLowerCase();
@@ -415,54 +382,53 @@
                 return;
             }
 
-            // ค้นหาข้อมูลจังหวัดในฐานข้อมูลฮับ
             let foundProv = provinceHubsDatabase.find(p => p.province.toLowerCase().includes(provinceQuery));
 
             let lat = 13.7563;
             let lon = 100.5018;
             let provName = provinceQuery;
             let hubs = [];
+            let bounds = [[14.0, 100.3], [14.0, 100.8], [13.5, 100.8], [13.5, 100.3]];
 
             if (foundProv) {
                 lat = foundProv.lat;
                 lon = foundProv.lon;
                 provName = foundProv.province;
-                // กรองเฉพาะค่ายที่เลือก
+                bounds = foundProv.bounds;
                 hubs = foundProv.hubs.filter(h => h.carrier.toLowerCase().includes(selectedCarrier) || selectedCarrier.includes(h.carrier.toLowerCase()));
             }
 
-            // ระบบสำรองอัจฉริยะ (Smart Fallback for any of 77 provinces)
             if (hubs.length === 0) {
                 const currentCarrierObj = carriersCache.find(c => c.name.toLowerCase().includes(selectedCarrier)) || { name: document.getElementById('map-carrier').value, icon: '📦' };
                 hubs = [
                     { name: `${currentCarrierObj.name} ศูนย์ฮับหลักจังหวัด${provinceQuery}`, carrier: currentCarrierObj.name, icon: currentCarrierObj.icon || '📦', address: `ศูนย์คัดแยกพัสดุหลัก อำเภอเมือง ${provinceQuery}` },
-                    { name: `${currentCarrierObj.name} คลังสินค้ากระจายสินค้า ${provinceQuery}`, carrier: currentCarrierObj.name, icon: currentCarrierObj.icon || '📦', address: `คลังสินค้าโซนเศรษฐกิจ ${provinceQuery}` }
+                    { name: `${currentCarrierObj.name} คลังกระจายสินค้า ${provinceQuery}`, carrier: currentCarrierObj.name, icon: currentCarrierObj.icon || '📦', address: `คลังสินค้าโซนเศรษฐกิจ ${provinceQuery}` }
                 ];
             }
 
-            // เคลียร์แผนที่เก่า
+            // เคลียร์แผนที่
             markersLayer.clearLayers();
-            redZoneLayer.clearLayers();
+            boundaryLayer.clearLayers();
 
-            // 1. วาดวงแหวนขอบเขตสีแดง (Red Zone Highlight) ล้อมรอบจังหวัด
-            const redCircle = L.circle([lat, lon], {
-                color: '#ef4444',       // สีแดงขอบ
-                fillColor: '#f87171',   // สีแดงอ่อนด้านใน
-                fillOpacity: 0.25,
-                radius: 35000           // รัศมี 35 กิโลเมตรครอบคลุมพื้นที่จังหวัด
-            }).addTo(redZoneLayer);
+            // 1. วาดเส้นแบ่งขอบเขตจังหวัด (Polygon Outline ไม่ใช่วงกลม)
+            const provincePolygon = L.polygon(bounds, {
+                color: '#2563eb',       // เส้นขอบสีน้ำเงินเด่นชัด
+                weight: 3,
+                dashArray: '6, 6',      // เส้นประแนวเขตแดน
+                fillColor: '#3b82f6',
+                fillOpacity: 0.12
+            }).addTo(boundaryLayer);
 
-            redCircle.bindPopup(`<b>🎯 โซนพื้นที่จังหวัด: ${provName}</b><br>แสดงเฉพาะฮับและจุดกระจายสินค้าในเขตนี้`).openPopup();
+            provincePolygon.bindPopup(`<b>🗺️ เขตพื้นที่จังหวัด: ${provName}</b>`).openPopup();
 
-            // 2. ปักหมุดฮับในจังหวัด
+            // 2. ปักหมุดศูนย์ฮับ
             const listContainer = document.getElementById('hub-list');
             listContainer.innerHTML = '';
             document.getElementById('hub-results-container').classList.remove('hidden');
 
             hubs.forEach((h, index) => {
-                // กระจายพิกัดรอบศูนย์กลางเล็กน้อยหากมีหลายฮับ
-                const offsetLat = lat + (index * 0.015);
-                const offsetLon = lon + (index * 0.015);
+                const offsetLat = lat + (index * 0.012);
+                const offsetLon = lon + (index * 0.012);
 
                 const marker = L.marker([offsetLat, offsetLon]).addTo(markersLayer);
                 marker.bindPopup(`<b>${getIconHtml(h.icon)} ${h.name}</b><br>${h.address}`);
@@ -470,7 +436,7 @@
                 const routeUrl = `https://www.google.com/maps/dir/?api=1&destination=${offsetLat},${offsetLon}`;
 
                 const item = document.createElement('div');
-                item.className = "p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between gap-2 hover:bg-blue-50/50 dark:hover:bg-slate-700/50 smooth-transition";
+                item.className = "p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between gap-2";
                 item.innerHTML = `
                     <div class="flex items-center gap-2.5">
                         <span class="text-xl">${getIconHtml(h.icon)}</span>
@@ -480,16 +446,15 @@
                         </div>
                     </div>
                     <div class="flex gap-1 shrink-0">
-                        <button onclick="if(map){map.invalidateSize(); map.setView([${offsetLat}, ${offsetLon}], 13);}" class="px-2.5 py-1.5 bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-200"><i class="fas fa-map-marker-alt"></i></button>
+                        <button onclick="if(map){map.invalidateSize(); map.setView([${offsetLat}, ${offsetLon}], 13);}" class="px-2.5 py-1.5 bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold"><i class="fas fa-map-marker-alt"></i></button>
                         <a href="${routeUrl}" target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium flex items-center gap-1 shadow-sm"><i class="fas fa-directions"></i> นำทาง</a>
                     </div>
                 `;
                 listContainer.appendChild(item);
             });
 
-            // ซูมแผนที่ไปที่จังหวัดนั้นทันที
             map.invalidateSize();
-            map.setView([lat, lon], 10);
+            map.fitBounds(bounds);
         }
 
         async function initCarriersStorage() {
@@ -538,13 +503,13 @@
             if (tab === 'login') {
                 loginForm.classList.remove('hidden');
                 registerForm.classList.add('hidden');
-                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition";
-                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition";
+                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600";
+                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent";
             } else {
                 loginForm.classList.add('hidden');
                 registerForm.classList.remove('hidden');
-                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-emerald-600 border-b-2 border-emerald-600 smooth-transition";
-                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition";
+                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-emerald-600 border-b-2 border-emerald-600";
+                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent";
             }
         }
 
@@ -555,14 +520,14 @@
             const contentTracking = document.getElementById('content-tracking');
 
             if (tab === 'locator') {
-                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
+                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm flex items-center justify-center gap-2";
+                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 flex items-center justify-center gap-2";
                 contentTracking.classList.add('hidden');
                 contentLocator.classList.remove('hidden');
                 setTimeout(() => { if (map) map.invalidateSize(); }, 50);
             } else {
-                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
+                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm flex items-center justify-center gap-2";
+                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 flex items-center justify-center gap-2";
                 contentLocator.classList.add('hidden');
                 contentTracking.classList.remove('hidden');
             }
@@ -626,86 +591,59 @@
         window.logout = async function() { await signOut(auth); }
 
         window.toggleDropdown = function(type) {
-            if (type === 'map') {
-                const list = document.getElementById('map-dropdown-list');
-                const chevron = document.getElementById('map-dropdown-chevron');
-                if (list.classList.contains('hidden')) {
-                    list.classList.remove('hidden');
-                    setTimeout(() => list.classList.remove('opacity-0', 'scale-95'), 10);
-                    chevron.classList.add('rotate-180');
-                } else {
-                    list.classList.add('hidden');
-                    chevron.classList.remove('rotate-180');
-                }
-            } else if (type === 'tracking') {
-                const list = document.getElementById('tracking-dropdown-list');
-                const chevron = document.getElementById('tracking-dropdown-chevron');
-                if (list.classList.contains('hidden')) {
-                    list.classList.remove('hidden');
-                    setTimeout(() => list.classList.remove('opacity-0', 'scale-95'), 10);
-                    chevron.classList.add('rotate-180');
-                } else {
-                    list.classList.add('hidden');
-                    chevron.classList.remove('rotate-180');
-                }
-            }
+            const listId = type === 'map' ? 'map-dropdown-list' : 'tracking-dropdown-list';
+            const list = document.getElementById(listId);
+            list.classList.toggle('hidden');
         }
 
         window.renderCustomDropdowns = function() {
             const carriers = carriersCache;
             
-            // Map Dropdown
             const mapList = document.getElementById('map-dropdown-list');
             mapList.innerHTML = '';
             carriers.forEach(c => {
                 const item = document.createElement('div');
                 item.className = "flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 text-sm font-medium";
                 item.innerHTML = `<span class="text-base">${getIconHtml(c.icon)}</span><span>${c.name}</span>`;
-                item.onclick = () => selectMapCarrier(c.name, c.icon);
+                item.onclick = () => {
+                    document.getElementById('map-carrier').value = c.name;
+                    document.getElementById('selected-map-carrier-display').innerHTML = `<span class="text-base">${getIconHtml(c.icon)}</span> <span>${c.name}</span>`;
+                    mapList.classList.add('hidden');
+                };
                 mapList.appendChild(item);
             });
-            if (carriers.length > 0) selectMapCarrier(carriers[0].name, carriers[0].icon);
+            if (carriers.length > 0) {
+                document.getElementById('map-carrier').value = carriers[0].name;
+                document.getElementById('selected-map-carrier-display').innerHTML = `<span class="text-base">${getIconHtml(carriers[0].icon)}</span> <span>${carriers[0].name}</span>`;
+            }
 
-            // Tracking Dropdown
             const trackingList = document.getElementById('tracking-dropdown-list');
             trackingList.innerHTML = '';
             carriers.forEach(c => {
                 const item = document.createElement('div');
                 item.className = "flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 text-sm font-medium";
                 item.innerHTML = `<span class="text-base">${getIconHtml(c.icon)}</span><span>${c.name}</span>`;
-                item.onclick = () => selectTrackingCarrier(c.id, c.name, c.icon);
+                item.onclick = () => {
+                    document.getElementById('carrier').value = c.id;
+                    document.getElementById('selected-tracking-carrier-display').innerHTML = `<span class="text-base">${getIconHtml(c.icon)}</span> <span>${c.name}</span>`;
+                    trackingList.classList.add('hidden');
+                };
                 trackingList.appendChild(item);
             });
-            if (carriers.length > 0) selectTrackingCarrier(carriers[0].id, carriers[0].name, carriers[0].icon);
+            if (carriers.length > 0) {
+                document.getElementById('carrier').value = carriers[0].id;
+                document.getElementById('selected-tracking-carrier-display').innerHTML = `<span class="text-base">${getIconHtml(carriers[0].icon)}</span> <span>${carriers[0].name}</span>`;
+            }
         }
 
-        function selectMapCarrier(name, icon) {
-            document.getElementById('map-carrier').value = name;
-            document.getElementById('selected-map-carrier-display').innerHTML = `<span class="text-base">${getIconHtml(icon)}</span> <span>${name}</span>`;
-            document.getElementById('map-dropdown-list').classList.add('hidden');
-            document.getElementById('map-dropdown-chevron').classList.remove('rotate-180');
-        }
-
-        function selectTrackingCarrier(id, name, icon) {
-            document.getElementById('carrier').value = id;
-            document.getElementById('selected-tracking-carrier-display').innerHTML = `<span class="text-base">${getIconHtml(icon)}</span> <span>${name}</span>`;
-            document.getElementById('tracking-dropdown-list').classList.add('hidden');
-            document.getElementById('tracking-dropdown-chevron').classList.remove('rotate-180');
-        }
-
-        // Admin Carrier Manager
         window.openCarrierModal = function() {
             document.getElementById('carrier-modal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('carrier-modal-content').classList.remove('scale-95', 'opacity-0'), 10);
             renderAdminCarriersList();
         }
 
         window.closeCarrierModal = function() {
-            document.getElementById('carrier-modal-content').classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                document.getElementById('carrier-modal').classList.add('hidden');
-                resetCarrierForm();
-            }, 200);
+            document.getElementById('carrier-modal').classList.add('hidden');
+            resetCarrierForm();
         }
 
         function renderAdminCarriersList() {
@@ -718,7 +656,6 @@
                             <span class="text-xl">${getIconHtml(c.icon)}</span>
                             <div>
                                 <p class="font-bold text-slate-800 dark:text-white">${c.name}</p>
-                                <p class="text-[10px] text-slate-400 truncate max-w-[160px]">${c.icon}</p>
                             </div>
                         </div>
                         <div class="flex gap-1.5">
@@ -735,17 +672,15 @@
             const editId = document.getElementById('edit-carrier-id').value;
             const name = document.getElementById('carrier-name').value.trim();
             const icon = document.getElementById('carrier-icon').value.trim();
-            
             if (!name || !icon) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
 
             const carrierId = editId ? editId : ('carrier_' + Date.now());
             await setDoc(doc(db, 'carriers', carrierId), { name, icon });
-            
             await initCarriersStorage();
             renderAdminCarriersList();
             renderCustomDropdowns();
             resetCarrierForm();
-            alert('บันทึกค่ายขนส่งเรียบร้อยแล้ว!');
+            alert('บันทึกเรียบร้อยแล้ว!');
         }
 
         window.editCarrier = function(id) {
@@ -780,14 +715,7 @@
             if (!trackingNo) return alert('กรุณากรอกเลขพัสดุ');
 
             const selected = carriersCache.find(c => c.id === carrierId) || carriersCache[0];
-            let targetUrl = '';
-            switch(carrierId) {
-                case 'flash': targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`; break;
-                case 'thpost': targetUrl = `https://track.thailandpost.com/?trackNumber=${encodeURIComponent(trackingNo)}`; break;
-                case 'kerry': targetUrl = `https://th.kexexpress.com/en/track?id=${encodeURIComponent(trackingNo)}`; break;
-                case 'j&t': targetUrl = `https://www.jtexpress.co.th/index/query/gz.html?billcode=${encodeURIComponent(trackingNo)}`; break;
-                default: targetUrl = `https://www.google.com/search?q=${encodeURIComponent(selected.name + ' tracking ' + trackingNo)}`;
-            }
+            let targetUrl = `https://www.google.com/search?q=${encodeURIComponent(selected.name + ' tracking ' + trackingNo)}`;
 
             await addDoc(collection(db, 'tracking_history'), {
                 uid: currentUser.uid,
