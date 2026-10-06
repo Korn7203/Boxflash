@@ -24,9 +24,26 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee { display: inline-block; animation: marquee 25s linear infinite; }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between smooth-transition">
+
+    <!-- ================= ANNOUNCEMENT BANNER (Feature 3) ================= -->
+    <div id="announcement-banner" class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium py-2 px-4 shadow-sm relative overflow-hidden hidden">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2 overflow-hidden whitespace-nowrap">
+                <i class="fas fa-bullhorn shrink-0 animate-bounce"></i>
+                <div class="overflow-hidden w-full">
+                    <span id="announcement-text" class="animate-marquee">ประกาศ: ยินดีต้อนรับสู่ระบบ Boxflash Hubs เช็กพัสดุและคำนวณค่าส่งได้ตลอด 24 ชั่วโมง</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Top Navigation / Header -->
     <nav class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 px-4 py-3 shadow-sm sticky top-0 z-50 smooth-transition">
@@ -133,17 +150,20 @@
             
             <!-- Dashboard Navigation Tabs & Admin Carrier Manager Button -->
             <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
-                <div class="grid grid-cols-2 gap-2 w-full sm:w-auto flex-1">
-                    <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
-                        <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_locator">ค้นหาสาขาบนแผนที่</span>
+                <div class="grid grid-cols-3 gap-1.5 w-full sm:w-auto flex-1">
+                    <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-1.5">
+                        <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_locator">ค้นหาสาขา</span>
                     </button>
-                    <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
-                        <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุทุกค่าย</span>
+                    <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-1.5">
+                        <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุ</span>
+                    </button>
+                    <button onclick="switchMainTab('calculator')" id="main-tab-calculator" class="py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-1.5">
+                        <i class="fas fa-calculator"></i> <span data-i18n="maintab_calculator">คำนวณค่าส่ง</span>
                     </button>
                 </div>
                 <!-- Admin Carrier Manager Toggle Button (Visible only for admin) -->
                 <button id="btn-admin-carriers" onclick="openCarrierModal()" class="hidden py-2 px-3 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm smooth-transition items-center gap-1.5 shrink-0 active:scale-95">
-                    <i class="fas fa-cog"></i> <span data-i18n="btn_manage_carriers">จัดการค่ายขนส่ง</span>
+                    <i class="fas fa-cog"></i> <span data-i18n="btn_manage_carriers">จัดการระบบ</span>
                 </button>
             </div>
 
@@ -262,23 +282,83 @@
                 </div>
             </div>
 
+            <!-- TAB 3: SHIPPING RATE CALCULATOR (Feature 1) -->
+            <div id="content-calculator" class="space-y-4 hidden smooth-transition">
+                <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5 smooth-transition hover:shadow-md">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-calculator text-blue-600"></i> <span data-i18n="calc_title">คำนวณค่าส่งพัสดุเปรียบเทียบ</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="calc_sub">กรอกน้ำหนักและขนาดพัสดุเพื่อประเมินค่าบริการคร่าวๆ ของแต่ละค่าย</p>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); calculateShipping();" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="calc_weight">น้ำหนักพัสดุ (กก.)</label>
+                                <input type="number" id="calc-weight" step="0.1" min="0.1" required value="1.0" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="calc_distance">ประเภทเส้นทาง</label>
+                                <select id="calc-zone" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-blue-500">
+                                    <option value="local" data-i18n="zone_local">ภายในจังหวัด / ภาคเดียวกัน</option>
+                                    <option value="inter" data-i18n="zone_inter">ข้ามภาค / พื้นที่ห่างไกล</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1" data-i18n="calc_size">ขนาดกล่อง (กว้าง x ยาว x สูง ซม.)</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="number" id="box-w" placeholder="กว้าง" value="10" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+                                <input type="number" id="box-l" placeholder="ยาว" value="10" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+                                <input type="number" id="box-h" placeholder="สูง" value="10" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
+                            <i class="fas fa-calculator mr-1"></i> <span data-i18n="btn_calc">คำนวณค่าบริการเปรียบเทียบ</span>
+                        </button>
+                    </form>
+
+                    <!-- Calculator Results Area -->
+                    <div id="calculator-results" class="space-y-3 pt-2 hidden animate-fade-in">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-wider" data-i18n="calc_results_title">ผลการประเมินราคาค่าจัดส่ง</h3>
+                        <div id="calc-results-list" class="space-y-2.5">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </main>
 
-    <!-- Modal: Admin Carrier Manager (Add / Edit Carriers) -->
+    <!-- Modal: Admin Carrier Manager & Announcement Settings (Feature 3) -->
     <div id="carrier-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 smooth-transition">
         <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-slate-200 dark:border-slate-700 transform scale-95 opacity-0 smooth-transition max-h-[90vh] overflow-y-auto" id="carrier-modal-content">
             <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
                 <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
-                    <i class="fas fa-cog text-blue-600"></i> <span data-i18n="admin_modal_title">จัดการค่ายขนส่ง (แอดมิน)</span>
+                    <i class="fas fa-cog text-blue-600"></i> <span data-i18n="admin_modal_title">จัดการระบบและประกาศ (แอดมิน)</span>
                 </h3>
                 <button onclick="closeCarrierModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 smooth-transition">
                     <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
 
-            <!-- Add / Edit Form -->
+            <!-- Announcement Editor Form (Feature 3) -->
+            <div class="space-y-2.5 bg-amber-50 dark:bg-amber-950/20 p-4 rounded-xl border border-amber-200 dark:border-amber-900/50 text-xs">
+                <h4 class="font-bold text-amber-800 dark:text-amber-400 text-sm flex items-center gap-1.5">
+                    <i class="fas fa-bullhorn"></i> <span data-i18n="admin_announcement_title">แก้ไขข้อความประกาศหน้าเว็บ</span>
+                </h4>
+                <div>
+                    <textarea id="admin-announcement-input" rows="2" placeholder="พิมพ์ประกาศแจ้งเตือนสถานะขนส่ง..." class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-amber-200 dark:border-amber-900 rounded-lg focus:ring-2 focus:ring-amber-500"></textarea>
+                </div>
+                <button type="button" onclick="saveAnnouncement()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg font-medium shadow-sm" data-i18n="btn_save_announcement">อัปเดตประกาศบนเว็บ</button>
+            </div>
+
+            <!-- Add / Edit Carrier Form -->
             <form id="carrier-form" onsubmit="event.preventDefault(); saveCarrier();" class="space-y-3 text-xs bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                 <input type="hidden" id="edit-carrier-id" value="">
                 <h4 class="font-bold text-slate-700 dark:text-slate-200 text-sm" id="form-title" data-i18n="form_title_add">➕ เพิ่มค่ายขนส่งใหม่</h4>
@@ -317,7 +397,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, query, where, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // ================= FIREBASE CONFIG =================
         const firebaseConfig = {
@@ -354,9 +434,10 @@
                 label_forgot_email: "อีเมลของคุณ",
                 btn_back: "ย้อนกลับ",
                 btn_send_reset: "ส่งลิงก์รีเซ็ตรหัสผ่าน",
-                maintab_locator: "ค้นหาสาขาบนแผนที่",
-                maintab_tracking: "เช็กพัสดุทุกค่าย",
-                btn_manage_carriers: "จัดการค่ายขนส่ง",
+                maintab_locator: "ค้นหาสาขา",
+                maintab_tracking: "เช็กพัสดุ",
+                maintab_calculator: "คำนวณค่าส่ง",
+                btn_manage_carriers: "จัดการระบบ",
                 locator_title: "ค้นหาสาขาและจุดบริการขนส่งใกล้คุณ",
                 locator_sub: "เลือกค่ายขนส่งและระบุเขต/จังหวัด ระบบจะนำทางไปหน้าแผนที่ค้นหาทันที",
                 label_select_carrier: "เลือกค่ายขนส่ง",
@@ -373,7 +454,9 @@
                 badge_admin: "แอดมิน",
                 badge_member: "สมาชิก",
                 no_history: "ยังไม่มีประวัติการเช็กพัสดุ",
-                admin_modal_title: "จัดการค่ายขนส่ง (แอดมิน)",
+                admin_modal_title: "จัดการระบบและประกาศ (แอดมิน)",
+                admin_announcement_title: "แก้ไขข้อความประกาศหน้าเว็บ",
+                btn_save_announcement: "อัปเดตประกาศบนเว็บ",
                 form_title_add: "➕ เพิ่มค่ายขนส่งใหม่",
                 form_title_edit: "✏️ แก้ไขค่ายขนส่ง",
                 label_carrier_name: "ชื่อค่ายขนส่ง",
@@ -383,7 +466,16 @@
                 admin_list_title: "ค่ายขนส่งที่มีในระบบปัจจุบัน (Firestore)",
                 btn_edit: "แก้ไข",
                 btn_delete: "ลบ",
-                btn_open_view: "เปิดดู"
+                btn_open_view: "เปิดดู",
+                calc_title: "คำนวณค่าส่งพัสดุเปรียบเทียบ",
+                calc_sub: "กรอกน้ำหนักและขนาดพัสดุเพื่อประเมินค่าบริการคร่าวๆ ของแต่ละค่าย",
+                calc_weight: "น้ำหนักพัสดุ (กก.)",
+                calc_distance: "ประเภทเส้นทาง",
+                zone_local: "ภายในจังหวัด / ภาคเดียวกัน",
+                zone_inter: "ข้ามภาค / พื้นที่ห่างไกล",
+                calc_size: "ขนาดกล่อง (กว้าง x ยาว x สูง ซม.)",
+                btn_calc: "คำนวณค่าบริการเปรียบเทียบ",
+                calc_results_title: "ผลการประเมินราคาค่าจัดส่ง"
             },
             en: {
                 nav_subtitle: "Find Branches & Track All Carriers",
@@ -402,9 +494,10 @@
                 label_forgot_email: "Your Email",
                 btn_back: "Back",
                 btn_send_reset: "Send Reset Link",
-                maintab_locator: "Branch Map Locator",
-                maintab_tracking: "Track All Carriers",
-                btn_manage_carriers: "Manage Carriers",
+                maintab_locator: "Branch Locator",
+                maintab_tracking: "Track Parcel",
+                maintab_calculator: "Shipping Calc",
+                btn_manage_carriers: "System Settings",
                 locator_title: "Find Courier Branches & Service Points Near You",
                 locator_sub: "Select carrier and enter area/province to open map search instantly",
                 label_select_carrier: "Select Carrier",
@@ -421,7 +514,9 @@
                 badge_admin: "Admin",
                 badge_member: "Member",
                 no_history: "No tracking history yet",
-                admin_modal_title: "Manage Carriers (Admin)",
+                admin_modal_title: "Manage System & Announcement (Admin)",
+                admin_announcement_title: "Edit Website Announcement Banner",
+                btn_save_announcement: "Update Announcement",
                 form_title_add: "➕ Add New Carrier",
                 form_title_edit: "✏️ Edit Carrier",
                 label_carrier_name: "Carrier Name",
@@ -431,7 +526,16 @@
                 admin_list_title: "Current System Carriers (Firestore)",
                 btn_edit: "Edit",
                 btn_delete: "Delete",
-                btn_open_view: "Open"
+                btn_open_view: "Open",
+                calc_title: "Shipping Rate Calculator",
+                calc_sub: "Estimate shipping rates across multiple carriers based on weight and dimensions.",
+                calc_weight: "Weight (kg)",
+                calc_distance: "Route Type",
+                zone_local: "Same Province / Region",
+                zone_inter: "Inter-region / Remote Area",
+                calc_size: "Box Dimensions (W x L x H cm)",
+                btn_calc: "Calculate Rates",
+                calc_results_title: "Estimated Shipping Rates"
             }
         };
 
@@ -454,6 +558,7 @@
             initTheme();
             initLanguage();
             await initCarriersStorage();
+            await loadAnnouncement();
             setupAuthListener();
             renderCustomDropdowns();
         });
@@ -475,6 +580,37 @@
             } catch (err) {
                 console.error("Error loading carriers:", err);
                 carriersCache = defaultCarriers;
+            }
+        }
+
+        // Announcement Loader & Saver (Feature 3)
+        async function loadAnnouncement() {
+            try {
+                const docSnap = await getDoc(doc(db, 'settings', 'announcement'));
+                const banner = document.getElementById('announcement-banner');
+                const textSpan = document.getElementById('announcement-text');
+                
+                if (docSnap.exists() && docSnap.data().message) {
+                    const msg = docSnap.data().message;
+                    textSpan.textContent = msg;
+                    banner.classList.remove('hidden');
+                    document.getElementById('admin-announcement-input').value = msg;
+                } else {
+                    banner.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error loading announcement:", err);
+            }
+        }
+
+        window.saveAnnouncement = async function() {
+            const msg = document.getElementById('admin-announcement-input').value.trim();
+            try {
+                await setDoc(doc(db, 'settings', 'announcement'), { message: msg });
+                await loadAnnouncement();
+                alert(currentLang === 'th' ? 'อัปเดตประกาศสำเร็จ!' : 'Announcement updated successfully!');
+            } catch (err) {
+                alert((currentLang === 'th' ? 'เกิดข้อผิดพลาด: ' : 'Error: ') + err.message);
             }
         }
 
@@ -513,609 +649,4 @@
                 }
             });
             
-            document.getElementById('map-area-input').placeholder = currentLang === 'th' ? 'เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก็ต...' : 'Enter district, province...';
-            document.getElementById('tracking-number').placeholder = currentLang === 'th' ? 'กรอกเลขพัสดุที่นี่...' : 'Enter tracking number here...';
-        }
-
-        window.toggleLanguage = function() {
-            currentLang = currentLang === 'th' ? 'en' : 'th';
-            localStorage.setItem('boxflash_lang', currentLang);
-            initLanguage();
-            if (currentUser) {
-                checkAuthStatus(currentUser);
-                loadHistory();
-            }
-        }
-
-        window.switchAuthTab = function(tab) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const tabLogin = document.getElementById('tab-login');
-            const tabRegister = document.getElementById('tab-register');
-
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition";
-                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition";
-            } else {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-emerald-600 border-b-2 border-emerald-600 smooth-transition";
-                tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition";
-            }
-        }
-
-        // ================= FORGOT PASSWORD FLOW =================
-        window.showForgotStep = function(step) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const authTabs = document.getElementById('auth-tabs');
-            const step1 = document.getElementById('forgot-step-1');
-
-            loginForm.classList.add('hidden');
-            registerForm.classList.add('hidden');
-            authTabs.classList.add('hidden');
-            step1.classList.add('hidden');
-
-            if (step === 0) {
-                authTabs.classList.remove('hidden');
-                loginForm.classList.remove('hidden');
-            } else if (step === 1) {
-                step1.classList.remove('hidden');
-            }
-        }
-
-        window.executePasswordReset = async function() {
-            const email = document.getElementById('forgot-email').value.trim();
-            if (!email) {
-                alert(currentLang === 'th' ? 'กรุณากรอกอีเมลของคุณ' : 'Please enter your email.');
-                return;
-            }
-
-            try {
-                await sendPasswordResetEmail(auth, email);
-                alert(currentLang === 'th' ? ('ระบบได้ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมล ' + email + ' เรียบร้อยแล้ว กรุณาตรวจสอบกล่องข้อความของคุณ') : ('Password reset link sent to ' + email + '. Please check your inbox.'));
-                document.getElementById('forgot-email').value = '';
-                showForgotStep(0);
-            } catch (err) {
-                alert((currentLang === 'th' ? 'เกิดข้อผิดพลาด: ' : 'Error: ') + err.message);
-            }
-        }
-
-        // Smooth Main Tab Switcher with Animation
-        window.switchMainTab = function(tab) {
-            const btnLocator = document.getElementById('main-tab-locator');
-            const btnTracking = document.getElementById('main-tab-tracking');
-            const contentLocator = document.getElementById('content-locator');
-            const contentTracking = document.getElementById('content-tracking');
-
-            if (tab === 'locator') {
-                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
-                
-                contentTracking.classList.add('opacity-0', '-translate-y-2', 'hidden');
-                contentLocator.classList.remove('hidden');
-                setTimeout(() => {
-                    contentLocator.classList.add('animate-fade-in');
-                }, 10);
-            } else {
-                btnTracking.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2";
-                btnLocator.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2";
-                
-                contentLocator.classList.add('hidden');
-                contentTracking.classList.remove('hidden');
-                setTimeout(() => {
-                    contentTracking.classList.add('animate-fade-in');
-                }, 10);
-            }
-        }
-
-        window.handleRegister = async function() {
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value.trim();
-
-            if (!email || !password) {
-                alert(currentLang === 'th' ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : 'Please fill in all fields.');
-                return;
-            }
-
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert(currentLang === 'th' ? 'สมัครสมาชิกสำเร็จ!' : 'Registration successful!');
-                switchAuthTab('login');
-            } catch (err) {
-                if (err.code === 'auth/email-already-in-use') {
-                    alert(currentLang === 'th' ? 'บัญชีนี้ถูกใช้งานไปแล้ว' : 'Email is already in use.');
-                } else if (err.code === 'auth/weak-password' || password.length < 6) {
-                    alert(currentLang === 'th' ? 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร' : 'Password must be at least 6 characters.');
-                } else if (err.code === 'auth/invalid-email') {
-                    alert(currentLang === 'th' ? 'รูปแบบอีเมลไม่ถูกต้อง' : 'Invalid email format.');
-                } else {
-                    alert((currentLang === 'th' ? 'สมัครสมาชิกไม่สำเร็จ: ' : 'Registration failed: ') + err.message);
-                }
-            }
-        }
-
-        window.handleLogin = async function() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value.trim();
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (err) {
-                if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-                    alert(currentLang === 'th' ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : 'Invalid email or password.');
-                } else {
-                    alert((currentLang === 'th' ? 'เข้าสู่ระบบไม่สำเร็จ: ' : 'Login failed: ') + err.message);
-                }
-            }
-        }
-
-        function setupAuthListener() {
-            onAuthStateChanged(auth, (user) => {
-                currentUser = user;
-                checkAuthStatus(user);
-            });
-        }
-
-        function checkAuthStatus(user) {
-            const authSection = document.getElementById('auth-section');
-            const dashboardSection = document.getElementById('dashboard-section');
-            const userNavArea = document.getElementById('user-nav-area');
-            const userEmailDisplay = document.getElementById('user-email-display');
-            const btnAdminCarriers = document.getElementById('btn-admin-carriers');
-
-            if (user) {
-                authSection.classList.add('hidden');
-                dashboardSection.classList.remove('hidden');
-                userNavArea.classList.remove('hidden');
-                userNavArea.classList.add('flex');
-
-                const adminBadge = translations[currentLang].badge_admin;
-                const memberBadge = translations[currentLang].badge_member;
-
-                if (user.email === ADMIN_EMAIL) {
-                    userEmailDisplay.innerHTML = `${user.email} <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">${adminBadge}</span>`;
-                    btnAdminCarriers.classList.remove('hidden');
-                    btnAdminCarriers.classList.add('flex');
-                } else {
-                    userEmailDisplay.innerHTML = `${user.email} <span class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded-full text-[10px] font-medium">${memberBadge}</span>`;
-                    btnAdminCarriers.classList.add('hidden');
-                    btnAdminCarriers.classList.remove('flex');
-                }
-
-                loadHistory();
-            } else {
-                authSection.classList.remove('hidden');
-                dashboardSection.classList.add('hidden');
-                userNavArea.classList.add('hidden');
-                userNavArea.classList.remove('flex');
-                btnAdminCarriers.classList.add('hidden');
-            }
-        }
-
-        window.logout = async function() {
-            try {
-                await signOut(auth);
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        // ================= CUSTOM ANIMATED DROPDOWNS =================
-        window.toggleDropdown = function(type) {
-            const listLocator = document.getElementById('custom-dropdown-list');
-            const chevronLocator = document.getElementById('dropdown-chevron');
-            
-            const listTracking = document.getElementById('tracking-dropdown-list');
-            const chevronTracking = document.getElementById('tracking-dropdown-chevron');
-
-            if (type === 'locator') {
-                listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
-                chevronTracking.classList.remove('rotate-180');
-
-                if (listLocator.classList.contains('hidden')) {
-                    listLocator.classList.remove('hidden');
-                    setTimeout(() => {
-                        listLocator.classList.remove('opacity-0', 'scale-95');
-                        listLocator.classList.add('opacity-100', 'scale-100');
-                    }, 10);
-                    chevronLocator.classList.add('rotate-180');
-                } else {
-                    listLocator.classList.remove('opacity-100', 'scale-100');
-                    listLocator.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => listLocator.classList.add('hidden'), 200);
-                    chevronLocator.classList.remove('rotate-180');
-                }
-            } else {
-                listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
-                chevronLocator.classList.remove('rotate-180');
-
-                if (listTracking.classList.contains('hidden')) {
-                    listTracking.classList.remove('hidden');
-                    setTimeout(() => {
-                        listTracking.classList.remove('opacity-0', 'scale-95');
-                        listTracking.classList.add('opacity-100', 'scale-100');
-                    }, 10);
-                    chevronTracking.classList.add('rotate-180');
-                } else {
-                    listTracking.classList.remove('opacity-100', 'scale-100');
-                    listTracking.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => listTracking.classList.add('hidden'), 200);
-                    chevronTracking.classList.remove('rotate-180');
-                }
-            }
-        }
-
-        window.addEventListener('click', (e) => {
-            const btnLocator = document.getElementById('custom-select-btn');
-            const listLocator = document.getElementById('custom-dropdown-list');
-            const chevronLocator = document.getElementById('dropdown-chevron');
-
-            const btnTracking = document.getElementById('tracking-select-btn');
-            const listTracking = document.getElementById('tracking-dropdown-list');
-            const chevronTracking = document.getElementById('tracking-dropdown-chevron');
-
-            if (btnLocator && listLocator && !btnLocator.contains(e.target) && !listLocator.contains(e.target)) {
-                listLocator.classList.remove('opacity-100', 'scale-100');
-                listLocator.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => listLocator.classList.add('hidden'), 200);
-                chevronLocator.classList.remove('rotate-180');
-            }
-
-            if (btnTracking && listTracking && !btnTracking.contains(e.target) && !listTracking.contains(e.target)) {
-                listTracking.classList.remove('opacity-100', 'scale-100');
-                listTracking.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => listTracking.classList.add('hidden'), 200);
-                chevronTracking.classList.remove('rotate-180');
-            }
-        });
-
-        window.renderCustomDropdowns = function() {
-            const carriers = carriersCache;
-            
-            // 1. Locator Dropdown
-            const locatorList = document.getElementById('custom-dropdown-list');
-            locatorList.innerHTML = '';
-            carriers.forEach(c => {
-                let iconDisplay = (c.icon && (c.icon.startsWith('http') || c.icon.startsWith('/')))
-                    ? `<img src="${c.icon}" class="w-5 h-5 rounded object-cover">` 
-                    : `<span class="text-base">${c.icon || '📦'}</span>`;
-
-                const item = document.createElement('div');
-                item.className = "flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-sm font-medium";
-                item.innerHTML = `${iconDisplay}<span>${c.name}</span>`;
-                item.onclick = () => selectLocatorCarrier(c.searchKey || c.name, c.name, c.icon);
-                locatorList.appendChild(item);
-            });
-            if (carriers.length > 0) {
-                selectLocatorCarrier(carriers[0].searchKey || carriers[0].name, carriers[0].name, carriers[0].icon);
-            }
-
-            // 2. Tracking Dropdown
-            const trackingList = document.getElementById('tracking-dropdown-list');
-            trackingList.innerHTML = '';
-            carriers.forEach(c => {
-                let iconDisplay = (c.icon && (c.icon.startsWith('http') || c.icon.startsWith('/')))
-                    ? `<img src="${c.icon}" class="w-5 h-5 rounded object-cover">` 
-                    : `<span class="text-base">${c.icon || '📦'}</span>`;
-
-                const item = document.createElement('div');
-                item.className = "flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-sm font-medium";
-                item.innerHTML = `${iconDisplay}<span>${c.name}</span>`;
-                item.onclick = () => selectTrackingCarrier(c.id, c.name, c.icon);
-                trackingList.appendChild(item);
-            });
-            if (carriers.length > 0) {
-                selectTrackingCarrier(carriers[0].id, carriers[0].name, carriers[0].icon);
-            }
-        }
-
-        function selectLocatorCarrier(searchKey, name, icon) {
-            document.getElementById('map-carrier').value = searchKey;
-            
-            let iconDisplay = (icon && (icon.startsWith('http') || icon.startsWith('/')))
-                ? `<img src="${icon}" class="w-5 h-5 rounded object-cover">` 
-                : `<span class="text-base">${icon || '📦'}</span>`;
-
-            document.getElementById('selected-carrier-display').innerHTML = `${iconDisplay} <span>${name}</span>`;
-            
-            const list = document.getElementById('custom-dropdown-list');
-            const chevron = document.getElementById('dropdown-chevron');
-            list.classList.remove('opacity-100', 'scale-100');
-            list.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => list.classList.add('hidden'), 200);
-            chevron.classList.remove('rotate-180');
-        }
-
-        function selectTrackingCarrier(id, name, icon) {
-            document.getElementById('carrier').value = id;
-            
-            let iconDisplay = (icon && (icon.startsWith('http') || icon.startsWith('/')))
-                ? `<img src="${icon}" class="w-5 h-5 rounded object-cover">` 
-                : `<span class="text-base">${icon || '📦'}</span>`;
-
-            document.getElementById('selected-tracking-carrier-display').innerHTML = `${iconDisplay} <span>${name}</span>`;
-            
-            const list = document.getElementById('tracking-dropdown-list');
-            const chevron = document.getElementById('tracking-dropdown-chevron');
-            list.classList.remove('opacity-100', 'scale-100');
-            list.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => list.classList.add('hidden'), 200);
-            chevron.classList.remove('rotate-180');
-        }
-
-        // ================= ADMIN CARRIER MANAGER MODAL (FIRESTORE) =================
-        window.openCarrierModal = function() {
-            const modal = document.getElementById('carrier-modal');
-            const content = document.getElementById('carrier-modal-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
-                content.classList.add('scale-100', 'opacity-100');
-            }, 10);
-            renderAdminCarriersList();
-        }
-
-        window.closeCarrierModal = function() {
-            const modal = document.getElementById('carrier-modal');
-            const content = document.getElementById('carrier-modal-content');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                resetCarrierForm();
-            }, 200);
-        }
-
-        function renderAdminCarriersList() {
-            const container = document.getElementById('admin-carriers-list');
-            let html = '';
-
-            const btnEditTxt = translations[currentLang].btn_edit;
-            const btnDelTxt = translations[currentLang].btn_delete;
-
-            carriersCache.forEach((c) => {
-                let iconDisplay = (c.icon && (c.icon.startsWith('http') || c.icon.startsWith('/')))
-                    ? `<img src="${c.icon}" class="w-6 h-6 rounded object-cover">` 
-                    : `<span class="text-base">${c.icon || '📦'}</span>`;
-
-                html += `
-                    <div class="flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
-                        <div class="flex items-center gap-2.5">
-                            ${iconDisplay}
-                            <div>
-                                <p class="font-bold text-xs text-slate-800 dark:text-white">${c.name}</p>
-                                <p class="text-[10px] text-slate-400">Key: ${c.searchKey || c.name}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <button onclick="editCarrier('${c.id}')" class="px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-medium hover:bg-amber-100 smooth-transition">${btnEditTxt}</button>
-                            <button onclick="deleteCarrier('${c.id}')" class="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-medium hover:bg-rose-100 smooth-transition">${btnDelTxt}</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        window.saveCarrier = async function() {
-            const carrierId = document.getElementById('edit-carrier-id').value;
-            const name = document.getElementById('carrier-name').value.trim();
-            const icon = document.getElementById('carrier-icon').value.trim();
-            const searchKey = name;
-
-            try {
-                if (!carrierId) {
-                    const newId = 'carrier_' + Date.now();
-                    await setDoc(doc(db, 'carriers', newId), { name, icon, searchKey });
-                } else {
-                    await setDoc(doc(db, 'carriers', carrierId), { name, icon, searchKey }, { merge: true });
-                }
-                await initCarriersStorage();
-                renderAdminCarriersList();
-                renderCustomDropdowns();
-                resetCarrierForm();
-                alert(currentLang === 'th' ? 'บันทึกข้อมูลค่ายขนส่งเรียบร้อยแล้ว!' : 'Carrier saved successfully!');
-            } catch (err) {
-                alert((currentLang === 'th' ? 'เกิดข้อผิดพลาด: ' : 'Error: ') + err.message);
-            }
-        }
-
-        window.editCarrier = function(id) {
-            const c = carriersCache.find(item => item.id === id);
-            if (c) {
-                document.getElementById('edit-carrier-id').value = c.id;
-                document.getElementById('carrier-name').value = c.name;
-                document.getElementById('carrier-icon').value = c.icon;
-                document.getElementById('form-title').innerHTML = translations[currentLang].form_title_edit;
-            }
-        }
-
-        window.deleteCarrier = async function(id) {
-            if (confirm(currentLang === 'th' ? 'คุณต้องการลบค่ายขนส่งนี้ใช่หรือไม่?' : 'Are you sure you want to delete this carrier?')) {
-                try {
-                    await deleteDoc(doc(db, 'carriers', id));
-                    await initCarriersStorage();
-                    renderAdminCarriersList();
-                    renderCustomDropdowns();
-                } catch (err) {
-                    alert((currentLang === 'th' ? 'เกิดข้อผิดพลาด: ' : 'Error: ') + err.message);
-                }
-            }
-        }
-
-        window.resetCarrierForm = function() {
-            document.getElementById('edit-carrier-id').value = '';
-            document.getElementById('carrier-name').value = '';
-            document.getElementById('carrier-icon').value = '';
-            document.getElementById('form-title').innerHTML = translations[currentLang].form_title_add;
-        }
-
-        // Map Search Redirection Function
-        window.openMapSearch = function() {
-            const carrier = document.getElementById('map-carrier').value;
-            const area = document.getElementById('map-area-input').value.trim();
-
-            if (!area) {
-                alert(currentLang === 'th' ? 'กรุณากรอกเขตหรือจังหวัด' : 'Please enter a district or province.');
-                document.getElementById('map-area-input').focus();
-                return;
-            }
-
-            const searchQuery = currentLang === 'th' ? `${carrier} ใกล้ฉัน ${area}` : `${carrier} near me ${area}`;
-            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(searchQuery)}`;
-
-            window.open(mapUrl, '_blank');
-        }
-
-        window.trackParcel = async function() {
-            const carrierId = document.getElementById('carrier').value;
-            const trackingNo = document.getElementById('tracking-number').value.trim();
-
-            if (!trackingNo) {
-                alert(currentLang === 'th' ? 'กรุณากรอกเลขพัสดุก่อนครับ' : 'Please enter a tracking number.');
-                document.getElementById('tracking-number').focus();
-                return;
-            }
-
-            const selectedCarrier = carriersCache.find(c => c.id === carrierId) || carriersCache[0];
-            let targetUrl = '';
-            let carrierName = selectedCarrier ? selectedCarrier.name : 'General Search';
-
-            switch(carrierId) {
-                case 'flash':
-                    targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`;
-                    break;
-                case 'thpost':
-                    targetUrl = `https://track.thailandpost.com/?trackNumber=${encodeURIComponent(trackingNo)}`;
-                    break;
-                case 'kerry':
-                    targetUrl = `https://th.kexexpress.com/en/track?id=${encodeURIComponent(trackingNo)}`;
-                    break;
-                case 'j&t':
-                    targetUrl = `https://www.jtexpress.co.th/index/query/gz.html?billcode=${encodeURIComponent(trackingNo)}`;
-                    break;
-                case 'ninjavan':
-                    targetUrl = `https://www.ninjavan.co/en-th/tracking?id=${encodeURIComponent(trackingNo)}`;
-                    break;
-                case 'best':
-                    targetUrl = `https://www.best-inc.co.th/track?billCode=${encodeURIComponent(trackingNo)}`;
-                    break;
-                case 'lalamove':
-                    targetUrl = `https://www.lalamove.com/th-th/`;
-                    break;
-                default:
-                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(carrierName + ' tracking ' + trackingNo)}`;
-            }
-
-            await saveHistory(carrierName, trackingNo, targetUrl);
-            window.open(targetUrl, '_blank');
-            
-            document.getElementById('tracking-number').value = '';
-            loadHistory();
-        }
-
-        async function saveHistory(carrierName, trackingNo, url) {
-            if (!currentUser) return;
-            try {
-                await addDoc(collection(db, 'tracking_history'), {
-                    uid: currentUser.uid,
-                    email: currentUser.email,
-                    carrierName,
-                    trackingNo,
-                    url,
-                    time: new Date().toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US', { dateStyle: 'short', timeStyle: 'short' }),
-                    createdAt: Date.now()
-                });
-            } catch (err) {
-                console.error("Error saving history:", err);
-            }
-        }
-
-        window.loadHistory = async function() {
-            if (!currentUser) return;
-            const historyList = document.getElementById('history-list');
-            
-            try {
-                const q = query(
-                    collection(db, 'tracking_history'), 
-                    where('uid', '==', currentUser.uid)
-                );
-                const snapshot = await getDocs(q);
-                let historyData = [];
-                snapshot.forEach(docSnap => {
-                    historyData.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
-                // Sort client-side by createdAt descending
-                historyData.sort((a, b) => b.createdAt - a.createdAt);
-
-                if (historyData.length === 0) {
-                    historyList.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">${translations[currentLang].no_history}</p>`;
-                    return;
-                }
-
-                let html = '';
-                const btnViewTxt = translations[currentLang].btn_open_view;
-
-                historyData.forEach((item) => {
-                    html += `
-                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 rounded-xl hover:bg-blue-50/50 dark:hover:bg-slate-700/50 smooth-transition animate-fade-in">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-semibold text-xs">
-                                    <i class="fas fa-box"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">${item.carrierName} <span class="font-normal text-slate-400 text-[11px]">(${item.time})</span></p>
-                                    <p class="text-sm font-bold text-slate-900 dark:text-white tracking-wide">${item.trackingNo}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <a href="${item.url}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium smooth-transition shadow-sm flex items-center gap-1 active:scale-95">
-                                    <i class="fas fa-external-link-alt text-[10px]"></i> ${btnViewTxt}
-                                </a>
-                                <button onclick="deleteHistoryItem('${item.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 smooth-transition rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/50 active:scale-95">
-                                    <i class="fas fa-times text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                historyList.innerHTML = html;
-            } catch (err) {
-                console.error("Error loading history:", err);
-            }
-        }
-
-        window.deleteHistoryItem = async function(id) {
-            try {
-                await deleteDoc(doc(db, 'tracking_history', id));
-                loadHistory();
-            } catch (err) {
-                console.error("Error deleting history item:", err);
-            }
-        }
-
-        window.clearHistory = async function() {
-            if (confirm(currentLang === 'th' ? 'คุณต้องการล้างประวัติการเช็กทั้งหมดใช่หรือไม่?' : 'Are you sure you want to clear all tracking history?')) {
-                if (!currentUser) return;
-                try {
-                    const q = query(
-                        collection(db, 'tracking_history'), 
-                        where('uid', '==', currentUser.uid)
-                    );
-                    const snapshot = await getDocs(q);
-                    for (let docSnap of snapshot.docs) {
-                        await deleteDoc(doc(db, 'tracking_history', docSnap.id));
-                    }
-                    loadHistory();
-                } catch (err) {
-                    console.error("Error clearing history:", err);
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+            document.getElementById('map-area-input').placeholder = currentLang === 'th' ? 'เช่น บางเขน, จตุจักร, เชียงใหม่, ภูเก
