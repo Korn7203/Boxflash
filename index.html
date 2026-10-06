@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boxflash - ค้นหาสาขาทุกค่ายขนส่งใกล้คุณ</title>
+    <title>Boxflash - ค้นหาสาขาทุกค่ายขนส่ง & เช็กพัสดุ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -40,7 +40,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-slate-800 dark:text-white leading-tight">Boxflash</h1>
-                    <p class="text-xs text-slate-400 dark:text-slate-400" data-i18n="nav_subtitle">ค้นหาจุดบริการทุกค่าย & เช็กพัสดุ</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-400">ค้นหาจุดบริการทุกค่าย & เช็กพัสดุ</p>
                 </div>
             </div>
             
@@ -68,28 +68,21 @@
         <!-- ================= AUTH SECTION ================= -->
         <div id="auth-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition animate-fade-in">
             <div id="auth-tabs" class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
-                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition" data-i18n="tab_login">เข้าสู่ระบบ</button>
-                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition" data-i18n="tab_register">สมัครสมาชิก</button>
+                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 smooth-transition">เข้าสู่ระบบ</button>
+                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition">สมัครสมาชิก</button>
             </div>
 
             <!-- Login Form -->
             <form id="login-form" onsubmit="event.preventDefault(); handleLogin();" class="space-y-4 animate-fade-in">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_email">อีเมล</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมล</label>
                     <input type="email" id="login-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_password">รหัสผ่าน</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
                     <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
-                <div class="flex items-center justify-between text-xs">
-                    <label class="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-300">
-                        <input type="checkbox" id="remember-me" class="rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                        <span data-i18n="remember_me">จดจำการเข้าสู่ระบบ</span>
-                    </label>
-                    <button type="button" onclick="showForgotStep(1)" class="text-blue-600 dark:text-blue-400 hover:underline font-medium" data-i18n="forgot_password">ลืมรหัสผ่าน?</button>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_login">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
                     เข้าสู่ระบบ
                 </button>
             </form>
@@ -97,46 +90,30 @@
             <!-- Register Form -->
             <form id="register-form" onsubmit="event.preventDefault(); handleRegister();" class="space-y-4 hidden animate-fade-in">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_email">อีเมลสำหรับสมัคร</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">อีเมลสำหรับสมัคร</label>
                     <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_reg_password">สร้างรหัสผ่าน</label>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">สร้างรหัสผ่าน</label>
                     <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]" data-i18n="btn_register">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm text-sm active:scale-[0.99]">
                     สร้างบัญชีผู้ใช้ใหม่
                 </button>
             </form>
-
-            <!-- Forgot Password Step 1 -->
-            <div id="forgot-step-1" class="space-y-4 hidden animate-fade-in">
-                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
-                    <i class="fas fa-key text-blue-600"></i> <span data-i18n="forgot_title">กู้คืนรหัสผ่าน</span>
-                </h3>
-                <p class="text-xs text-slate-400" data-i18n="forgot_desc">กรอกอีเมลที่ลงทะเบียนไว้ ระบบจะส่งลิงก์รีเซ็ตรหัสผ่านไปให้</p>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_forgot_email">อีเมลของคุณ</label>
-                    <input type="email" id="forgot-email" placeholder="name@example.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm smooth-transition">
-                </div>
-                <div class="flex gap-2">
-                    <button type="button" onclick="showForgotStep(0)" class="px-4 py-3 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-medium text-sm active:scale-95" data-i18n="btn_back">ย้อนกลับ</button>
-                    <button type="button" onclick="executePasswordReset()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl text-sm active:scale-95" data-i18n="btn_send_reset">ส่งลิงก์รีเซ็ตรหัสผ่าน</button>
-                </div>
-            </div>
         </div>
 
         <!-- ================= DASHBOARD SECTION ================= -->
         <div id="dashboard-section" class="space-y-6 hidden animate-fade-in">
             
             <!-- Dashboard Navigation Tabs -->
-            <div class="flex flex-col sm:flex-row gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
-                <div class="grid grid-cols-2 gap-2 w-full sm:w-auto flex-1">
+            <div class="flex gap-2 justify-between items-center bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl smooth-transition">
+                <div class="grid grid-cols-2 gap-2 w-full">
                     <button onclick="switchMainTab('locator')" id="main-tab-locator" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm smooth-transition flex items-center justify-center gap-2">
-                        <i class="fas fa-map-marked-alt"></i> <span data-i18n="maintab_locator">ค้นหาสาขาบนแผนที่</span>
+                        <i class="fas fa-map-marked-alt"></i> ค้นหาสาขาบนแผนที่
                     </button>
                     <button onclick="switchMainTab('tracking')" id="main-tab-tracking" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 smooth-transition flex items-center justify-center gap-2">
-                        <i class="fas fa-search-location"></i> <span data-i18n="maintab_tracking">เช็กพัสดุทุกค่าย</span>
+                        <i class="fas fa-search-location"></i> เช็กพัสดุทุกค่าย
                     </button>
                 </div>
             </div>
@@ -146,14 +123,14 @@
                 <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5 smooth-transition hover:shadow-md">
                     <div>
                         <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fas fa-compass text-blue-600"></i> <span data-i18n="locator_title">ค้นหาจุดบริการทุกค่ายขนส่งใกล้คุณ</span>
+                            <i class="fas fa-compass text-blue-600"></i> ค้นหาจุดบริการทุกค่ายขนส่งใกล้คุณ
                         </h2>
-                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="locator_sub">พิมพ์ชื่อพื้นที่ หรือกดปุ่ม "ตำแหน่งของฉัน" เพื่อดูสาขาของทุกค่ายรอบตัวพร้อมระยะทาง</p>
+                        <p class="text-xs text-slate-400 mt-0.5">พิมพ์ชื่อพื้นที่ หรือกดปุ่ม "ตำแหน่งของฉัน" เพื่อดูสาขาของทุกค่ายรอบตัวพร้อมระยะทาง</p>
                     </div>
 
                     <form onsubmit="event.preventDefault(); searchAllCarriersByArea();" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_map_area">กรอกพื้นที่ / หรือค้นหาใกล้ตัว</label>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">กรอกพื้นที่ / หรือค้นหาใกล้ตัว</label>
                             <div class="flex flex-col sm:flex-row gap-2">
                                 <div class="relative flex-1">
                                     <input type="text" id="map-area-input" placeholder="เช่น กรุงเทพ, เชียงใหม่, บางซื่อ, หาดใหญ่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
@@ -161,10 +138,10 @@
                                 </div>
                                 <div class="flex gap-2">
                                     <button type="submit" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
-                                        <i class="fas fa-search"></i> <span data-i18n="btn_search_map">ค้นหาทุกค่าย</span>
+                                        <i class="fas fa-search"></i> ค้นหาทุกค่าย
                                     </button>
                                     <button type="button" onclick="findUserLocationAndAllNearby()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]" title="ตำแหน่งของฉัน">
-                                        <i class="fas fa-location-crosshairs"></i> <span data-i18n="btn_my_location">ตำแหน่งของฉัน</span>
+                                        <i class="fas fa-location-crosshairs"></i> ตำแหน่งของฉัน
                                     </button>
                                 </div>
                             </div>
@@ -178,7 +155,7 @@
 
                     <!-- Branch List & Distance Result Area -->
                     <div id="branch-results-container" class="space-y-2 pt-2 hidden">
-                        <h3 class="font-bold text-xs text-slate-600 dark:text-slate-300 uppercase tracking-wider" data-i18n="branch_found_title">📌 สาขาทุกค่ายที่พบและระยะทางจากคุณ</h3>
+                        <h3 class="font-bold text-xs text-slate-600 dark:text-slate-300 uppercase tracking-wider">📌 สาขาทุกค่ายที่พบและระยะทางจากคุณ</h3>
                         <div id="branch-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
                     </div>
                 </div>
@@ -188,12 +165,12 @@
             <div id="content-tracking" class="space-y-6 hidden smooth-transition">
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
                     <h2 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-search-location text-blue-600"></i> <span data-i18n="track_title">เช็กพัสดุด่วนทุกค่าย</span>
+                        <i class="fas fa-search-location text-blue-600"></i> เช็กพัสดุด่วนทุกค่าย
                     </h2>
                     
                     <form onsubmit="event.preventDefault(); trackParcel();" class="space-y-4">
                         <div class="relative">
-                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_carrier">เลือกบริษัทขนส่ง</label>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">เลือกบริษัทขนส่ง</label>
                             
                             <div id="tracking-select-btn" onclick="toggleTrackingDropdown()" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500">
                                 <div class="flex items-center gap-2.5" id="selected-tracking-carrier-display">
@@ -208,13 +185,13 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_tracking_no">เลขติดตามพัสดุ</label>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">เลขติดตามพัสดุ</label>
                             <div class="relative">
                                 <input type="text" id="tracking-number" placeholder="กรอกเลขพัสดุที่นี่..." class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium smooth-transition">
                                 <i class="fas fa-barcode absolute left-4 top-3.5 text-slate-400 text-base"></i>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]" data-i18n="btn_track">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl smooth-transition shadow-sm flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
                             <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด
                         </button>
                     </form>
@@ -224,9 +201,9 @@
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fas fa-history text-slate-600 dark:text-slate-400"></i> <span data-i18n="history_title">ประวัติการเช็คล่าสุด</span>
+                            <i class="fas fa-history text-slate-600 dark:text-slate-400"></i> ประวัติการเช็คล่าสุด
                         </h2>
-                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 font-medium smooth-transition active:scale-95" data-i18n="btn_clear_history">
+                        <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400 font-medium smooth-transition active:scale-95">
                             <i class="fas fa-trash-alt mr-1"></i> ล้างประวัติ
                         </button>
                     </div>
@@ -249,8 +226,8 @@
     <!-- Firebase SDK & Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCq5bwLyxo4ijvov9FUloeHlhaa3NZpSBY",
@@ -266,78 +243,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const translations = {
-            th: {
-                nav_subtitle: "ค้นหาจุดบริการทุกค่าย & เช็กพัสดุ",
-                tab_login: "เข้าสู่ระบบ",
-                tab_register: "สมัครสมาชิก",
-                label_email: "อีเมล",
-                label_password: "รหัสผ่าน",
-                remember_me: "จดจำการเข้าสู่ระบบ",
-                forgot_password: "ลืมรหัสผ่าน?",
-                btn_login: "เข้าสู่ระบบ",
-                label_reg_email: "อีเมลสำหรับสมัคร",
-                label_reg_password: "สร้างรหัสผ่าน",
-                btn_register: "สร้างบัญชีผู้ใช้ใหม่",
-                forgot_title: "กู้คืนรหัสผ่าน",
-                forgot_desc: "กรอกอีเมลที่ลงทะเบียนไว้ ระบบจะส่งลิงก์รีเซ็ตรหัสผ่านไปให้",
-                label_forgot_email: "อีเมลของคุณ",
-                btn_back: "ย้อนกลับ",
-                btn_send_reset: "ส่งลิงก์รีเซ็ตรหัสผ่าน",
-                maintab_locator: "ค้นหาสาขาบนแผนที่",
-                maintab_tracking: "เช็กพัสดุทุกค่าย",
-                locator_title: "ค้นหาจุดบริการทุกค่ายขนส่งใกล้คุณ",
-                locator_sub: "พิมพ์ชื่อพื้นที่ หรือกดปุ่ม 'ตำแหน่งของฉัน' เพื่อดูสาขาของทุกค่ายรอบตัวพร้อมระยะทาง",
-                label_map_area: "กรอกพื้นที่ / หรือค้นหาใกล้ตัว",
-                btn_search_map: "ค้นหาทุกค่าย",
-                btn_my_location: "ตำแหน่งของฉัน",
-                branch_found_title: "📌 สาขาทุกค่ายที่พบและระยะทางจากคุณ",
-                track_title: "เช็กพัสดุด่วนทุกค่าย",
-                label_carrier: "เลือกบริษัทขนส่ง",
-                label_tracking_no: "เลขติดตามพัสดุ",
-                btn_track: "เปิดหน้าเช็กพัสดุ & บันทึกล่าสุด",
-                history_title: "ประวัติการเช็คล่าสุด",
-                btn_clear_history: "ล้างประวัติ",
-                badge_member: "สมาชิก",
-                btn_open_view: "เปิดดู"
-            },
-            en: {
-                nav_subtitle: "Find All Carriers Branches & Track",
-                tab_login: "Login",
-                tab_register: "Register",
-                label_email: "Email",
-                label_password: "Password",
-                remember_me: "Remember me",
-                forgot_password: "Forgot password?",
-                btn_login: "Login",
-                label_reg_email: "Registration Email",
-                label_reg_password: "Create Password",
-                btn_register: "Create New Account",
-                forgot_title: "Password Recovery",
-                forgot_desc: "Enter your registered email and we'll send you a password reset link.",
-                label_forgot_email: "Your Email",
-                btn_back: "Back",
-                btn_send_reset: "Send Reset Link",
-                maintab_locator: "Branch Map Locator",
-                maintab_tracking: "Track All Carriers",
-                locator_title: "Find All Courier Branches Near You",
-                locator_sub: "Enter area or click 'My Location' to view all courier branches around you",
-                label_map_area: "Enter Area or Search Nearby",
-                btn_search_map: "Search All",
-                btn_my_location: "My Location",
-                branch_found_title: "📌 Found Branches & Distance",
-                track_title: "Quick Parcel Tracking",
-                label_carrier: "Select Carrier",
-                label_tracking_no: "Tracking Number",
-                btn_track: "Open Tracking & Save History",
-                history_title: "Recent History",
-                btn_clear_history: "Clear History",
-                badge_member: "Member",
-                btn_open_view: "Open"
-            }
-        };
-
-        let currentLang = localStorage.getItem('boxflash_lang') || 'th';
         let currentTheme = localStorage.getItem('boxflash_theme') || 'light';
         let currentUser = null;
         let map = null;
@@ -364,7 +269,6 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             initTheme();
-            initLanguage();
             setupAuthListener();
             renderTrackingDropdown();
             initInteractiveMap();
@@ -391,10 +295,8 @@
             return (R * c).toFixed(1);
         }
 
-        // ค้นหาสาขาทุกค่ายตามคำที่พิมพ์
-        window.searchAllCarriersByArea = async function() {
+        window.searchAllCarriersByArea = function() {
             const keyword = document.getElementById('map-area-input').value.trim().toLowerCase();
-            
             let matchedBranches = allCarriersBranches;
             if (keyword) {
                 matchedBranches = allCarriersBranches.filter(b => 
@@ -403,26 +305,21 @@
                     b.carrier.toLowerCase().includes(keyword)
                 );
             }
-
             if (matchedBranches.length === 0) {
-                alert(currentLang === 'th' ? 'ไม่พบสาขาในพื้นที่นี้ ลองค้นหาคำอื่น เช่น "บางซื่อ", "จตุจักร" หรือ "เชียงใหม่"' : 'No branches found.');
+                alert('ไม่พบสาขาในพื้นที่นี้ ลองค้นหาคำอื่น เช่น "บางซื่อ", "จตุจักร" หรือ "เชียงใหม่"');
                 return;
             }
-
             displayAllBranches(matchedBranches);
         }
 
-        // ค้นหาตำแหน่ง GPS ของผู้ใช้ และแสดงทุกสาขาใกล้เคียงเรียงตามระยะทาง
         window.findUserLocationAndAllNearby = function() {
             if (!navigator.geolocation) {
-                alert(currentLang === 'th' ? 'เบราว์เซอร์ไม่รองรับ GPS' : 'Geolocation not supported');
+                alert('เบราว์เซอร์ไม่รองรับ GPS');
                 return;
             }
-
             navigator.geolocation.getCurrentPosition((position) => {
                 userLat = position.coords.latitude;
                 userLon = position.coords.longitude;
-
                 map.setView([userLat, userLon], 14);
 
                 if (userMarker) markersLayer.removeLayer(userMarker);
@@ -433,21 +330,16 @@
                         iconSize: [30, 30]
                     })
                 }).addTo(markersLayer);
-                userMarker.bindPopup(`<b>${currentLang === 'th' ? 'ตำแหน่งของคุณ' : 'Your Location'}</b>`).openPopup();
+                userMarker.bindPopup('<b>ตำแหน่งของคุณ</b>').openPopup();
 
-                // คำนวณระยะทางทุกสาขา
                 let branchesWithDist = allCarriersBranches.map(b => ({
                     ...b,
                     distance: calculateDistance(userLat, userLon, b.lat, b.lon)
                 }));
-
-                // เรียงจากใกล้ไปไกลสุด
                 branchesWithDist.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-
                 displayAllBranches(branchesWithDist, true);
-
-            }, (error) => {
-                alert(currentLang === 'th' ? 'ไม่สามารถดึงตำแหน่งของคุณได้ กรุณาเปิด GPS' : 'Unable to retrieve location.');
+            }, () => {
+                alert('ไม่สามารถดึงตำแหน่งของคุณได้ กรุณาเปิด GPS');
             });
         }
 
@@ -465,7 +357,6 @@
             branches.forEach((b) => {
                 bounds.push([b.lat, b.lon]);
                 const marker = L.marker([b.lat, b.lon]).addTo(markersLayer);
-                
                 let distText = b.distance ? `<br>🚗 ห่างจากคุณประมาณ <b>${b.distance} กม.</b>` : '';
                 marker.bindPopup(`<b>${b.icon} ${b.name}</b><br>${b.address}${distText}`);
 
@@ -494,7 +385,6 @@
             }
         }
 
-        // Theme Control
         window.initTheme = function() {
             const htmlRoot = document.getElementById('html-root');
             const themeIcon = document.getElementById('theme-icon');
@@ -513,20 +403,8 @@
             initTheme();
         }
 
-        window.initLanguage = function() {
-            const langBtn = document.getElementById('lang-btn');
-            langBtn.innerHTML = currentLang === 'th' ? '🇹🇭 TH' : '🇬🇧 EN';
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
-            });
-        }
-
         window.toggleLanguage = function() {
-            currentLang = currentLang === 'th' ? 'en' : 'th';
-            localStorage.setItem('boxflash_lang', currentLang);
-            initLanguage();
-            if (currentUser) { loadHistory(); }
+            // Placeholder for language toggle if needed
         }
 
         window.switchAuthTab = function(tab) {
@@ -546,31 +424,6 @@
                 tabRegister.className = "flex-1 pb-3 text-sm font-semibold text-emerald-600 border-b-2 border-emerald-600 smooth-transition";
                 tabLogin.className = "flex-1 pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent smooth-transition";
             }
-        }
-
-        window.showForgotStep = function(step) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const authTabs = document.getElementById('auth-tabs');
-            const step1 = document.getElementById('forgot-step-1');
-
-            loginForm.classList.add('hidden');
-            registerForm.classList.add('hidden');
-            authTabs.classList.add('hidden');
-            step1.classList.add('hidden');
-
-            if (step === 0) { authTabs.classList.remove('hidden'); loginForm.classList.remove('hidden'); }
-            else if (step === 1) { step1.classList.remove('hidden'); }
-        }
-
-        window.executePasswordReset = async function() {
-            const email = document.getElementById('forgot-email').value.trim();
-            if (!email) return alert('กรุณากรอกอีเมล');
-            try {
-                await sendPasswordResetEmail(auth, email);
-                alert('ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว');
-                showForgotStep(0);
-            } catch (err) { alert(err.message); }
         }
 
         window.switchMainTab = function(tab) {
@@ -682,21 +535,58 @@
             document.getElementById('tracking-dropdown-chevron').classList.remove('rotate-180');
         }
 
+        // แก้ไขระบบเปิดเว็บเช็กพัสดุให้ตรงตามค่ายขนส่งจริงโดยไม่เด้งไปหน้า Trading
         window.trackParcel = async function() {
             const carrierId = document.getElementById('carrier').value;
             const trackingNo = document.getElementById('tracking-number').value.trim();
             if (!trackingNo) return alert('กรุณากรอกเลขพัสดุ');
 
-            let targetUrl = `https://www.google.com/search?q=${encodeURIComponent(carrierId + ' tracking ' + trackingNo)}`;
+            let targetUrl = '';
+            let carrierDisplayName = '';
+
+            switch(carrierId) {
+                case 'flash':
+                    targetUrl = `https://www.flashexpress.co.th/tracking/?se=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'Flash Express';
+                    break;
+                case 'kerry':
+                    targetUrl = `https://th.kexexpress.com/en/track?id=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'Kerry Express (KEX)';
+                    break;
+                case 'thpost':
+                    targetUrl = `https://track.thailandpost.com/?trackNumber=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'ไปรษณีย์ไทย';
+                    break;
+                case 'j&t':
+                    targetUrl = `https://www.jtexpress.co.th/index/query/gz.html?billcode=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'J&T Express';
+                    break;
+                case 'ninjavan':
+                    targetUrl = `https://www.ninjavan.co/en-th/tracking?id=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'Ninja Van';
+                    break;
+                case 'best':
+                    targetUrl = `https://www.best-inc.co.th/track?billCode=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'Best Express';
+                    break;
+                case 'lalamove':
+                    targetUrl = `https://www.lalamove.com/th-th/`;
+                    carrierDisplayName = 'Lalamove';
+                    break;
+                default:
+                    targetUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNo)}`;
+                    carrierDisplayName = 'General Carrier';
+            }
 
             await addDoc(collection(db, 'tracking_history'), {
                 uid: currentUser.uid,
-                carrierName: carrierId,
+                carrierName: carrierDisplayName,
                 trackingNo,
                 url: targetUrl,
                 time: new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }),
                 createdAt: Date.now()
             });
+
             window.open(targetUrl, '_blank');
             document.getElementById('tracking-number').value = '';
             loadHistory();
