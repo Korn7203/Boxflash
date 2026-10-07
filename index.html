@@ -217,7 +217,7 @@
                 </div>
             </div>
 
-            <!-- TAB 2: MULTI-CARRIER TRACKING & HISTORY (CUSTOMIZED & REDESIGNED) -->
+            <!-- TAB 2: MULTI-CARRIER TRACKING & HISTORY -->
             <div id="content-tracking" class="space-y-6 hidden smooth-transition">
                 <!-- Tracking Card -->
                 <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 smooth-transition hover:shadow-md space-y-6">
@@ -258,41 +258,14 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <!-- Action Button -->
+                        <div class="pt-2">
                             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl smooth-transition shadow-md flex items-center justify-center gap-2 text-sm active:scale-[0.99]" data-i18n="btn_track">
                                 <i class="fas fa-external-link-alt"></i> เปิดหน้าเช็กพัสดุ & บันทึก
-                            </button>
-                            <button type="button" onclick="previewTrackingResult()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-xl smooth-transition flex items-center justify-center gap-2 text-sm active:scale-[0.99]" data-i18n="btn_preview_status">
-                                <i class="fas fa-eye text-blue-500"></i> จำลองดูสถานะด่วน
                             </button>
                         </div>
                     </form>
 
-                    <!-- Embedded Quick Preview Result Area (NEW FEATURE) -->
-                    <div id="quick-preview-box" class="hidden bg-slate-50 dark:bg-slate-900/80 border border-blue-200 dark:border-blue-900/60 rounded-2xl p-4 space-y-3 animate-fade-in">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-info-circle"></i> ผลการตรวจสอบเบื้องต้น
-                            </span>
-                            <span id="preview-carrier-badge" class="text-[10px] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2.5 py-0.5 rounded-full font-semibold">Flash Express</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300">
-                            <span>เลขพัสดุ: <strong id="preview-track-no-text" class="text-slate-800 dark:text-white">-</strong></span>
-                            <span class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1"><i class="fas fa-circle text-[8px]"></i> กำลังจัดส่ง / ปกติ</span>
-                        </div>
-                        <div class="text-xs bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
-                            <p class="font-semibold text-slate-800 dark:text-white">สถานะล่าสุด: พัสดุถึงสาขาปลายทางแล้ว</p>
-                            <p class="text-[11px] text-slate-400">อัปเดตล่าสุด: วันนี้ 10:45 น. (พนักงานกำลังนำจ่าย)</p>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
-                        <p class="text-xs text-rose-500 dark:text-rose-400 font-medium flex items-start gap-2 leading-relaxed">
-                            <i class="fas fa-shield-alt mt-0.5 shrink-0"></i> 
-                            <span data-i18n="track_notice">ขนส่งบางแห่งมีระบบป้องกันบอท หากเข้าหน้าเว็บแล้วต้องยืนยันตัวตนหรือกรอกเลขซ้ำ สามารถใช้ปุ่มจำลองสถานะด้านบนเพื่อดูข้อมูลคร่าวๆ ได้ทันที</span>
-                        </p>
-                    </div>
                 </div>
 
                 <!-- Recent History Section -->
@@ -505,8 +478,6 @@
                 label_carrier: "เลือกบริษัทขนส่ง",
                 label_tracking_no: "เลขติดตามพัสดุ",
                 btn_track: "เปิดหน้าเช็กพัสดุ & บันทึก",
-                btn_preview_status: "จำลองดูสถานะด่วน",
-                track_notice: "ขนส่งบางแห่งมีระบบป้องกันบอท หากเข้าหน้าเว็บแล้วต้องยืนยันตัวตนหรือกรอกเลขซ้ำ สามารถใช้ปุ่มจำลองสถานะด้านบนเพื่อดูข้อมูลคร่าวๆ ได้ทันที",
                 history_title: "ประวัติการเช็คล่าสุด",
                 btn_clear_history: "ล้างประวัติ",
                 badge_admin: "แอดมิน",
@@ -585,8 +556,6 @@
                 label_carrier: "Select Carrier",
                 label_tracking_no: "Tracking Number",
                 btn_track: "Open Tracking & Save",
-                btn_preview_status: "Quick Status Preview",
-                track_notice: "Some couriers have anti-bot protection. If required to login or re-enter, you can use the quick status preview button above.",
                 history_title: "Recent History",
                 btn_clear_history: "Clear History",
                 badge_admin: "Admin",
@@ -1277,21 +1246,6 @@
             window.open(mapUrl, '_blank');
         }
 
-        // Quick Preview Status Feature (NEW)
-        window.previewTrackingResult = function() {
-            const trackingNo = document.getElementById('tracking-number').value.trim();
-            const carrierId = document.getElementById('carrier').value;
-            if (!trackingNo) {
-                alert(currentLang === 'th' ? 'กรุณากรอกเลขพัสดุก่อนแสดงตัวอย่าง' : 'Please enter tracking number first.');
-                document.getElementById('tracking-number').focus();
-                return;
-            }
-            const selectedCarrier = carriersCache.find(c => c.id === carrierId) || carriersCache[0];
-            document.getElementById('preview-carrier-badge').textContent = selectedCarrier.name;
-            document.getElementById('preview-track-no-text').textContent = trackingNo;
-            document.getElementById('quick-preview-box').classList.remove('hidden');
-        }
-
         window.trackParcel = async function() {
             const carrierId = document.getElementById('carrier').value;
             const trackingNo = document.getElementById('tracking-number').value.trim();
@@ -1336,7 +1290,6 @@
             window.open(targetUrl, '_blank');
             
             document.getElementById('tracking-number').value = '';
-            document.getElementById('quick-preview-box').classList.add('hidden');
             loadHistory();
         }
 
