@@ -301,20 +301,28 @@
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_weight">น้ำหนัก (กิโลกรัม)</label>
                                 <input type="number" id="calc-weight" step="0.1" min="0.1" value="1.0" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
                             </div>
-                            <!-- ขนาดกล่อง -->
-                            <div>
+                            
+                            <!-- ขนาดกล่อง (เปลี่ยนเป็น Custom Dropdown) -->
+                            <div class="relative">
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_box_size">ขนาดกล่อง / ความสูง</label>
-                                <select id="calc-box-size" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                    <option value="S" data-i18n="box_s">กล่อง S (เล็ก / เอกสาร)</option>
-                                    <option value="M" selected data-i18n="box_m">กล่อง M (ขนาดกลาง)</option>
-                                    <option value="L" data-i18n="box_l">กล่อง L (ขนาดใหญ่)</option>
-                                    <option value="XL" data-i18n="box_xl">กล่อง XL (ใหญ่พิเศษ / พัสดุหนัก)</option>
-                                </select>
+                                
+                                <div id="boxsize-select-btn" onclick="toggleDropdown('boxsize')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500 shadow-sm active:scale-[0.99]">
+                                    <span id="selected-boxsize-display">กล่อง M (ขนาดกลาง)</span>
+                                    <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="boxsize-dropdown-chevron"></i>
+                                </div>
+
+                                <div id="boxsize-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 hidden p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top">
+                                    <div onclick="selectBoxSize('S', 'กล่อง S (เล็ก / เอกสาร)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="box_s">กล่อง S (เล็ก / เอกสาร)</div>
+                                    <div onclick="selectBoxSize('M', 'กล่อง M (ขนาดกลาง)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="box_m">กล่อง M (ขนาดกลาง)</div>
+                                    <div onclick="selectBoxSize('L', 'กล่อง L (ขนาดใหญ่)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="box_l">กล่อง L (ขนาดใหญ่)</div>
+                                    <div onclick="selectBoxSize('XL', 'กล่อง XL (ใหญ่พิเศษ / พัสดุหนัก)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="box_xl">กล่อง XL (ใหญ่พิเศษ / พัสดุหนัก)</div>
+                                </div>
+                                <input type="hidden" id="calc-box-size" value="M">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- ประเภทสิ่งของ (แก้ไขเป็น Custom Dropdown เพื่อไม่ให้พับซ้อนกัน) -->
+                            <!-- ประเภทสิ่งของ (Custom Dropdown) -->
                             <div class="relative">
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_item_type">ประเภทสิ่งของ</label>
                                 
@@ -331,14 +339,21 @@
                                 <input type="hidden" id="calc-item-type" value="normal">
                             </div>
 
-                            <!-- บับเบิ้ล -->
-                            <div>
+                            <!-- บับเบิ้ล (เปลี่ยนเป็น Custom Dropdown) -->
+                            <div class="relative">
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_bubble">ห่อบับเบิ้ลกันกระแทก</label>
-                                <select id="calc-bubble" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                    <option value="0" data-i18n="bubble_none">ไม่ห่อบับเบิ้ล</option>
-                                    <option value="15" data-i18n="bubble_standard">ห่อบับเบิ้ลมาตรฐาน (+15 บาท)</option>
-                                    <option value="30" data-i18n="bubble_thick">ห่อบับเบิ้ลหนาพิเศษ (+30 บาท)</option>
-                                </select>
+                                
+                                <div id="bubble-select-btn" onclick="toggleDropdown('bubble')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500 shadow-sm active:scale-[0.99]">
+                                    <span id="selected-bubble-display">ไม่ห่อบับเบิ้ล</span>
+                                    <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="bubble-dropdown-chevron"></i>
+                                </div>
+
+                                <div id="bubble-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 hidden p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top">
+                                    <div onclick="selectBubble('0', 'ไม่ห่อบับเบิ้ล')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="bubble_none">ไม่ห่อบับเบิ้ล</div>
+                                    <div onclick="selectBubble('15', 'ห่อบับเบิ้ลมาตรฐาน (+15 บาท)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="bubble_standard">ห่อบับเบิ้ลมาตรฐาน (+15 บาท)</div>
+                                    <div onclick="selectBubble('30', 'ห่อบับเบิ้ลหนาพิเศษ (+30 บาท)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="bubble_thick">ห่อบับเบิ้ลหนาพิเศษ (+30 บาท)</div>
+                                </div>
+                                <input type="hidden" id="calc-bubble" value="0">
                             </div>
                         </div>
 
@@ -998,105 +1013,96 @@
             const listItemType = document.getElementById('itemtype-dropdown-list');
             const chevronItemType = document.getElementById('itemtype-dropdown-chevron');
 
-            if (type === 'locator') {
-                if(listTracking) listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
-                if(listItemType) listItemType.classList.add('hidden', 'opacity-0', 'scale-95');
+            const listBoxSize = document.getElementById('boxsize-dropdown-list');
+            const chevronBoxSize = document.getElementById('boxsize-dropdown-chevron');
 
-                if (listLocator.classList.contains('hidden')) {
-                    listLocator.classList.remove('hidden');
-                    setTimeout(() => {
-                        listLocator.classList.remove('opacity-0', 'scale-95');
-                        listLocator.classList.add('opacity-100', 'scale-100');
-                    }, 10);
-                    chevronLocator.classList.add('rotate-180');
-                } else {
-                    listLocator.classList.remove('opacity-100', 'scale-100');
-                    listLocator.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => listLocator.classList.add('hidden'), 200);
-                    chevronLocator.classList.remove('rotate-180');
+            const listBubble = document.getElementById('bubble-dropdown-list');
+            const chevronBubble = document.getElementById('bubble-dropdown-chevron');
+
+            // ซ่อนอันอื่นทั้งหมดก่อน
+            [
+                {l: listLocator, c: chevronLocator},
+                {l: listTracking, c: chevronTracking},
+                {l: listItemType, c: chevronItemType},
+                {l: listBoxSize, c: chevronBoxSize},
+                {l: listBubble, c: chevronBubble}
+            ].forEach(item => {
+                if (item.l && item.l.id !== type + '-dropdown-list') {
+                    item.l.classList.add('hidden', 'opacity-0', 'scale-95');
+                    if(item.c) item.c.classList.remove('rotate-180');
                 }
-            } else if (type === 'tracking') {
-                if(listLocator) listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
-                if(listItemType) listItemType.classList.add('hidden', 'opacity-0', 'scale-95');
+            });
 
-                if (listTracking.classList.contains('hidden')) {
-                    listTracking.classList.remove('hidden');
-                    setTimeout(() => {
-                        listTracking.classList.remove('opacity-0', 'scale-95');
-                        listTracking.classList.add('opacity-100', 'scale-100');
-                    }, 10);
-                    chevronTracking.classList.add('rotate-180');
-                } else {
-                    listTracking.classList.remove('opacity-100', 'scale-100');
-                    listTracking.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => listTracking.classList.add('hidden'), 200);
-                    chevronTracking.classList.remove('rotate-180');
-                }
-            } else if (type === 'itemtype') {
-                if(listLocator) listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
-                if(listTracking) listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
+            let targetList, targetChevron;
+            if (type === 'locator') { targetList = listLocator; targetChevron = chevronLocator; }
+            else if (type === 'tracking') { targetList = listTracking; targetChevron = chevronTracking; }
+            else if (type === 'itemtype') { targetList = listItemType; targetChevron = chevronItemType; }
+            else if (type === 'boxsize') { targetList = listBoxSize; targetChevron = chevronBoxSize; }
+            else if (type === 'bubble') { targetList = listBubble; targetChevron = chevronBubble; }
 
-                if (listItemType.classList.contains('hidden')) {
-                    listItemType.classList.remove('hidden');
+            if (targetList) {
+                if (targetList.classList.contains('hidden')) {
+                    targetList.classList.remove('hidden');
                     setTimeout(() => {
-                        listItemType.classList.remove('opacity-0', 'scale-95');
-                        listItemType.classList.add('opacity-100', 'scale-100');
+                        targetList.classList.remove('opacity-0', 'scale-95');
+                        targetList.classList.add('opacity-100', 'scale-100');
                     }, 10);
-                    chevronItemType.classList.add('rotate-180');
+                    if(targetChevron) targetChevron.classList.add('rotate-180');
                 } else {
-                    listItemType.classList.remove('opacity-100', 'scale-100');
-                    listItemType.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => listItemType.classList.add('hidden'), 200);
-                    chevronItemType.classList.remove('rotate-180');
+                    targetList.classList.remove('opacity-100', 'scale-100');
+                    targetList.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => targetList.classList.add('hidden'), 200);
+                    if(targetChevron) targetChevron.classList.remove('rotate-180');
                 }
             }
+        }
+
+        window.selectBoxSize = function(val, textKey) {
+            document.getElementById('calc-box-size').value = val;
+            document.getElementById('selected-boxsize-display').textContent = textKey;
+            closeDropdown('boxsize');
         }
 
         window.selectItemType = function(val, textKey) {
             document.getElementById('calc-item-type').value = val;
             document.getElementById('selected-itemtype-display').textContent = textKey;
+            closeDropdown('itemtype');
+        }
 
-            const list = document.getElementById('itemtype-dropdown-list');
-            const chevron = document.getElementById('itemtype-dropdown-chevron');
-            list.classList.remove('opacity-100', 'scale-100');
-            list.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => list.classList.add('hidden'), 200);
-            chevron.classList.remove('rotate-180');
+        window.selectBubble = function(val, textKey) {
+            document.getElementById('calc-bubble').value = val;
+            document.getElementById('selected-bubble-display').textContent = textKey;
+            closeDropdown('bubble');
+        }
+
+        function closeDropdown(type) {
+            const list = document.getElementById(type + '-dropdown-list');
+            const chevron = document.getElementById(type + '-dropdown-chevron');
+            if(list) {
+                list.classList.remove('opacity-100', 'scale-100');
+                list.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => list.classList.add('hidden'), 200);
+            }
+            if(chevron) chevron.classList.remove('rotate-180');
         }
 
         window.addEventListener('click', (e) => {
-            const btnLocator = document.getElementById('custom-select-btn');
-            const listLocator = document.getElementById('custom-dropdown-list');
-            const chevronLocator = document.getElementById('dropdown-chevron');
+            ['custom', 'tracking', 'itemtype', 'boxsize', 'bubble'].forEach(type => {
+                let btnId = type === 'custom' ? 'custom-select-btn' : type + '-select-btn';
+                let listId = type === 'custom' ? 'custom-dropdown-list' : type + '-dropdown-list';
+                let chevronId = type === 'custom' ? 'dropdown-chevron' : type + '-dropdown-chevron';
 
-            const btnTracking = document.getElementById('tracking-select-btn');
-            const listTracking = document.getElementById('tracking-dropdown-list');
-            const chevronTracking = document.getElementById('tracking-dropdown-chevron');
+                const btn = document.getElementById(btnId);
+                const list = document.getElementById(listId);
+                const chevron = document.getElementById(chevronId);
 
-            const btnItemType = document.getElementById('itemtype-select-btn');
-            const listItemType = document.getElementById('itemtype-dropdown-list');
-            const chevronItemType = document.getElementById('itemtype-dropdown-chevron');
-
-            if (btnLocator && listLocator && !btnLocator.contains(e.target) && !listLocator.contains(e.target)) {
-                listLocator.classList.remove('opacity-100', 'scale-100');
-                listLocator.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => listLocator.classList.add('hidden'), 200);
-                chevronLocator.classList.remove('rotate-180');
-            }
-
-            if (btnTracking && listTracking && !btnTracking.contains(e.target) && !listTracking.contains(e.target)) {
-                listTracking.classList.remove('opacity-100', 'scale-100');
-                listTracking.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => listTracking.classList.add('hidden'), 200);
-                chevronTracking.classList.remove('rotate-180');
-            }
-
-            if (btnItemType && listItemType && !btnItemType.contains(e.target) && !listItemType.contains(e.target)) {
-                listItemType.classList.remove('opacity-100', 'scale-100');
-                listItemType.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => listItemType.classList.add('hidden'), 200);
-                chevronItemType.classList.remove('rotate-180');
-            }
+                if (btn && list && !btn.contains(e.target) && !list.contains(e.target)) {
+                    list.classList.remove('opacity-100', 'scale-100');
+                    list.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => list.classList.add('hidden'), 200);
+                    if(chevron) chevron.classList.remove('rotate-180');
+                }
+            });
         });
 
         window.renderCustomDropdowns = function() {
@@ -1147,13 +1153,7 @@
                 : `<span class="text-base">${icon || '📦'}</span>`;
 
             document.getElementById('selected-carrier-display').innerHTML = `${iconDisplay} <span>${name}</span>`;
-            
-            const list = document.getElementById('custom-dropdown-list');
-            const chevron = document.getElementById('dropdown-chevron');
-            list.classList.remove('opacity-100', 'scale-100');
-            list.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => list.classList.add('hidden'), 200);
-            chevron.classList.remove('rotate-180');
+            closeDropdown('custom');
         }
 
         function selectTrackingCarrier(id, name, icon) {
@@ -1164,13 +1164,7 @@
                 : `<span class="text-base">${icon || '📦'}</span>`;
 
             document.getElementById('selected-tracking-carrier-display').innerHTML = `${iconDisplay} <span>${name}</span>`;
-            
-            const list = document.getElementById('tracking-dropdown-list');
-            const chevron = document.getElementById('tracking-dropdown-chevron');
-            list.classList.remove('opacity-100', 'scale-100');
-            list.classList.add('opacity-0', 'scale-95');
-            setTimeout(() => list.classList.add('hidden'), 200);
-            chevron.classList.remove('rotate-180');
+            closeDropdown('tracking');
         }
 
         // ================= ADMIN CARRIER MANAGER MODAL =================
