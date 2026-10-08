@@ -314,15 +314,23 @@
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- ประเภทสิ่งของ -->
-                            <div>
+                            <!-- ประเภทสิ่งของ (แก้ไขเป็น Custom Dropdown เพื่อไม่ให้พับซ้อนกัน) -->
+                            <div class="relative">
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_item_type">ประเภทสิ่งของ</label>
-                                <select id="calc-item-type" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm font-medium">
-                                    <option value="normal" data-i18n="item_normal">สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)</option>
-                                    <option value="fragile" data-i18n="item_fragile">สินค้าแตกหักง่าย (แก้ว, อิเล็กทรอนิกส์)</option>
-                                    <option value="cold" data-i18n="item_cold">อาหารแห้ง / ควบคุมอุณหภูมิ</option>
-                                </select>
+                                
+                                <div id="itemtype-select-btn" onclick="toggleDropdown('itemtype')" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center justify-between text-sm font-medium smooth-transition hover:border-blue-500 shadow-sm active:scale-[0.99]">
+                                    <span id="selected-itemtype-display">สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)</span>
+                                    <i class="fas fa-chevron-down text-xs text-slate-400 smooth-transition" id="itemtype-dropdown-chevron"></i>
+                                </div>
+
+                                <div id="itemtype-dropdown-list" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 hidden p-1.5 space-y-1 dropdown-anim opacity-0 scale-95 origin-top">
+                                    <div onclick="selectItemType('normal', 'สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="item_normal">สิ่งของทั่วไป (ผ้า, เสื้อผ้า, หนังสือ)</div>
+                                    <div onclick="selectItemType('fragile', 'สินค้าแตกหักง่าย (แก้ว, อิเล็กทรอนิกส์)')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="item_fragile">สินค้าแตกหักง่าย (แก้ว, อิเล็กทรอนิกส์)</div>
+                                    <div onclick="selectItemType('cold', 'อาหารแห้ง / ควบคุมอุณหภูมิ')" class="px-3.5 py-2.5 rounded-xl cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 smooth-transition text-xs font-medium" data-i18n="item_cold">อาหารแห้ง / ควบคุมอุณหภูมิ</div>
+                                </div>
+                                <input type="hidden" id="calc-item-type" value="normal">
                             </div>
+
                             <!-- บับเบิ้ล -->
                             <div>
                                 <label class="block font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5" data-i18n="label_bubble">ห่อบับเบิ้ลกันกระแทก</label>
@@ -987,9 +995,12 @@
             const listTracking = document.getElementById('tracking-dropdown-list');
             const chevronTracking = document.getElementById('tracking-dropdown-chevron');
 
+            const listItemType = document.getElementById('itemtype-dropdown-list');
+            const chevronItemType = document.getElementById('itemtype-dropdown-chevron');
+
             if (type === 'locator') {
-                listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
-                chevronTracking.classList.remove('rotate-180');
+                if(listTracking) listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
+                if(listItemType) listItemType.classList.add('hidden', 'opacity-0', 'scale-95');
 
                 if (listLocator.classList.contains('hidden')) {
                     listLocator.classList.remove('hidden');
@@ -1004,9 +1015,9 @@
                     setTimeout(() => listLocator.classList.add('hidden'), 200);
                     chevronLocator.classList.remove('rotate-180');
                 }
-            } else {
-                listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
-                chevronLocator.classList.remove('rotate-180');
+            } else if (type === 'tracking') {
+                if(listLocator) listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
+                if(listItemType) listItemType.classList.add('hidden', 'opacity-0', 'scale-95');
 
                 if (listTracking.classList.contains('hidden')) {
                     listTracking.classList.remove('hidden');
@@ -1021,7 +1032,36 @@
                     setTimeout(() => listTracking.classList.add('hidden'), 200);
                     chevronTracking.classList.remove('rotate-180');
                 }
+            } else if (type === 'itemtype') {
+                if(listLocator) listLocator.classList.add('hidden', 'opacity-0', 'scale-95');
+                if(listTracking) listTracking.classList.add('hidden', 'opacity-0', 'scale-95');
+
+                if (listItemType.classList.contains('hidden')) {
+                    listItemType.classList.remove('hidden');
+                    setTimeout(() => {
+                        listItemType.classList.remove('opacity-0', 'scale-95');
+                        listItemType.classList.add('opacity-100', 'scale-100');
+                    }, 10);
+                    chevronItemType.classList.add('rotate-180');
+                } else {
+                    listItemType.classList.remove('opacity-100', 'scale-100');
+                    listItemType.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => listItemType.classList.add('hidden'), 200);
+                    chevronItemType.classList.remove('rotate-180');
+                }
             }
+        }
+
+        window.selectItemType = function(val, textKey) {
+            document.getElementById('calc-item-type').value = val;
+            document.getElementById('selected-itemtype-display').textContent = textKey;
+
+            const list = document.getElementById('itemtype-dropdown-list');
+            const chevron = document.getElementById('itemtype-dropdown-chevron');
+            list.classList.remove('opacity-100', 'scale-100');
+            list.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => list.classList.add('hidden'), 200);
+            chevron.classList.remove('rotate-180');
         }
 
         window.addEventListener('click', (e) => {
@@ -1032,6 +1072,10 @@
             const btnTracking = document.getElementById('tracking-select-btn');
             const listTracking = document.getElementById('tracking-dropdown-list');
             const chevronTracking = document.getElementById('tracking-dropdown-chevron');
+
+            const btnItemType = document.getElementById('itemtype-select-btn');
+            const listItemType = document.getElementById('itemtype-dropdown-list');
+            const chevronItemType = document.getElementById('itemtype-dropdown-chevron');
 
             if (btnLocator && listLocator && !btnLocator.contains(e.target) && !listLocator.contains(e.target)) {
                 listLocator.classList.remove('opacity-100', 'scale-100');
@@ -1045,6 +1089,13 @@
                 listTracking.classList.add('opacity-0', 'scale-95');
                 setTimeout(() => listTracking.classList.add('hidden'), 200);
                 chevronTracking.classList.remove('rotate-180');
+            }
+
+            if (btnItemType && listItemType && !btnItemType.contains(e.target) && !listItemType.contains(e.target)) {
+                listItemType.classList.remove('opacity-100', 'scale-100');
+                listItemType.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => listItemType.classList.add('hidden'), 200);
+                chevronItemType.classList.remove('rotate-180');
             }
         });
 
